@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@prisma/extension-accelerate": "^1.2.2",
-    "@react-email/components": "^0.0.33",
+    "@react-email/components": "^0.0.13",
     "better-auth": "^1.2.3",
     "next": "15.2.2",
     "nodemailer": "^6.10.0",

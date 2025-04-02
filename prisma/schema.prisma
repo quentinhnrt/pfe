@@ -19,23 +19,26 @@ enum Role {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  email         String         @unique
-  firstname     String?
-  lastname      String?
-  name          String?
-  emailVerified Boolean
-  role          Role           @default(USER)
-  image         String?
-  onBoarded     Boolean        @default(false)
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
-  Artwork       Artwork[]
-  Group         Group[]
-  UserTemplate  UserTemplate[]
-  Inspiration   Inspiration[]
+  id             String           @id @default(cuid())
+  email          String           @unique
+  firstname      String?
+  lastname       String?
+  name           String?
+  emailVerified  Boolean
+  role           Role             @default(USER)
+  image          String?
+  onBoarded      Boolean          @default(false)
+  createdAt      DateTime
+  updatedAt      DateTime
+  sessions       Session[]
+  accounts       Account[]
+  Artwork        Artwork[]
+  Group          Group[]
+  UserTemplate   UserTemplate[]
+  Inspiration    Inspiration[]
+  Post           Post[]
+  PostReaction   PostReaction[]
+  QuestionAnswer QuestionAnswer[]
 
   @@map("user")
 }
@@ -54,6 +57,9 @@ model Artwork {
   user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   GroupArtwork       GroupArtwork[]
   InspirationArtwork InspirationArtwork[]
+  PostArtwork        PostArtwork[]
+  Post               Post?                @relation(fields: [postId], references: [id])
+  postId             Int?
 }
 
 model Group {
@@ -173,4 +179,63 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Question {
+  id       Int      @id @default(autoincrement())
+  question String
+  answers  Answer[]
+  Post     Post?
+}
+
+model Answer {
+  id             Int              @id @default(autoincrement())
+  questionId     Int
+  content        String
+  Question       Question         @relation(fields: [questionId], references: [id])
+  QuestionAnswer QuestionAnswer[]
+}
+
+model QuestionAnswer {
+  id       Int    @id @default(autoincrement())
+  answerId Int
+  userId   String
+
+  answer Answer @relation(fields: [answerId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model Post {
+  id           Int            @id @default(autoincrement())
+  userId       String
+  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  images       Artwork[]
+  content      String
+  questionId   Int?           @unique
+  question     Question?      @relation(fields: [questionId], references: [id])
+  PostReaction PostReaction[]
+  PostArtwork  PostArtwork[]
+}
+
+model PostArtwork {
+  id        Int @id @default(autoincrement())
+  postId    Int
+  artworkId Int
+
+  artwork Artwork @relation(fields: [artworkId], references: [id])
+  post    Post    @relation(fields: [postId], references: [id])
+}
+
+model Reaction {
+  id    Int    @id @default(autoincrement())
+  image String
+}
+
+model PostReaction {
+  id     Int    @id @default(autoincrement())
+  userId String
+  postId Int
+
+  user User @relation(fields: [userId], references: [id])
+  post Post @relation(fields: [postId], references: [id])
 }

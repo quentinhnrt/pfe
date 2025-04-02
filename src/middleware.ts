@@ -17,6 +17,10 @@ export async function middleware(request: NextRequest) {
         }
     );
 
+    if (!response.ok) {
+        return NextResponse.next();
+    }
+
     const session = await response.json();
 
     if(session && session.user && !session.user.onBoarded) {
