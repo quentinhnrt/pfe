@@ -34,3 +34,32 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Architecture
+
+```bash
+src
+├── app                 # Définit la structure de routage et l'organisation des pages de l'application.
+├── core                # Contient les éléments fondamentaux et réutilisables de l'application qui définissent son "cœur métier".
+│   ├── components      # Contient des composants UI spécifiques au domaine métier.
+│   ├── entities        # Définit les modèles de données fondamentaux et leurs comportements.
+│   ├── services        # Gère les communications avec les sources externes (API, bases de données, etc.).
+│   └── stores          # Gère l'état global et la logique métier de l'application.
+├── features            # Organise le code par fonctionnalités distinctes ou domaines métier.
+│   └── [feature-name]
+│       ├── components
+│       ├── entities
+│       ├── services
+│       └── stores
+├── middleware.ts
+├── shared              # Contient les utilitaires, composants et logiques partagés qui ne sont pas spécifiques au domaine métier.
+│   ├── assets
+│   ├── components
+│   ├── emails
+│   ├── hooks
+│   └── lib
+└── tests
+    ├── components
+    ├── pages
+    └── units
+```

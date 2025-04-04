@@ -10,13 +10,25 @@
     "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@prisma/client": "^6.5.0",
     "@prisma/extension-accelerate": "^1.2.2",
     "@react-email/components": "^0.0.13",
     "better-auth": "^1.2.3",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "gsap": "^3.12.7",
+    "lenis": "^1.2.3",
+    "lucide-react": "^0.485.0",
+    "motion": "^12.6.2",
     "next": "15.2.2",
     "nodemailer": "^6.10.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "sass": "^1.86.0",
+    "tailwind-merge": "^3.0.2",
+    "tw-animate-css": "^1.2.5",
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

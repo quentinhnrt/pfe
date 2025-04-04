@@ -1,24 +1,25 @@
-'use server'
+"use server";
 
-import prisma from "@/lib/prisma";
+import prisma from "@/shared/lib/prisma";
 
 export async function update(formData: FormData) {
-    const userData = Object.fromEntries(formData)
+  const userData = Object.fromEntries(formData);
 
-    const firstKey = Object.keys(userData)[0]
+  const firstKey = Object.keys(userData)[0];
 
-    delete userData[firstKey]
+  delete userData[firstKey];
 
-    userData.name = userData.firstname?.toString().toLowerCase() + '-' + userData.lastname?.toString().toLowerCase()
+  userData.name =
+    userData.firstname?.toString().toLowerCase() +
+    "-" +
+    userData.lastname?.toString().toLowerCase();
 
-    console.log(userData)
+  console.log(userData);
 
-    const user = await prisma.user.update({
-        where: {
-            id: userData.id
-        },
-        data: userData
-    })
-
-
+  const user = await prisma.user.update({
+    where: {
+      id: userData.id,
+    },
+    data: userData,
+  });
 }

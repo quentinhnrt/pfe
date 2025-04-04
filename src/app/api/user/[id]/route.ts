@@ -1,37 +1,43 @@
-import prisma from "@/lib/prisma";
+import prisma from "@/shared/lib/prisma";
 
-export async function GET(request: Request, {params}: { params: Promise<{ id: number }> }) {
-    const {id} = await params;
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: number }> }
+) {
+  const { id } = await params;
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id
-        }
-    })
+  const user = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
 
-    if (!user) {
-        return new Response('User not found', {
-            status: 403
-        })
-    }
+  if (!user) {
+    return new Response("User not found", {
+      status: 403,
+    });
+  }
 
-    return Response.json(user)
+  return Response.json(user);
 }
 
-export async function POST(request: Request, {params}: { params: Promise<{ id: number }> }) {
-    const {id} = await params;
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: number }> }
+) {
+  const { id } = await params;
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id
-        }
-    })
+  const user = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
 
-    if (!user) {
-        return new Response('User not found', {
-            status: 403
-        })
-    }
+  if (!user) {
+    return new Response("User not found", {
+      status: 403,
+    });
+  }
 
-    console.log(await request.json())
+  console.log(await request.json());
 }

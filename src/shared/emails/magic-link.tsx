@@ -1,5 +1,4 @@
-import * as React from "react";
-import { Html, Button, Heading, Text } from "@react-email/components";
+import { Button, Heading, Html, Text } from "@react-email/components";
 
 export function MagicLinkEmail({ url }: { url: string }) {
   return (
