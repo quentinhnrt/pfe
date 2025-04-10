@@ -1,9 +1,16 @@
-FROM postgres:latest
+# Dockerfile
+FROM node:22-alpine
 
-ENV POSTGRES_USER=database
-ENV POSTGRES_PASSWORD=database
-ENV POSTGRES_DB=database
+WORKDIR /app
 
-EXPOSE 5432
+COPY package*.json ./
+RUN npm install
 
-CMD ["postgres"]
+COPY prisma ./prisma
+RUN npx prisma generate
+
+COPY . .
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
