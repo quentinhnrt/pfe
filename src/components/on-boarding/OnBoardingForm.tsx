@@ -65,7 +65,7 @@ export default function OnBoardingForm({user}: {user: User}) {
         }
 
         const response = await fetch('/api/user/' + user.id, {
-            method: "POST",
+            method: "PUT",
             body: formData
         })
 

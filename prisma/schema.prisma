@@ -33,11 +33,11 @@ model User {
   updatedAt      DateTime
   sessions       Session[]
   accounts       Account[]
-  Artwork        Artwork[]
-  Group          Group[]
+  artworks       Artwork[]
+  groups         Group[]
   UserTemplate   UserTemplate[]
-  Inspiration    Inspiration[]
-  Post           Post[]
+  inspirations   Inspiration[]
+  posts          Post[]
   PostReaction   PostReaction[]
   QuestionAnswer QuestionAnswer[]
 
@@ -55,12 +55,10 @@ model Artwork {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  GroupArtwork       GroupArtwork[]
-  InspirationArtwork InspirationArtwork[]
-  PostArtwork        PostArtwork[]
-  Post               Post?                @relation(fields: [postId], references: [id])
-  postId             Int?
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groups       Group[]
+  inspirations Inspiration[]
+  posts        Post[]
 }
 
 model Group {
@@ -71,21 +69,8 @@ model Group {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  GroupArtwork GroupArtwork[]
-}
-
-model GroupArtwork {
-  id        Int      @id @default(autoincrement())
-  groupId   Int
-  artworkId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  artwork Artwork @relation(fields: [artworkId], references: [id], onDelete: Cascade)
-
-  @@unique([groupId, artworkId])
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artworks Artwork[]
 }
 
 model Template {
@@ -120,21 +105,8 @@ model Inspiration {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  InspirationArtwork InspirationArtwork[]
-}
-
-model InspirationArtwork {
-  id            Int      @id @default(autoincrement())
-  inspirationId Int
-  artworkId     Int
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  inspiration Inspiration @relation(fields: [inspirationId], references: [id], onDelete: Cascade)
-  artwork     Artwork     @relation(fields: [artworkId], references: [id], onDelete: Cascade)
-
-  @@unique([inspirationId, artworkId])
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  artworks Artwork[]
 }
 
 model Session {
@@ -210,21 +182,11 @@ model Post {
   id           Int            @id @default(autoincrement())
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  images       Artwork[]
   content      String
   questionId   Int?           @unique
   question     Question?      @relation(fields: [questionId], references: [id])
   PostReaction PostReaction[]
-  PostArtwork  PostArtwork[]
-}
-
-model PostArtwork {
-  id        Int @id @default(autoincrement())
-  postId    Int
-  artworkId Int
-
-  artwork Artwork @relation(fields: [artworkId], references: [id])
-  post    Post    @relation(fields: [postId], references: [id])
+  artworks     Artwork[]
 }
 
 model Reaction {
