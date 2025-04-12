@@ -10,9 +10,10 @@ import { useFormContext, Controller } from "react-hook-form"
 interface ImageUploadFieldProps {
     name: string
     label?: string
+    existingImage?: string
 }
 
-export function ImageUploadField({ name, label = "Image" }: ImageUploadFieldProps) {
+export function ImageUploadField({ name, label = "Image", existingImage }: ImageUploadFieldProps) {
     const { control, setValue, watch } = useFormContext()
     const file = watch(name)
     const [preview, setPreview] = useState<string | null>(null)
@@ -52,6 +53,18 @@ export function ImageUploadField({ name, label = "Image" }: ImageUploadFieldProp
                         <Card className="w-48 h-48 mt-4 overflow-hidden rounded-2xl shadow">
                             <Image
                                 src={preview}
+                                alt="Preview"
+                                width={192}
+                                height={192}
+                                className="object-cover w-full h-full"
+                            />
+                        </Card>
+                    )}
+
+                    {!preview && existingImage && (
+                        <Card className="w-48 h-48 mt-4 overflow-hidden rounded-2xl shadow">
+                            <Image
+                                src={existingImage}
                                 alt="Preview"
                                 width={192}
                                 height={192}
