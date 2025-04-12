@@ -19,7 +19,10 @@ export default async function Forms() {
     const artworks = await prisma.artwork.findMany({
         where: {
             userId: session.user.id
-        }
+        },
+        orderBy: [
+            {updatedAt: "desc"}
+        ]
     })
 
     function ArtworkDialog() {

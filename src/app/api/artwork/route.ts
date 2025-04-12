@@ -2,6 +2,7 @@ import {auth} from "@/shared/lib/auth";
 import {headers} from "next/headers";
 import prisma from "@/shared/lib/prisma";
 import {uploadImage} from "@/shared/lib/upload/blob";
+import {Artwork} from "@prisma/client";
 
 export async function POST(
     request: Request
@@ -33,4 +34,78 @@ export async function POST(
     })
 
     return Response.json(artwork)
+}
+
+export async function PUT(request: Request) {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+
+    if (!session || !session.user) {
+        return new Response("Not authorized", {
+            status: 403,
+        });
+    }
+
+    let data = await request.formData()
+    const artworkId = parseInt(data.get("artworkId") as string);
+
+    if (!artworkId) {
+        return new Response("Not authorized", {
+            status: 403,
+        });
+    }
+
+    const artwork = await prisma.artwork.findUnique({
+        where: {
+            id: artworkId,
+            userId: session.user.id
+        }
+    })
+
+    if (!artwork) {
+        return new Response("Artwork not found", {
+            status: 403,
+        });
+    }
+
+    const dataObject = {} as Artwork
+
+    if (data.has("title")) {
+        dataObject.title = data.get("title") as string
+    }
+
+    if (data.has("description")) {
+        dataObject.description = data.get("description") as string
+    }
+
+    if (data.has("isForSale")) {
+        dataObject.isForSale = data.get("isForSale") === "true"
+    }
+
+    if (data.has("price")) {
+        dataObject.price = parseInt(data.get("price") as string)
+    }
+
+    if (data.has("image") && data.get("image") instanceof File) {
+        const image = await uploadImage(data.get("image") as File)
+
+        dataObject.thumbnail = image.url
+    }
+
+    const updatedArtwork = await prisma.artwork.update({
+        where: {
+            id: artworkId,
+            userId: session.user.id
+        },
+        data: dataObject
+    })
+
+    if (!updatedArtwork) {
+        return new Response("An error occurred", {
+            status: 500,
+        });
+    }
+
+    return Response.json(updatedArtwork)
 }

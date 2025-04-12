@@ -25,29 +25,70 @@ const ACCEPTED_IMAGE_TYPES = [
     "image/webp",
 ];
 
-const formSchema = z.object({
-    title: z.string().min(1).max(255),
-    description: z.string().optional(),
-    isForSale: z.boolean(),
-    price: z.string().optional(),
-    image: z
-        .any()
-        .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
-        .refine(
-            (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
-            "Only .jpg, .jpeg, .png and .webp formats are supported."
-        ),
-}).superRefine((data, ctx) => {
-    if (data.isForSale && (data.price === undefined || data.price === null)) {
-        ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: 'Le prix est requis lorsque l\'œuvre est à vendre',
-            path: ['price'],
-        });
+function isImageCorrect(image: File) {
+    const size = image.size <= MAX_FILE_SIZE
+    const format = ACCEPTED_IMAGE_TYPES.includes(image.type)
+
+    if (!size) {
+        return {
+            correct: false,
+            message: "Max image size is 5MB."
+        }
     }
-});
+
+    if (!format) {
+        return {
+            correct: false,
+            message:  "Only .jpg, .jpeg, .png and .webp formats are supported."
+        }
+    }
+
+    return {
+        correct: true,
+        message: ""
+    }
+}
 
 export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
+    const formSchema = z.object({
+        title: z.string().min(1).max(255),
+        description: z.string().optional(),
+        isForSale: z.boolean(),
+        price: z.string().optional(),
+        image: z
+            .any()
+            .optional()
+    }).superRefine((data, ctx) => {
+        if (data.isForSale && (data.price === undefined || data.price === null)) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'Le prix est requis lorsque l\'œuvre est à vendre',
+                path: ['price'],
+            });
+        }
+
+        if (!artwork && !data.image) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: 'L\'image est obligatoire',
+                path: ['image'],
+            });
+        }
+
+        if (!artwork && data.image) {
+            const imageCorrect = isImageCorrect(data.image)
+
+            if (!imageCorrect.correct) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: imageCorrect.message,
+                    path: ['image'],
+                });
+            }
+        }
+
+    });
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -56,7 +97,7 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
             isForSale: artwork?.isForSale ?? false,
             image: null,
             price: artwork?.price?.toString() ?? undefined
-        }
+        },
     })
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
@@ -64,11 +105,21 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
 
         for (const key in values) {
             // @ts-expect-error it works
-            formData.append(key, values[key])
+            const value = values[key];
+
+            if (artwork && (value === null || value === undefined)) {
+                continue;
+            }
+
+            formData.append(key, value)
+        }
+
+        if (artwork) {
+            formData.append("artworkId", artwork.id.toString())
         }
 
         const response = await fetch('/api/artwork', {
-            method: 'POST',
+            method: artwork ? "PUT" : 'POST',
             body: formData
         })
 
