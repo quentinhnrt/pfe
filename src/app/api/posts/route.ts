@@ -3,6 +3,11 @@ import {headers} from "next/headers";
 import prisma from "@/shared/lib/prisma";
 import {NextResponse} from "next/server";
 
+type POST_PARAMS = {
+    artworks: number[],
+    content: string
+}
+
 export async function POST(request: Request) {
     try {
         const session = await auth.api.getSession({
@@ -15,7 +20,7 @@ export async function POST(request: Request) {
             });
         }
 
-        const data = await request.json()
+        const data: POST_PARAMS = await request.json()
 
         const content = data.content.toString()
         const artworks = data.artworks.map(id => {

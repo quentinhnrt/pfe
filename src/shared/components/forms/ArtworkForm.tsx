@@ -147,7 +147,7 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
                 <FormField
                     control={form.control}
                     name="image"
-                    render={({field}) => (
+                    render={() => (
                         <FormItem>
                             <FormLabel>Titre</FormLabel>
                             <FormControl>

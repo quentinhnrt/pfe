@@ -5,12 +5,10 @@ import {Prisma} from "@prisma/client";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Textarea} from "@/components/ui/textarea";
-import {ArtworkGallerySelector} from "@/shared/components/fields/ArtworkGallerySelector";
 import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import ArtworkForm from "@/shared/components/forms/ArtworkForm";
 import {ReactNode} from "react";
-import {ArtworkGallerySelectorTest} from "@/shared/components/fields/ArtworkGallerySelectorTest";
+import {ArtworkGallerySelector} from "@/shared/components/fields/ArtworkGallerySelector";
 
 type PostWithArtworks = Prisma.PostGetPayload<{
     include: { artworks: true }
@@ -81,11 +79,11 @@ export default function PostForm({post, children}: Props) {
                         <FormField
                             control={form.control}
                             name="artworks"
-                            render={({field}) => (
+                            render={() => (
                                 <FormItem>
                                     <FormLabel>Oeuvres</FormLabel>
                                     <FormControl>
-                                        <ArtworkGallerySelectorTest name={"artworks"} label={"Sélectionner un ou plusieurs oeuvres à accompagner avec le post"}/>
+                                        <ArtworkGallerySelector name={"artworks"} label={"Sélectionner un ou plusieurs oeuvres à accompagner avec le post"}/>
                                     </FormControl>
                                 </FormItem>
                             )}

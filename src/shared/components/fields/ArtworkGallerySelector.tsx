@@ -2,10 +2,24 @@
 
 import { useEffect, useState } from "react"
 import { useFormContext, Controller } from "react-hook-form"
-import { FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
-import { Card } from "@/components/ui/card"
+import {
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+} from "@/components/ui/form"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
 import Image from "next/image"
-import clsx from "clsx"
+import { Input } from "@/components/ui/input"
 
 interface Artwork {
     id: number
@@ -16,77 +30,84 @@ interface Artwork {
 interface ArtworkGallerySelectorProps {
     name: string
     label?: string
-    initialSelectedIds?: number[] // <- utile pour les valeurs initiales quand on édite
+    initialSelectedIds?: number[]
 }
 
 export function ArtworkGallerySelector({
-                                                name,
-                                                label = "Select Artworks",
-                                                initialSelectedIds = []
-                                            }: ArtworkGallerySelectorProps) {
+                                               name,
+                                               label = "Select Artworks",
+                                               initialSelectedIds = [],
+                                           }: ArtworkGallerySelectorProps) {
     const { control, setValue, watch } = useFormContext()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const selectedIds: number[] = watch(name, initialSelectedIds) || []
 
     const [artworks, setArtworks] = useState<Artwork[]>([])
     const [loading, setLoading] = useState(true)
     const [page, setPage] = useState(0)
-    const [initialArtworks, setInitialArtworks] = useState<Artwork[]>([])
+    const [hasMore, setHasMore] = useState(true)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("")
 
-    function ArtworkCard({artwork, isSelected}:{artwork: Artwork, isSelected: boolean}) {
-        return (
-            <Card
-                key={artwork.id}
-                onClick={() => toggleSelection(artwork.id)}
-                className={clsx(
-                    "cursor-pointer border-2 rounded-2xl overflow-hidden transition-all",
-                    isSelected ? "border-primary ring-2 ring-primary/50" : "border-muted"
-                )}
-            >
-                <Image
-                    src={artwork.thumbnail}
-                    alt={artwork.title}
-                    width={200}
-                    height={200}
-                    className="object-cover w-full h-48"
-                />
-                <div className="p-2 text-sm text-center">{artwork.title}</div>
-            </Card>
-        )
-    }
+    // Debounce
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm)
+            setPage(0)
+        }, 300)
+        return () => clearTimeout(timeout)
+    }, [searchTerm])
 
     useEffect(() => {
-        const loadArtworks = async () => {
-            const initalialSelectedIdsParamValue = initialSelectedIds.join()
+        const fetchArtworks = async () => {
+            setLoading(true)
+
             const params = {
-                perPage: "10",
+                perPage: "20",
                 page: page.toString(),
-                artworks: initalialSelectedIdsParamValue
-            } as Record<string, string>
+                artworks: initialSelectedIds.join(),
+                title: debouncedSearchTerm,
+            }
 
             const searchParams = new URLSearchParams(params)
-            const response = await fetch('/api/me/artworks?'+searchParams.toString())
-
+            const response = await fetch('/api/me/artworks?' + searchParams.toString())
             const data = await response.json()
 
-            setArtworks(data.artworks)
-            setInitialArtworks(data.selectedArtworks)
+            const newArtworks = [...data.initialArtworks, ...data.artworks]
+
+            // Remove duplicates by ID
+            const uniqueMap = new Map<number, Artwork>()
+            const allArtworks = [...(page === 0 ? [] : artworks), ...newArtworks]
+            allArtworks.forEach((art) => uniqueMap.set(art.id, art))
+
+            // Move selected artworks to the top
+            const sorted = Array.from(uniqueMap.values()).sort((a, b) => {
+                const aSelected = selectedIds.includes(a.id) ? 0 : 1
+                const bSelected = selectedIds.includes(b.id) ? 0 : 1
+                return aSelected - bSelected
+            })
+
+            setArtworks(sorted)
+            setHasMore(data.artworks.length > 0)
             setLoading(false)
         }
 
-        loadArtworks()
+        fetchArtworks()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearchTerm, page])
 
-    }, [])
-
-    const toggleSelection = (id: number) => {
-        const isSelected = selectedIds.includes(id)
-        const updated = isSelected
-            ? selectedIds.filter((i) => i !== id)
-            : [...selectedIds, id]
-
-        setValue(name, updated)
+    // @ts-expect-error TODO: fix param e type
+    const loadMore = (e) => {
+        e.preventDefault()
+        setPage((prev) => prev + 1)
     }
 
-    if (loading) return <p className="text-muted">Chargement de la galerie...</p>
+    const toggleSelection = (id: number) => {
+        const updated = selectedIds.includes(id)
+            ? selectedIds.filter((i) => i !== id)
+            : [...selectedIds, id]
+        setValue(name, updated)
+    }
 
     return (
         <Controller
@@ -94,24 +115,61 @@ export function ArtworkGallerySelector({
             control={control}
             render={() => (
                 <FormItem>
-                    <FormLabel>{label}</FormLabel>
+                    <FormLabel className="flex items-center justify-between">
+                        {label}
+                        <Input
+                            type="search"
+                            className="w-64"
+                            placeholder="Chercher par titre"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </FormLabel>
                     <FormControl>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-2">
-                            {initialArtworks?.length && initialArtworks.map((artwork) => {
-                                return (
-                                    <ArtworkCard artwork={artwork} isSelected={true} key={artwork.id} />
-                                )
-                            })}
-                            {artworks?.length && artworks.map((artwork) => {
-                                const isSelected = selectedIds.includes(artwork.id)
-
-                                return (
-                                    <ArtworkCard artwork={artwork} isSelected={isSelected} key={artwork.id} />
-                                )
-                            })}
+                        <div className="mt-4 rounded-md border">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[40px]" />
+                                        <TableHead className="w-[60px]">Preview</TableHead>
+                                        <TableHead>Title</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {artworks.map((artwork) => (
+                                        <TableRow key={artwork.id}>
+                                            <TableCell className="text-center">
+                                                <Checkbox
+                                                    checked={selectedIds.includes(artwork.id)}
+                                                    onCheckedChange={() => toggleSelection(artwork.id)}
+                                                    aria-label={`Select ${artwork.title}`}
+                                                />
+                                            </TableCell>
+                                            <TableCell>
+                                                <Image
+                                                    src={artwork.thumbnail}
+                                                    alt={artwork.title}
+                                                    width={48}
+                                                    height={48}
+                                                    className="rounded object-cover aspect-square"
+                                                />
+                                            </TableCell>
+                                            <TableCell>{artwork.title}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                            {hasMore && (
+                                <div className="p-4 text-center">
+                                    <Button onClick={loadMore} variant="outline">
+                                        Charger plus
+                                    </Button>
+                                </div>
+                            )}
                         </div>
                     </FormControl>
                     <FormMessage />
+                    <p>{loading && "loading"}</p>
                 </FormItem>
             )}
         />
