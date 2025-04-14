@@ -1,5 +1,5 @@
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import ArtworkForm from "@/shared/components/forms/artwork-form";
+import ArtworkForm from "@/shared/components/forms/ArtworkForm";
 import {Button} from "@/components/ui/button";
 import {ReactNode} from "react";
 import {Artwork} from "@prisma/client";

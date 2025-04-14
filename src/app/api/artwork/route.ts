@@ -3,6 +3,7 @@ import {headers} from "next/headers";
 import prisma from "@/shared/lib/prisma";
 import {uploadImage} from "@/shared/lib/upload/blob";
 import {Artwork} from "@prisma/client";
+import {NextResponse} from "next/server";
 
 export async function POST(
     request: Request
@@ -11,8 +12,8 @@ export async function POST(
         headers: await headers()
     })
 
-    if (!session || !session.user) {
-        return new Response("Not authorized", {
+    if (!session || !session.user || session.user.role !== "ARTIST") {
+        return NextResponse.json("Not authorized", {
             status: 403,
         });
     }
@@ -33,7 +34,7 @@ export async function POST(
         },
     })
 
-    return Response.json(artwork)
+    return NextResponse.json(artwork)
 }
 
 export async function PUT(request: Request) {
@@ -41,17 +42,17 @@ export async function PUT(request: Request) {
         headers: await headers()
     })
 
-    if (!session || !session.user) {
-        return new Response("Not authorized", {
+    if (!session || !session.user || session.user.role !== "ARTIST") {
+        return NextResponse.json("Not authorized", {
             status: 403,
         });
     }
 
-    let data = await request.formData()
+    const data = await request.formData()
     const artworkId = parseInt(data.get("artworkId") as string);
 
     if (!artworkId) {
-        return new Response("Not authorized", {
+        return NextResponse.json("Not authorized", {
             status: 403,
         });
     }
@@ -64,7 +65,7 @@ export async function PUT(request: Request) {
     })
 
     if (!artwork) {
-        return new Response("Artwork not found", {
+        return  NextResponse.json("Artwork not found", {
             status: 403,
         });
     }
@@ -102,10 +103,8 @@ export async function PUT(request: Request) {
     })
 
     if (!updatedArtwork) {
-        return new Response("An error occurred", {
-            status: 500,
-        });
+        return NextResponse.json({error: 'Erreur interne'}, {status: 500});
     }
 
-    return Response.json(updatedArtwork)
+    return NextResponse.json(updatedArtwork)
 }

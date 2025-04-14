@@ -6,6 +6,7 @@ import {redirect} from "next/navigation";
 import {Artwork} from "@prisma/client";
 import Image from "next/image";
 import {Pen} from "lucide-react";
+import PostForm from "@/shared/components/forms/PostForm";
 
 export default async function Forms() {
     const session = await auth.api.getSession({
@@ -16,14 +17,7 @@ export default async function Forms() {
         redirect("/");
     }
 
-    const artworks = await prisma.artwork.findMany({
-        where: {
-            userId: session.user.id
-        },
-        orderBy: [
-            {updatedAt: "desc"}
-        ]
-    })
+    const artworks = []
 
     function ArtworkDialog() {
 
@@ -38,7 +32,7 @@ export default async function Forms() {
                 <ArtworkDialog />
             </div>
 
-            <div className={"grid grid-cols-3 gap-8"}>
+            <div className={"grid grid-cols-3 gap-8 w-1/2"}>
                 {artworks.length && artworks.map((artwork: Artwork) => (
                     <div key={artwork.id} className={"relative"}>
                         <Image src={artwork.thumbnail} alt={artwork.title} width={300} height={300} className={"aspect-square w-full object-cover"} />
@@ -51,6 +45,10 @@ export default async function Forms() {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <div>
+                <PostForm />
             </div>
         </div>
     )

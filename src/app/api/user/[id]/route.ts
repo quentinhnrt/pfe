@@ -2,6 +2,7 @@ import prisma from "@/shared/lib/prisma";
 import {headers} from "next/headers";
 import {auth} from "@/shared/lib/auth";
 import {uploadImage} from "@/shared/lib/upload/blob";
+import {NextResponse} from "next/server";
 
 export async function GET(
   request: Request,
@@ -13,15 +14,22 @@ export async function GET(
     where: {
       id,
     },
+    include: {
+      posts: {
+        include: {
+          artworks: true
+        }
+      }
+    }
   });
 
   if (!user) {
-    return new Response("User not found", {
+    return NextResponse.json("User not found", {
       status: 403,
     });
   }
 
-  return Response.json(user);
+  return NextResponse.json(user);
 }
 
 export async function PUT(
@@ -35,7 +43,7 @@ export async function PUT(
   })
 
   if (!session || session.user?.id !== id) {
-    return new Response("Not authorized", {
+    return NextResponse.json("Not authorized", {
       status: 403,
     });
   }
@@ -47,7 +55,7 @@ export async function PUT(
   });
 
   if (!user) {
-    return new Response("User not found", {
+    return NextResponse.json("User not found", {
       status: 403,
     });
   }
@@ -68,5 +76,5 @@ export async function PUT(
     }
   })
 
-  return Response.json(updatedUser)
+  return NextResponse.json(updatedUser, {status: 201})
 }

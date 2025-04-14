@@ -7,7 +7,7 @@ import {Input} from "@/components/ui/input";
 import {Textarea} from "@/components/ui/textarea";
 import {Switch} from "@/components/ui/switch";
 import {Button} from "@/components/ui/button";
-import {ImageUploadField} from "@/components/image-upload";
+import {ImageUploadField} from "@/shared/components/fields/ImageUpload";
 import {DialogClose, DialogFooter} from "@/components/ui/dialog";
 import {Artwork} from "@prisma/client";
 
@@ -78,6 +78,8 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
         if (!artwork && data.image) {
             const imageCorrect = isImageCorrect(data.image)
 
+            console.log(imageCorrect)
+
             if (!imageCorrect.correct) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
@@ -141,8 +143,19 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
 
     return (
         <Form {...form}>
-            <form id="artworkForm" onSubmit={form.handleSubmit(onSubmit)} className={"space-y-8"}>
-                <ImageUploadField name={"image"} label={"Image"} existingImage={artwork?.thumbnail}/>
+            <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-8"}>
+                <FormField
+                    control={form.control}
+                    name="image"
+                    render={({field}) => (
+                        <FormItem>
+                            <FormLabel>Titre</FormLabel>
+                            <FormControl>
+                                <ImageUploadField name={"image"} label={"Image"} existingImage={artwork?.thumbnail}/>
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="title"

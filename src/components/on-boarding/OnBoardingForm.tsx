@@ -20,7 +20,7 @@ import {
     SelectValue,
 } from "../ui/select";
 import {Button} from "../ui/button";
-import {ImageUploadField} from "@/components/image-upload";
+import {ImageUploadField} from "@/shared/components/fields/ImageUpload";
 import {User} from "@prisma/client";
 import {redirect} from "next/navigation";
 
