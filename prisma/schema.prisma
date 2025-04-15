@@ -20,26 +20,26 @@ enum Role {
 }
 
 model User {
-  id             String           @id @default(cuid())
-  email          String           @unique
-  firstname      String?
-  lastname       String?
-  name           String?
-  emailVerified  Boolean
-  role           Role             @default(USER)
-  image          String?
-  onBoarded      Boolean          @default(false)
-  createdAt      DateTime
-  updatedAt      DateTime
-  sessions       Session[]
-  accounts       Account[]
-  artworks       Artwork[]
-  groups         Group[]
-  UserTemplate   UserTemplate[]
-  inspirations   Inspiration[]
-  posts          Post[]
-  PostReaction   PostReaction[]
-  QuestionAnswer QuestionAnswer[]
+  id            String         @id @default(cuid())
+  email         String         @unique
+  firstname     String?
+  lastname      String?
+  name          String?
+  emailVerified Boolean
+  role          Role           @default(USER)
+  image         String?
+  onBoarded     Boolean        @default(false)
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
+  artworks      Artwork[]
+  groups        Group[]
+  UserTemplate  UserTemplate[]
+  inspirations  Inspiration[]
+  posts         Post[]
+  PostReaction  PostReaction[]
+  answers       Answer[]
 
   @@map("user")
 }
@@ -158,24 +158,17 @@ model Question {
   id       Int      @id @default(autoincrement())
   question String
   answers  Answer[]
-  Post     Post?
+  post     Post     @relation(fields: [postId], references: [id])
+  postId   Int      @unique
 }
 
 model Answer {
-  id             Int              @id @default(autoincrement())
-  questionId     Int
-  content        String
-  Question       Question         @relation(fields: [questionId], references: [id])
-  QuestionAnswer QuestionAnswer[]
-}
-
-model QuestionAnswer {
-  id       Int    @id @default(autoincrement())
-  answerId Int
-  userId   String
-
-  answer Answer @relation(fields: [answerId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  id         Int      @id @default(autoincrement())
+  content    String
+  question   Question @relation(fields: [questionId], references: [id])
+  User       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  questionId Int
 }
 
 model Post {
@@ -184,21 +177,24 @@ model Post {
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   content      String
   questionId   Int?           @unique
-  question     Question?      @relation(fields: [questionId], references: [id])
+  question     Question?
   PostReaction PostReaction[]
   artworks     Artwork[]
 }
 
 model Reaction {
-  id    Int    @id @default(autoincrement())
-  image String
+  id           Int            @id @default(autoincrement())
+  image        String
+  PostReaction PostReaction[]
 }
 
 model PostReaction {
-  id     Int    @id @default(autoincrement())
-  userId String
-  postId Int
+  id         Int    @id @default(autoincrement())
+  userId     String
+  postId     Int
+  reactionId Int
 
-  user User @relation(fields: [userId], references: [id])
-  post Post @relation(fields: [postId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+  post     Post     @relation(fields: [postId], references: [id])
+  reaction Reaction @relation(fields: [reactionId], references: [id])
 }
