@@ -49,9 +49,9 @@ export default function OnBoardingForm({user}: {user: User}) {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            firstname: "",
-            lastname: "",
-            role: "USER",
+            firstname: user.firstname ?? "",
+            lastname: user.lastname ?? "",
+            role: user.role ?? "USER",
             image: null,
         },
     });
@@ -111,11 +111,11 @@ export default function OnBoardingForm({user}: {user: User}) {
                 <FormField
                     control={form.control}
                     name="role"
-                    render={() => (
+                    render={({field}) => (
                         <FormItem>
                             <FormLabel>Type de compte</FormLabel>
                             <FormControl>
-                                <Select>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Type de compte"/>
                                     </SelectTrigger>

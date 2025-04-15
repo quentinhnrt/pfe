@@ -149,7 +149,6 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
                     name="image"
                     render={() => (
                         <FormItem>
-                            <FormLabel>Titre</FormLabel>
                             <FormControl>
                                 <ImageUploadField name={"image"} label={"Image"} existingImage={artwork?.thumbnail}/>
                             </FormControl>
