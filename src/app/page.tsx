@@ -69,12 +69,12 @@ export default async function Home() {
         )}
 
         {session && session.user && (
-            <div>
+            <Link href={"/user/" + session.user.id} className={"flex flex-col items-center"}>
               {session.user.image && (
                   <Image src={session.user.image} alt={session.user.firstname ?? ""} width={200} height={200} className={"rounded-full"} />
               )}
               <p className={"font-semibold text-center text-3xl mt-4"}>{session.user.firstname}</p>
-            </div>
+            </Link>
         )}
 
       </main>

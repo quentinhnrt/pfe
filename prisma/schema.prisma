@@ -165,10 +165,10 @@ model Question {
 model Answer {
   id         Int      @id @default(autoincrement())
   content    String
-  question   Question @relation(fields: [questionId], references: [id])
-  User       User?    @relation(fields: [userId], references: [id])
-  userId     String?
   questionId Int
+  votes      Int      @default(0)
+  users      User[]
+  question   Question @relation(fields: [questionId], references: [id])
 }
 
 model Post {
@@ -176,7 +176,6 @@ model Post {
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   content      String
-  questionId   Int?           @unique
   question     Question?
   PostReaction PostReaction[]
   artworks     Artwork[]

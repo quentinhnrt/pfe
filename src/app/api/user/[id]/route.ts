@@ -17,7 +17,12 @@ export async function GET(
     include: {
       posts: {
         include: {
-          artworks: true
+          artworks: true,
+          question: {
+            include: {
+              answers: true,
+            },
+          },
         }
       }
     }

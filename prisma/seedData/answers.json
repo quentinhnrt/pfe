@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "content": "Reponse 1",
+    "questionId": 1,
+    "votes": 0,
+    "users": [],
+    "question": {
+      "id": 1,
+      "question": "Question",
+      "postId": 1
+    }
+  },
+  {
+    "id": 2,
+    "content": "réponse 2",
+    "questionId": 1,
+    "votes": 0,
+    "users": [],
+    "question": {
+      "id": 1,
+      "question": "Question",
+      "postId": 1
+    }
+  }
+]

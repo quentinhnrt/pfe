@@ -1,8 +1,8 @@
-import Image from "next/image";
 import {Prisma} from "@prisma/client";
+import PostCard from "@/shared/components/post-card/PostCard";
 
 type UserWithPosts = Prisma.UserGetPayload<{
-    include: { posts: {include: {artworks: true}} }
+    include: { posts: { include: { artworks: true, question: { include: { answers: true } } } } }
 }>
 
 export default async function ProfilePage({params}: { params: Promise<{ id: string }> }) {
@@ -13,20 +13,8 @@ export default async function ProfilePage({params}: { params: Promise<{ id: stri
     return (
         <div>
             <h1>{user.firstname}</h1>
-            <div className={"space-y-8"}>
-                {user.posts?.length && user.posts.map(post => (
-                    <div key={"post-" + post.id} className={"bg-red-200"}>
-                        <p>{post.content}</p>
-                        <div className={"grid grid-cols-3"}>
-                            {post.artworks?.length && post.artworks.map(artwork => (
-
-                                <Image src={artwork.thumbnail} alt={artwork.title} width={100} height={100}
-                                       key={"artwork-" + artwork.id}/>
-
-                            ))}
-                        </div>
-                    </div>
-                ))}
+            <div className={"space-y-8 max-w-7xl mx-auto"}>
+                {user.posts?.length && user.posts.map(post => <PostCard post={post} key={"post-" + post.id}/>)}
             </div>
         </div>
     )

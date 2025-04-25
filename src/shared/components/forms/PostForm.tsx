@@ -9,13 +9,16 @@ import {Button} from "@/components/ui/button";
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {ReactNode} from "react";
 import {ArtworkGallerySelector} from "@/shared/components/fields/ArtworkGallerySelector";
+import {Switch} from "@/components/ui/switch";
+import Repeater from "@/shared/components/fields/Repeater";
+import {Input} from "@/components/ui/input";
 
-type PostWithArtworks = Prisma.PostGetPayload<{
-    include: { artworks: true }
+type PostWithArtworksQuestion = Prisma.PostGetPayload<{
+    include: { artworks: true, question: { include: { answers: true } } }
 }>
 
 type Props = {
-    post?: PostWithArtworks,
+    post?: PostWithArtworksQuestion,
     children?: ReactNode
 }
 
@@ -23,21 +26,44 @@ export default function PostForm({post, children}: Props) {
     const initialArtworks: number[] = post ? post.artworks.map(artwork => artwork.id) : []
     const formSchema = z.object({
         content: z.string().min(1),
-        artworks: z.number().array()
-    })
+        artworks: z.number().array(),
+        hasCommunityQuestion: z.boolean().optional(),
+        question: z.string().optional(),
+        answers: z.object({answer: z.string()}).array().optional(),
+    }).superRefine((data, ctx) => {
+        if (data.hasCommunityQuestion && !data.question) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "La question est requise",
+            })
+        }
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             content: post?.content ?? "",
-            artworks: initialArtworks
+            artworks: initialArtworks,
+            hasCommunityQuestion: !!post?.questionId,
+            question: post?.question?.question ?? "",
+            answers: post?.question ? parsedAnswersForForm(post.question.answers.map(answer => answer.content)) : [],
         }
     })
+
+    function parsedAnswersForForm(answers: string[]) {
+        return answers.map(answer => ({answer}))
+    }
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
         const response = await fetch("/api/posts", {
             method: post ? "PUT" : "POST",
-            body: JSON.stringify(values)
+            body: JSON.stringify({
+                content: values.content,
+                artworks: values.artworks,
+                question: values.hasCommunityQuestion && values.question ? values.question : null,
+                answers: values.hasCommunityQuestion && values.answers ? values.answers.map(answer => answer.answer) : null,
+                postId: post?.id,
+            })
         })
 
         const data = await response.json()
@@ -49,6 +75,8 @@ export default function PostForm({post, children}: Props) {
 
         console.log(data)
     }
+
+    const hasCommunityQuestion = form.watch("hasCommunityQuestion")
 
     return (
         <Dialog>
@@ -83,11 +111,80 @@ export default function PostForm({post, children}: Props) {
                                 <FormItem>
                                     <FormLabel>Oeuvres</FormLabel>
                                     <FormControl>
-                                        <ArtworkGallerySelector name={"artworks"} label={"Sélectionner un ou plusieurs oeuvres à accompagner avec le post"}/>
+                                        <ArtworkGallerySelector name={"artworks"}
+                                                                label={"Sélectionner un ou plusieurs oeuvres à accompagner avec le post"}/>
                                     </FormControl>
                                 </FormItem>
                             )}
                         />
+
+                        <FormField
+                            control={form.control}
+                            name="hasCommunityQuestion"
+                            render={({field}) => (
+                                <FormItem
+                                    className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                                    <div className="space-y-0.5">
+                                        <FormLabel>Y a t-il une question à la communauté ?</FormLabel>
+                                    </div>
+                                    <FormControl>
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                </FormItem>
+                            )}
+                        />
+
+                        {hasCommunityQuestion && (
+                            <>
+                                <FormField
+                                    control={form.control}
+                                    name="question"
+                                    render={({field}) => (
+                                        <FormItem>
+                                            <FormLabel>Question</FormLabel>
+                                            <FormControl>
+                                                <Textarea placeholder={"Contenu"} {...field} />
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="answers"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>Réponses</FormLabel>
+                                            <FormControl>
+                                                <Repeater<{answer: string}>
+                                                    name={"answers"}
+                                                    // @ts-expect-error it works
+                                                    initialValues={post?.question ? parsedAnswersForForm(post.question.answers.map((answer) => answer.content)) : []}
+                                                    renderFields={
+                                                        (item, index, handleChange) => (
+                                                            <Input
+                                                                type="text"
+                                                                value={item.answer}
+                                                                onChange={(e) => handleChange(index, "answer", e.target.value)}
+                                                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                                            />
+                                                        )
+                                                    }/>
+                                            </FormControl>
+                                            <FormMessage/>
+                                        </FormItem>
+                                    )}
+                                />
+
+                            </>
+
+
+                        )}
+
 
                         <Button type="submit">
                             {post ? "Modifier" : "Créer"}
