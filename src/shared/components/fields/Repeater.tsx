@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Controller, useFormContext} from "react-hook-form";
 
 type ValueType = object | number | string | (object | number | string)[];
@@ -35,8 +35,11 @@ export default function Repeater<T>({
         const updatedItems = [...items];
         updatedItems[index] = { ...updatedItems[index], [name]: value };
         setItems(updatedItems);
-        setValue(name.toString(), items);
     };
+
+    useEffect(() => {
+        setValue(name, items);
+    }, [items, setValue, name]);
 
     return (
         <Controller name={name} control={control} render={() => (
