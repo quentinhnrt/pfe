@@ -31,8 +31,6 @@ export async function GET(request : NextRequest) {
         title: data.get("title") ?? ""
     };
 
-    console.log(params)
-
     const artworks = await prisma.artwork.findMany({
         take: params.perPage,
         skip: params.page * params.perPage,

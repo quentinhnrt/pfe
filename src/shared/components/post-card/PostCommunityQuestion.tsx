@@ -24,7 +24,6 @@ export default function PostCommunityQuestion({question}: Props) {
             return 0
         }
 
-        console.log(Math.round((answer.votes / numberOfUserAnswers) * 100))
         return Math.round((answer.votes / numberOfUserAnswers) * 100)
     }
 

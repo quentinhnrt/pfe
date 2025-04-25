@@ -72,8 +72,6 @@ export default function PostForm({post, children}: Props) {
             console.error(data)
             return;
         }
-
-        console.log(data)
     }
 
     const hasCommunityQuestion = form.watch("hasCommunityQuestion")

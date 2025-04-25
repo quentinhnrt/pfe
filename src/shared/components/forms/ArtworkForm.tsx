@@ -78,8 +78,6 @@ export default function ArtworkForm({onSuccess, onFailure, artwork}: Props) {
         if (!artwork && data.image) {
             const imageCorrect = isImageCorrect(data.image)
 
-            console.log(imageCorrect)
-
             if (!imageCorrect.correct) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
