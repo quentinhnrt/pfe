@@ -39,7 +39,6 @@ export function ArtworkGallerySelector({
                                                initialSelectedIds = [],
                                            }: ArtworkGallerySelectorProps) {
     const { control, setValue, watch } = useFormContext()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const selectedIds: number[] = watch(name, initialSelectedIds) || []
 
     const [artworks, setArtworks] = useState<Artwork[]>([])

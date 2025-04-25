@@ -4,7 +4,6 @@ import {Palette, Plus, SquarePen} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import ArtworkFormDialog from "@/shared/components/dialogs/ArtworkFormDialog";
 import {authClient} from "@/shared/lib/auth-client";
-import {User} from "@prisma/client"
 import PostForm from "@/shared/components/forms/PostForm";
 
 export default function ActionButton() {

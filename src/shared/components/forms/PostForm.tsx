@@ -44,7 +44,7 @@ export default function PostForm({post, children}: Props) {
         defaultValues: {
             content: post?.content ?? "",
             artworks: initialArtworks,
-            hasCommunityQuestion: !!post?.questionId,
+            hasCommunityQuestion: !!post?.question,
             question: post?.question?.question ?? "",
             answers: post?.question ? parsedAnswersForForm(post.question.answers.map(answer => answer.content)) : [],
         }

@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {Controller, useFormContext} from "react-hook-form";
+
+type ValueType = object | number | string | (object | number | string)[];
 
 interface FormRepeaterProps<T> {
     initialValues: T;
-    renderFields: (item: T, index: number, handleChange: (index: number, name: keyof T, value: any) => void) => React.ReactNode;
+    renderFields: (item: T, index: number, handleChange: (index: number, name: keyof T, value: ValueType) => void) => React.ReactNode;
     onAdd?: () => void;
     onRemove?: (index: number) => void;
     name: string;
@@ -29,15 +31,12 @@ export default function Repeater<T>({
         onRemove?.(index);
     };
 
-    const handleChange = (index: number, name: keyof T, value: any) => {
+    const handleChange = (index: number, name: keyof T, value: ValueType) => {
         const updatedItems = [...items];
         updatedItems[index] = { ...updatedItems[index], [name]: value };
         setItems(updatedItems);
+        setValue(name.toString(), items);
     };
-
-    useEffect(() => {
-        setValue(name, items);
-    }, [items]);
 
     return (
         <Controller name={name} control={control} render={() => (
