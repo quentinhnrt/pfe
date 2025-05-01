@@ -1,8 +1,9 @@
-import {$Enums, Prisma, PrismaClient, User} from '@prisma/client'
+import {$Enums, PrismaClient} from '@prisma/client'
 import users from './seedData/users.json'
 import artworks from './seedData/artworks.json'
 import posts from './seedData/posts.json'
 import answers from './seedData/answers.json'
+import templates from './seedData/templates.json'
 import Role = $Enums.Role;
 
 const prisma = new PrismaClient()
@@ -82,6 +83,17 @@ async function main() {
             data: {
                 content: answer.content,
                 questionId: answer.questionId,
+            }
+        })
+    }
+
+    for (const template of templates) {
+        await prisma.template.create({
+            data: {
+                id: template.id,
+                name: template.name,
+                description: template.description,
+                slug: template.slug,
             }
         })
     }

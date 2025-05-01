@@ -28,7 +28,6 @@ export default function ActionButton() {
 
     const { data: session } = authClient.useSession()
 
-    // @ts-expect-error Il y a un override de la session pour retourner l'utilisateur entier
     if (!session || !session.user || session.user.role !== "ARTIST") {
         return;
     }

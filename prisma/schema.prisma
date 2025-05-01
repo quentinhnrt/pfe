@@ -24,7 +24,7 @@ model User {
   email         String         @unique
   firstname     String?
   lastname      String?
-  name          String?
+  name          String         @unique
   emailVerified Boolean
   role          Role           @default(USER)
   image         String?
@@ -35,13 +35,39 @@ model User {
   accounts      Account[]
   artworks      Artwork[]
   groups        Group[]
-  UserTemplate  UserTemplate[]
   inspirations  Inspiration[]
   posts         Post[]
   PostReaction  PostReaction[]
   answers       Answer[]
+  user_template UserTemplate[]
 
   @@map("user")
+}
+
+model Template {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  slug        String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user_template UserTemplate[]
+}
+
+model UserTemplate {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  templateId Int
+  active     Boolean  @default(false)
+  data       Json
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, templateId])
 }
 
 model Artwork {
@@ -71,30 +97,6 @@ model Group {
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   artworks Artwork[]
-}
-
-model Template {
-  id           Int            @id @default(autoincrement())
-  name         String         @unique
-  description  String?
-  slug         String         @unique
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  UserTemplate UserTemplate[]
-}
-
-model UserTemplate {
-  id         Int      @id @default(autoincrement())
-  userId     String
-  templateId Int
-  data       Json
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, templateId])
 }
 
 model Inspiration {

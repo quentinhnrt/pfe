@@ -31,12 +31,14 @@ interface ArtworkGallerySelectorProps {
     name: string
     label?: string
     initialSelectedIds?: number[]
+    onChange?: (selectedIds: number[]) => void
 }
 
 export function ArtworkGallerySelector({
                                                name,
                                                label = "Select Artworks",
                                                initialSelectedIds = [],
+                                                onChange,
                                            }: ArtworkGallerySelectorProps) {
     const { control, setValue, watch } = useFormContext()
     const selectedIds: number[] = watch(name, initialSelectedIds) || []
@@ -106,6 +108,10 @@ export function ArtworkGallerySelector({
             ? selectedIds.filter((i) => i !== id)
             : [...selectedIds, id]
         setValue(name, updated)
+
+        if (onChange) {
+            onChange(updated)
+        }
     }
 
     return (
