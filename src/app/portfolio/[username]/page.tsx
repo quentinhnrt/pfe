@@ -1,8 +1,6 @@
 import { Prisma } from "@prisma/client"
-import path from "path";
-import * as fs from "node:fs";
 import {notFound} from "next/navigation";
-export const dynamic = 'force-dynamic';
+import {templates} from "@/lib/templates";
 
 
 type UserWithTemplate = Prisma.UserGetPayload<{
@@ -47,20 +45,13 @@ export default async function PortfolioPage({params}: { params: Promise<{ userna
 
     const templateId = activeTemplate.template.slug
 
-    const templatePath = `src/components/templates/${templateId}/render.tsx`;
-    const templateImportPath = `@/components/templates/${templateId}/render`;
+    // @ts-expect-error it is a dynamic import
+    const Template = templates[templateId]?.render.default
 
-    const filepath = path.resolve(process.cwd(), templatePath);
-    const templateExists = fs.existsSync(filepath);
-
-    if (!templateExists) {
-        console.log("Template not found:", templateId);
-        notFound();
+    if (!Template) {
+        console.log("Template not found:", templateId)
+        notFound()
     }
-
-    const template = await import(templateImportPath);
-
-    const Template = template.default || template;
 
     return (
         <div>
