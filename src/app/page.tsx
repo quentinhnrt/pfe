@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {auth} from "@/shared/lib/auth";
 import {headers} from "next/headers";
+import SearchArtist from "@/components/SearchArtist";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -77,6 +78,7 @@ export default async function Home() {
             </Link>
         )}
 
+        <SearchArtist />
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
