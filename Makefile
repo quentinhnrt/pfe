@@ -25,7 +25,7 @@ export COMPOSE_FILE
 
 ### Docker
 
-init: down build up
+init: down build up prisma-generate prisma-push
 
 restart: down up
 
