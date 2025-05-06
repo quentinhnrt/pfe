@@ -1,14 +1,22 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
+import createNextIntlPlugin from 'next-intl/plugin'
 
 const nextConfig: NextConfig = {
+  experimental: {
+    authInterrupts: true,
+  },
   images: {
-      remotePatterns: [
-          {
-              hostname: "**.public.blob.vercel-storage.com",
-              protocol: "https"
-          }
-      ]
-  }
-};
+    remotePatterns: [
+      {
+        hostname: '**.public.blob.vercel-storage.com',
+        protocol: 'https',
+      },
+    ],
+  },
+  output: 'standalone',
+  reactStrictMode: false,
+}
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin()
+
+export default withNextIntl(nextConfig)

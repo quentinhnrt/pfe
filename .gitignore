@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.dist
 
 # vercel
 .vercel
@@ -40,4 +41,15 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-public/tmp
+# docker
+compose.override.yaml
+
+# test
+/test-results
+
+# prisma
+src/generated
+
+# tmp
+public/tmp/*
+!public/tmp/README.md
