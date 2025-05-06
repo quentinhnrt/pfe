@@ -39,7 +39,7 @@ down:
 	$(DOCKER_COMPOSE) down
 
 build:
-	$(DOCKER_COMPOSE) build --no-cache
+	$(DOCKER_COMPOSE) build
 
 next:
 	$(DOCKER_COMPOSE) exec -it nextjs sh
