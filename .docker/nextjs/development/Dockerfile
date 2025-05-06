@@ -7,7 +7,7 @@ WORKDIR /app
 RUN npm i -g @ae-studio/px
 
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* .npmrc* ./
-RUN px ci --legacy-peer-deps
+RUN px i
 
 # RUN \
 #   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \

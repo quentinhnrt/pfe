@@ -14,7 +14,7 @@ RUN npm i -g @ae-studio/px
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN px ci --legacy-peer-deps
+RUN px ci
 
 # RUN \
 #   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \

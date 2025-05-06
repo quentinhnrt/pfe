@@ -50,7 +50,7 @@ db:
 ### NPM
 
 install:
-	@$(DOCKER_COMPOSE) exec nextjs sh -c "px ci --legacy-peer-deps" 
+	@$(DOCKER_COMPOSE) exec nextjs sh -c "px i" 
 
 clean:
 	@$(DOCKER_COMPOSE) exec nextjs sh -c "px clean"
