@@ -1,54 +1,62 @@
-import ArtworkFormDialog from "@/shared/components/dialogs/ArtworkFormDialog";
-import {auth} from "@/shared/lib/auth";
-import {headers} from "next/headers";
-import {redirect} from "next/navigation";
-import {Artwork} from "@prisma/client";
+import ArtworkFormDialog from "@/features/dialogs/ArtworkFormDialog";
+import PostForm from "@/features/forms/PostForm";
+import { auth } from "@/lib/auth";
+import { Artwork } from "@prisma/client";
+import { Pen } from "lucide-react";
+import { headers } from "next/headers";
 import Image from "next/image";
-import {Pen} from "lucide-react";
-import PostForm from "@/shared/components/forms/PostForm";
+import { redirect } from "next/navigation";
 
 export default async function Forms() {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-    if (!session || !session.user) {
-        redirect("/");
-    }
+  if (!session || !session.user) {
+    redirect("/");
+  }
 
-    const artworks: Artwork[] = []
+  const artworks: Artwork[] = [];
 
-    function ArtworkDialog() {
+  function ArtworkDialog() {
+    return <ArtworkFormDialog />;
+  }
 
-        return (
-            <ArtworkFormDialog />
-        )
-    }
+  return (
+    <div className={"w-[1200px] mx-auto space-y-8 mt-12"}>
+      <div>
+        <ArtworkDialog />
+      </div>
 
-    return (
-        <div className={"w-[1200px] mx-auto space-y-8 mt-12"}>
-            <div>
-                <ArtworkDialog />
+      <div className={"grid grid-cols-3 gap-8 w-1/2"}>
+        {artworks.length &&
+          artworks.map((artwork: Artwork) => (
+            <div key={artwork.id} className={"relative"}>
+              <Image
+                src={artwork.thumbnail}
+                alt={artwork.title}
+                width={300}
+                height={300}
+                className={"aspect-square w-full object-cover"}
+              />
+              <div className={"absolute bottom-4 right-4"}>
+                <ArtworkFormDialog artwork={artwork}>
+                  <div
+                    className={
+                      "bg-white rounded-full w-12 h-12 p-2 flex items-center justify-center cursor-pointer"
+                    }
+                  >
+                    <Pen />
+                  </div>
+                </ArtworkFormDialog>
+              </div>
             </div>
+          ))}
+      </div>
 
-            <div className={"grid grid-cols-3 gap-8 w-1/2"}>
-                {artworks.length && artworks.map((artwork: Artwork) => (
-                    <div key={artwork.id} className={"relative"}>
-                        <Image src={artwork.thumbnail} alt={artwork.title} width={300} height={300} className={"aspect-square w-full object-cover"} />
-                        <div className={"absolute bottom-4 right-4"}>
-                            <ArtworkFormDialog artwork={artwork}>
-                                <div className={"bg-white rounded-full w-12 h-12 p-2 flex items-center justify-center cursor-pointer"}>
-                                    <Pen />
-                                </div>
-                            </ArtworkFormDialog>
-                        </div>
-                    </div>
-                ))}
-            </div>
-
-            <div>
-                <PostForm />
-            </div>
-        </div>
-    )
+      <div>
+        <PostForm />
+      </div>
+    </div>
+  );
 }

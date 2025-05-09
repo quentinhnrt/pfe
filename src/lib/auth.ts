@@ -1,5 +1,5 @@
-import { sendMagicLink } from "@/shared/lib/auth/magiclink";
-import prisma from "@/shared/lib/prisma";
+import { sendMagicLink } from "@/lib/auth/magiclink";
+import prisma from "@/lib/prisma";
 import { User } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
@@ -33,7 +33,7 @@ export const auth = betterAuth({
     additionalFields: {
       role: {
         type: "string",
-      }
-    }
-  }
+      },
+    },
+  },
 });

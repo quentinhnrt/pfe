@@ -1,5 +1,5 @@
-import { MagicLinkEmail } from "@/shared/emails/MagicLink";
-import NodeMailer from "@/shared/lib/mail";
+import { MagicLinkEmail } from "@/emails/MagicLink";
+import NodeMailer from "@/lib/mail";
 import { render } from "@react-email/components";
 
 export async function sendMagicLink({
