@@ -1,13 +1,13 @@
-import { Role } from '@/generated/prisma'
-import prisma from '@/lib/prisma'
-import answers from './data/answers.json'
-import artworks from './data/artworks.json'
-import posts from './data/posts.json'
-import templates from './data/templates.json'
-import users from './data/users.json'
+import prisma from "@/shared/lib/prisma";
+import { Role } from "@prisma/client";
+import answers from "./data/answers.json";
+import artworks from "./data/artworks.json";
+import posts from "./data/posts.json";
+import templates from "./data/templates.json";
+import users from "./data/users.json";
 
 async function main() {
-  console.log('Seeding users...')
+  console.log("Seeding users...");
   for (const user of users) {
     await prisma.user.create({
       data: {
@@ -23,7 +23,7 @@ async function main() {
         role: user.role as Role,
         onBoarded: user.onBoarded,
       },
-    })
+    });
   }
 
   for (const artwork of artworks) {
@@ -42,7 +42,7 @@ async function main() {
           },
         },
       },
-    })
+    });
   }
 
   for (const post of posts) {
@@ -54,7 +54,7 @@ async function main() {
             post.artworks.map((artwork: { id: number }) => {
               return {
                 id: artwork.id,
-              }
+              };
             }) || [],
         },
         user: {
@@ -74,7 +74,7 @@ async function main() {
           },
         },
       },
-    })
+    });
   }
 
   for (const answer of answers) {
@@ -83,7 +83,7 @@ async function main() {
         content: answer.content,
         questionId: answer.questionId,
       },
-    })
+    });
   }
 
   for (const template of templates) {
@@ -94,18 +94,18 @@ async function main() {
         description: template.description,
         slug: template.slug,
       },
-    })
+    });
   }
 
-  console.log('✅ Seeding done!')
+  console.log("✅ Seeding done!");
 }
 
 main()
   .then(async () => {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error('❌ Error while seeding:', e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+    console.error("❌ Error while seeding:", e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
