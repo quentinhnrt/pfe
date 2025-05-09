@@ -1,8 +1,8 @@
 "use client";
 import SearchInput from "@/features/forms/SearchInput";
-import { useState } from "react";
 import { User } from "@prisma/client";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function SearchArtist() {
   const [artists, setArtists] = useState([]);
@@ -25,7 +25,7 @@ export default function SearchArtist() {
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="text-2xl font-bold mb-4">Rechercher un artiste</h1>
+      <h1 className="mb-4 text-2xl font-bold">Rechercher un artiste</h1>
       <SearchInput onSearch={handleSearch} />
 
       {artists.length > 0 && (
@@ -34,7 +34,7 @@ export default function SearchArtist() {
             <Link
               href={"/user/" + artist.id}
               key={artist.id}
-              className="p-2 border-b"
+              className="border-b p-2"
             >
               {artist.firstname} {artist.lastname}
             </Link>
