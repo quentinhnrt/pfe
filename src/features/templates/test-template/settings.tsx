@@ -1,5 +1,4 @@
 "use client";
-import { z } from "zod";
 import {
   FormControl,
   FormField,
@@ -9,9 +8,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Repeater from "@/features/fields/Repeater";
 import { ArtworkGallerySelector } from "@/features/fields/ArtworkGallerySelector";
+import Repeater from "@/features/fields/Repeater";
 import { TemplateContainer } from "@/features/template-container/TemplateContainer";
+import { z } from "zod";
 
 type ArtworkSection = {
   title: string;
@@ -90,7 +90,7 @@ export default function Settings() {
                         onChange={(e) =>
                           handleChange(index, "title", e.target.value)
                         }
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                       <Input
                         placeholder={"Subtitle"}
@@ -99,7 +99,7 @@ export default function Settings() {
                         onChange={(e) =>
                           handleChange(index, "subtitle", e.target.value)
                         }
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                       />
                       <ArtworkGallerySelector
                         name={`artworkSections.${index}.artworks`}

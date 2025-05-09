@@ -1,4 +1,5 @@
 "use client";
+
 import { Button } from "@/components/ui/button";
 import ArtworkFormDialog from "@/features/dialogs/ArtworkFormDialog";
 import PostForm from "@/features/forms/PostForm";
@@ -37,12 +38,12 @@ export default function ActionButton() {
   }
 
   return (
-    <div ref={actionRef} className={"fixed bottom-12 right-12"}>
+    <div ref={actionRef} className={"fixed right-12 bottom-12"}>
       <Button
         onClick={() => setOpen(!open)}
         variant={"outline"}
         className={
-          "h-12 bg-white aspect-square rounded-full flex items-center justify-center cursor-pointer border-black/50"
+          "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
         }
       >
         <Plus
@@ -52,18 +53,18 @@ export default function ActionButton() {
 
       <div
         className={
-          "absolute -top-4 right-0 -translate-y-full w-fit flex flex-col items-end gap-4" +
+          "absolute -top-4 right-0 flex w-fit -translate-y-full flex-col items-end gap-4" +
           (open ? " block" : " hidden")
         }
       >
         <ArtworkFormDialog>
-          <div className={"flex items-center gap-4 size-max cursor-pointer"}>
+          <div className={"flex size-max cursor-pointer items-center gap-4"}>
             <p>Créer une oeuvre</p>
 
             <Button
               variant={"outline"}
               className={
-                "h-12 bg-white aspect-square rounded-full flex items-center justify-center cursor-pointer border-black/50"
+                "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
               }
             >
               <Palette />
@@ -71,13 +72,13 @@ export default function ActionButton() {
           </div>
         </ArtworkFormDialog>
         <PostForm>
-          <div className={"flex items-center gap-4 size-max cursor-pointer"}>
+          <div className={"flex size-max cursor-pointer items-center gap-4"}>
             <p>Créer un post</p>
 
             <Button
               variant={"outline"}
               className={
-                "h-12 bg-white aspect-square rounded-full flex items-center justify-center cursor-pointer border-black/50"
+                "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
               }
             >
               <SquarePen />

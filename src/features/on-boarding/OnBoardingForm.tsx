@@ -60,8 +60,7 @@ export default function OnBoardingForm({ user }: { user: User }) {
     const formData = new FormData();
 
     for (const key in values) {
-      // @ts-expect-error it works
-      formData.append(key, values[key]);
+      formData.append(key, values[key as keyof typeof values]);
     }
 
     const response = await fetch("/api/user/" + user.id, {

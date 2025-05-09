@@ -48,24 +48,33 @@ export default function PostCommunityQuestion({ question }: Props) {
   }
 
   return (
-    <div className={"bg-gray-100 p-4 rounded-lg mt-4"}>
+    <div className={"mt-4 rounded-lg bg-gray-100 p-4"}>
       <h2 className={"text-lg font-semibold"}>
         {question.question} - {numberOfUserAnswers}
       </h2>
       <ul className={"list-none space-y-4"}>
         {question.answers.map((answer) => (
           <li
-            onClick={() => handleAnswerClick(answer)}
-            className={"p-2 bg-gray-200 rounded relative"}
             key={"answer-" + answer.id}
+            className={"relative rounded bg-gray-200 p-2"}
           >
-            <span className={"z-10 block relative"}>
-              {answer.content} ({answer.votes})
-            </span>
-            <div
-              className={"z-0 h-full bg-gray-300 absolute top-0 left-0"}
-              style={{ width: getAnswerVotePercentage(answer) + "%" }}
-            ></div>
+            <button
+              onClick={() => handleAnswerClick(answer)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  handleAnswerClick(answer);
+                }
+              }}
+              className="w-full text-left"
+            >
+              <span className={"relative z-10 block"}>
+                {answer.content} ({answer.votes})
+              </span>
+              <div
+                className={"absolute top-0 left-0 z-0 h-full bg-gray-300"}
+                style={{ width: getAnswerVotePercentage(answer) + "%" }}
+              ></div>
+            </button>
           </li>
         ))}
       </ul>

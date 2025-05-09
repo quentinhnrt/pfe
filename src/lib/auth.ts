@@ -4,11 +4,13 @@ import { User } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { customSession, magicLink } from "better-auth/plugins";
+import { getServerUrl } from "./server-url";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  baseURL: getServerUrl(),
   plugins: [
     magicLink({
       sendMagicLink: async (data: {
