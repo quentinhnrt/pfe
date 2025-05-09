@@ -11,7 +11,7 @@ type Props = {
 };
 export default function PostCard({ post }: Props) {
   return (
-    <div className={"bg-white shadow-xl rounded-xl border border-gray-300 p-4"}>
+    <div className={"rounded-xl border border-gray-300 bg-white p-4 shadow-xl"}>
       <p>{post.content}</p>
       {post.artworks && <PostArtworks artworks={post.artworks} />}
       {post.question && <PostCommunityQuestion question={post.question} />}

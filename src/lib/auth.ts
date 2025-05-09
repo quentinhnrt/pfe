@@ -1,6 +1,5 @@
 import { sendMagicLink } from "@/lib/auth/magiclink";
 import prisma from "@/lib/prisma";
-// @ts-expect-error it works
 import { User } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";

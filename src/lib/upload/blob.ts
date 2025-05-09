@@ -9,7 +9,7 @@ interface UploadResult {
   source: "vercel" | "local";
 }
 
-export async function uploadMedia(file: File): Promise<UploadResult> {
+export async function uploadImage(file: File): Promise<UploadResult> {
   const extension = file.name.split(".").pop();
   const filename = `${randomUUID()}.${extension}`;
 

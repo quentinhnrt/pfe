@@ -29,11 +29,11 @@ export default function SearchInput({
     }, delay);
 
     return () => clearTimeout(handler);
-  }, [inputValue, delay]);
+  }, [inputValue, delay, onDebounceChange]);
 
   useEffect(() => {
     onSearch(debouncedValue);
-  }, [debouncedValue]);
+  }, [debouncedValue, onSearch]);
 
   return (
     <div className="w-full max-w-md">
@@ -42,7 +42,7 @@ export default function SearchInput({
         placeholder="Rechercher..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        className="w-full p-2 border border-gray-300 rounded"
+        className="w-full rounded border border-gray-300 p-2"
       />
     </div>
   );

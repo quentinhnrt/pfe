@@ -192,16 +192,7 @@ export default function PostForm({ post, children }: Props) {
                       <FormControl>
                         <Repeater<{ answer: string }>
                           name={"answers"}
-                          // @ts-expect-error it works
-                          initialValues={
-                            post?.question
-                              ? parsedAnswersForForm(
-                                  post.question.answers.map(
-                                    (answer) => answer.content
-                                  )
-                                )
-                              : []
-                          }
+                          initialValues={{ answer: "" }}
                           renderFields={(item, index, handleChange) => (
                             <Input
                               type="text"
@@ -209,7 +200,7 @@ export default function PostForm({ post, children }: Props) {
                               onChange={(e) =>
                                 handleChange(index, "answer", e.target.value)
                               }
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             />
                           )}
                         />
