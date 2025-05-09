@@ -1,0 +1,57 @@
+services:
+  nextjs:
+    build:
+      context: .
+      dockerfile: .docker/nextjs/development/Dockerfile
+      args:
+        NODE_VERSION: 22
+    container_name: artilink_app
+    restart: no
+    depends_on:
+      - postgres
+    ports:
+      - '3000:3000'
+      - '5555:5555'
+      - '3001:3001'
+    networks:
+      - internal
+    environment:
+      NODE_ENV: development
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    develop:
+      watch:
+        - action: sync
+          path: ./
+          target: /app
+          ignore:
+            - node_modules
+            - .next
+        - action: rebuild
+          path: package.json
+
+  postgres:
+    image: postgres:16
+    container_name: artilink_db
+    restart: no
+    ports:
+      - '5432:5432'
+    networks:
+      - internal
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+    name: artilink_postgres_data
+
+networks:
+  internal:
+    driver: bridge
+    name: artilink_network
