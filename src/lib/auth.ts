@@ -3,7 +3,6 @@ import prisma from "@/lib/prisma";
 import { User } from "@prisma/client";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { nextCookies } from "better-auth/next-js";
 import { customSession, magicLink } from "better-auth/plugins";
 import { getServerUrl } from "./server-url";
 
@@ -31,7 +30,6 @@ export const auth = betterAuth({
         session,
       };
     }),
-    nextCookies(),
   ],
   user: {
     additionalFields: {
