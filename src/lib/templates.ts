@@ -1,6 +1,6 @@
 export const templates = {
-    'test-template': {
-        'render': await import('@/components/templates/test-template/render'),
-        'settings': await import('@/components/templates/test-template/settings'),
-    }
-}
+  "test-template": {
+    render: await import("@/features/templates/test-template/render"),
+    settings: await import("@/features/templates/test-template/settings"),
+  },
+};

@@ -1,6 +1,6 @@
-import { auth } from "@/shared/lib/auth";
-import prisma from "@/shared/lib/prisma";
-import { uploadImage } from "@/shared/lib/upload/blob";
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { uploadImage } from "@/lib/upload/blob";
 import { Role } from "@prisma/client";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";

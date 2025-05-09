@@ -1,5 +1,5 @@
 "use client";
-import { authClient } from "@/shared/lib/auth-client";
+import { authClient } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 import { useState } from "react";
 

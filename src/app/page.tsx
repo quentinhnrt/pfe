@@ -1,8 +1,8 @@
+import SearchArtist from "@/components/SearchArtist";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
-import {auth} from "@/shared/lib/auth";
-import {headers} from "next/headers";
-import SearchArtist from "@/components/SearchArtist";
 
 export default async function Home() {
   const session = await auth.api.getSession({
@@ -59,36 +59,47 @@ export default async function Home() {
           </a>
         </div>
         {!session && (
-            <div>
-              <Link
-                  href={"/sign-in"}
-                  className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-              >
-                S&#39;inscrire / Se connecter
-              </Link>
-            </div>
+          <div>
+            <Link
+              href={"/sign-in"}
+              className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
+            >
+              S&#39;inscrire / Se connecter
+            </Link>
+          </div>
         )}
 
         {session && session.user && (
-            <Link href={"/user/" + session.user.id} className={"flex flex-col items-center"}>
-              {session.user.image && (
-                  <Image src={session.user.image} alt={session.user.firstname ?? ""} width={200} height={200} className={"rounded-full"} />
-              )}
-              <p className={"font-semibold text-center text-3xl mt-4"}>{session.user.firstname}</p>
-            </Link>
+          <Link
+            href={"/user/" + session.user.id}
+            className={"flex flex-col items-center"}
+          >
+            {session.user.image && (
+              <Image
+                src={session.user.image}
+                alt={session.user.firstname ?? ""}
+                width={200}
+                height={200}
+                className={"rounded-full"}
+              />
+            )}
+            <p className={"font-semibold text-center text-3xl mt-4"}>
+              {session.user.firstname}
+            </p>
+          </Link>
         )}
 
         <SearchArtist />
       </main>
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
         <a
-            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <Image
-              aria-hidden
+            aria-hidden
             src="/file.svg"
             alt="File icon"
             width={16}

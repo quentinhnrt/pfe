@@ -1,7 +1,7 @@
+import OnBoardingForm from "@/features/on-boarding/OnBoardingForm";
+import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { auth } from "@/shared/lib/auth";
-import OnBoardingForm from "@/components/on-boarding/OnBoardingForm";
 
 export default async function OnBoarding() {
   const session = await auth.api.getSession({

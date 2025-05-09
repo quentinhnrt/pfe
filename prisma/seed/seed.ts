@@ -1,4 +1,4 @@
-import prisma from "@/shared/lib/prisma";
+import prisma from "@/lib/prisma";
 import { Role } from "@prisma/client";
 import answers from "./data/answers.json";
 import artworks from "./data/artworks.json";
