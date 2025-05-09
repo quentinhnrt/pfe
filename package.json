@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:fix": "next lint --fix",
     "ts": "tsc --noEmit",
     "email:dev": "email dev --dir src/emails",
     "test": "vitest",
