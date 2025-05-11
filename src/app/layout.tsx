@@ -39,6 +39,7 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body
         className={`${fontSans.variable} ${fontSerif.variable} ${fontMono.variable} antialiased`}
+        suppressHydrationWarning
       >
         <NextIntlClientProvider>
           <Providers>
