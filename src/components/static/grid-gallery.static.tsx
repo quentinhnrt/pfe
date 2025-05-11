@@ -1,11 +1,7 @@
 import ArtworkCard from "@/components/static/artwork-card.static";
 import pictures from "@/components/static/data/pictures";
-import {
-  Masonry,
-  useInfiniteLoader,
-  usePositioner,
-  useResizeObserver,
-} from "masonic";
+import { cn } from "@/lib/utils";
+import { Masonry, useInfiniteLoader } from "masonic";
 import { useScroller, useSize } from "mini-virtual-list";
 import { nanoid } from "nanoid";
 import React from "react";
@@ -13,6 +9,7 @@ import React from "react";
 interface GridGalleryProps {
   columnWidth: number;
   columnGutter: number;
+  className?: string;
 }
 
 const randomChoice = (items: string[]) =>
@@ -30,6 +27,7 @@ const getFakeItemsPromise = (start: number, end: number) =>
 export const GridGallery = ({
   columnWidth = 300,
   columnGutter = 4,
+  className,
 }: GridGalleryProps) => {
   const containerRef = React.useRef(null);
 
@@ -37,14 +35,6 @@ export const GridGallery = ({
 
   const { width, height } = useSize(containerRef);
   const { scrollTop } = useScroller(containerRef);
-
-  const positioner = usePositioner({
-    width,
-    columnWidth: columnWidth,
-    columnGutter: columnGutter,
-  });
-
-  const resizeObserver = useResizeObserver(positioner);
 
   const maybeLoadMore = useInfiniteLoader(
     async (startIndex: number, stopIndex: number) => {
@@ -59,14 +49,13 @@ export const GridGallery = ({
   );
 
   return (
-    <div className="w-full h-full p-2">
+    <div ref={containerRef} className={cn("w-full h-full p-2", className)}>
       <Masonry
         onRender={maybeLoadMore}
         items={items}
         columnGutter={columnGutter}
         columnWidth={columnWidth}
         overscanBy={1.25}
-        resizeObserver={resizeObserver}
         scrollToIndex={scrollTop}
         scrollFps={12}
         ssrWidth={width}
