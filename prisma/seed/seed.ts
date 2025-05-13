@@ -41,6 +41,7 @@ async function main() {
             id: artwork.userId,
           },
         },
+        sold: artwork.sold ?? false,
       },
     });
   }
@@ -49,6 +50,8 @@ async function main() {
     await prisma.post.create({
       data: {
         content: post.content,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
         artworks: {
           connect:
             post.artworks.map((artwork: { id: number }) => {
