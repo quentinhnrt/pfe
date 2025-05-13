@@ -38,6 +38,9 @@ export const auth = betterAuth({
             role: {
                 type: "string",
             },
+            firstname: {
+                type: "string",
+            }
         },
     },
     databaseHooks: {
@@ -52,3 +55,5 @@ export const auth = betterAuth({
         }
     }
 });
+
+export type Session = typeof auth.$Infer.Session

@@ -2,7 +2,7 @@ import PostArtworks from "@/features/post-card/PostArtworks";
 import PostCommunityQuestion from "@/features/post-card/PostCommunityQuestion";
 import { Prisma } from "@prisma/client";
 
-type PostWithArtworksQuestionAndAnswers = Prisma.PostGetPayload<{
+export type PostWithArtworksQuestionAndAnswers = Prisma.PostGetPayload<{
   include: { artworks: true; question: { include: { answers: true } } };
 }>;
 

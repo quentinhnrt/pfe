@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import PostFeed from "@/components/PostFeed";
 
 export default async function Home() {
   const t = await getTranslations("HomePage");
@@ -37,23 +38,28 @@ export default async function Home() {
         )}
 
         {session && session.user && (
-          <Link
-            href={"/user/" + session.user.id}
-            className={"flex flex-col items-center"}
-          >
-            {session.user.image && (
-              <Image
-                src={session.user.image}
-                alt={session.user.firstname ?? ""}
-                width={200}
-                height={200}
-                className={"rounded-full"}
-              />
-            )}
-            <p className={"mt-4 text-center text-3xl font-semibold"}>
-              {session.user.firstname}
-            </p>
-          </Link>
+            <div>
+                <Link
+                    href={"/user/" + session.user.id}
+                    className={"flex flex-col items-center"}
+                >
+                    {session.user.image && (
+                        <Image
+                            src={session.user.image}
+                            alt={session.user.firstname ?? ""}
+                            width={200}
+                            height={200}
+                            className={"rounded-full"}
+                        />
+                    )}
+                    <p className={"mt-4 text-center text-3xl font-semibold"}>
+                        {session.user.firstname}
+                    </p>
+                </Link>
+
+                <PostFeed />
+            </div>
+
         )}
 
         <SearchArtist />
