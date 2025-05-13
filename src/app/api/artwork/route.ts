@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       price: Number.isNaN(price) ? null : price,
       thumbnail: image.url,
       userId: session.user.id,
+      sold: false
     },
   });
 
@@ -91,6 +92,10 @@ export async function PUT(request: Request) {
 
     dataObject.thumbnail = image.url;
   }
+
+    if (data.has("sold")) {
+        dataObject.sold = data.get("sold") === "true";
+    }
 
   const updatedArtwork = await prisma.artwork.update({
     where: {

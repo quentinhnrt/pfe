@@ -64,6 +64,7 @@ export default function ArtworkForm({ onSuccess, onFailure, artwork }: Props) {
       isForSale: z.boolean(),
       price: z.string().optional(),
       image: z.any().optional(),
+      sold: z.boolean().optional(),
     })
     .superRefine((data, ctx) => {
       if (data.isForSale && (data.price === undefined || data.price === null)) {
@@ -103,6 +104,7 @@ export default function ArtworkForm({ onSuccess, onFailure, artwork }: Props) {
       isForSale: artwork?.isForSale ?? false,
       image: null,
       price: artwork?.price?.toString() ?? undefined,
+      sold: false
     },
   });
 
@@ -221,6 +223,26 @@ export default function ArtworkForm({ onSuccess, onFailure, artwork }: Props) {
               </FormItem>
             )}
           />
+        )}
+
+        {isForSale && (
+            <FormField
+                control={form.control}
+                name="sold"
+                render={({ field }) => (
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
+                    <div className="space-y-0.5">
+                    <FormLabel>Cette oeuvre est-elle vendue ?</FormLabel>
+                    </div>
+                    <FormControl>
+                    <Switch
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                    />
+                    </FormControl>
+                </FormItem>
+                )}
+            />
         )}
 
         <DialogFooter className="pt-4">
