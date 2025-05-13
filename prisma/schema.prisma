@@ -25,7 +25,7 @@ model User {
   email         String         @unique
   firstname     String?
   lastname      String?
-  name          String         @unique
+  name          String?        @unique
   emailVerified Boolean
   role          Role           @default(USER)
   image         String?
@@ -41,6 +41,8 @@ model User {
   PostReaction  PostReaction[]
   answers       Answer[]
   user_template UserTemplate[]
+  following     Follow[]       @relation("Following")
+  followers     Follow[]       @relation("Followers")
 
   @@map("user")
 }
@@ -200,4 +202,16 @@ model PostReaction {
   user     User     @relation(fields: [userId], references: [id])
   post     Post     @relation(fields: [postId], references: [id])
   reaction Reaction @relation(fields: [reactionId], references: [id])
+}
+
+model Follow {
+  id          Int      @id @default(autoincrement())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  following User @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
 }
