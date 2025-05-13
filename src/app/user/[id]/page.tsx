@@ -16,7 +16,7 @@ export default async function ProfilePage({
     <div>
       <h1>{user.firstname}</h1>
 
-        <FollowButton user={user} currentUser={currentUser} />
+        <FollowButton user={user} currentUser={currentUser ?? undefined} />
 
       <div className={"space-y-8 max-w-7xl mx-auto"}>
         {user.posts?.length &&

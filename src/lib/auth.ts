@@ -46,10 +46,11 @@ export const auth = betterAuth({
     databaseHooks: {
         user: {
             create: {
-                // @ts-expect-error it works
                 async before(user) {
                     user.name = 'user_' + generateRandomString(10);
-                    return user
+                    return {
+                        data: user
+                    }
                 }
             }
         }
