@@ -23,6 +23,8 @@ type CREATE_POST_QUERY = {
     artworks: {
       connect: { id: number }[];
     };
+    createdAt: Date;
+    updatedAt: Date;
   };
   include: {
     artworks: true;
@@ -60,6 +62,8 @@ export async function POST(request: Request) {
         artworks: {
           connect: artworks,
         },
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       include: {
         artworks: true,
@@ -118,6 +122,7 @@ export async function PUT(request: Request) {
         artworks: {
           set: artworks,
         },
+        updatedAt: new Date(),
       },
       include: {
         artworks: true,

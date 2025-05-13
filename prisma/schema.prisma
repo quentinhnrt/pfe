@@ -182,6 +182,8 @@ model Post {
   userId       String
   user         User           @relation(fields: [userId], references: [id], onDelete: Cascade)
   content      String
+  createdAt    DateTime
+  updatedAt    DateTime       @updatedAt
   question     Question?
   PostReaction PostReaction[]
   artworks     Artwork[]
