@@ -6,6 +6,7 @@ import PostForm from "@/features/forms/PostForm";
 import { authClient } from "@/lib/auth-client";
 import { Palette, Plus, SquarePen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import CollectionForm from "@/features/forms/CollectionForm";
 
 export default function ActionButton() {
   const [open, setOpen] = useState(false);
@@ -85,6 +86,20 @@ export default function ActionButton() {
             </Button>
           </div>
         </PostForm>
+        <CollectionForm>
+          <div className={"flex size-max cursor-pointer items-center gap-4"}>
+            <p>Créer une collection</p>
+
+            <Button
+                variant={"outline"}
+                className={
+                  "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
+                }
+            >
+              <SquarePen />
+            </Button>
+          </div>
+        </CollectionForm>
       </div>
     </div>
   );
