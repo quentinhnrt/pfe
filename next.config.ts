@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
         hostname: "**.public.blob.vercel-storage.com",
         protocol: "https",
       },
+      {
+        hostname: "**.pixabay.com",
+        protocol: "https",
+      },
     ],
   },
   output: "standalone",

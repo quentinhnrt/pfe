@@ -3,6 +3,7 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Shadcn UI */
 :root {
   --background: oklch(0.99 0 0);
   --foreground: oklch(0.2 0 0);
@@ -168,6 +169,24 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
+/* Aurora Background */
+@theme inline {
+  --animate-aurora: aurora 60s linear infinite;
+  @keyframes aurora {
+    from {
+      background-position:
+        50% 50%,
+        50% 50%;
+    }
+    to {
+      background-position:
+        350% 50%,
+        350% 50%;
+    }
+  }
+}
+
+/* Global */
 body {
   background: var(--background);
   color: var(--foreground);
