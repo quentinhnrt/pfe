@@ -15,12 +15,7 @@ export default async function OnBoarding() {
     return (
         <div className="flex min-h-screen">
             <div
-                className="hidden md:block md:w-1/3 relative"
-                style={{
-                    backgroundImage: "url('/placeholder.svg?height=1080&width=1920')",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                }}
+                className="hidden md:block md:w-1/3 relative bg-primary"
             >
 
                 <div className="absolute inset-0 bg-black bg-opacity-50"></div>
