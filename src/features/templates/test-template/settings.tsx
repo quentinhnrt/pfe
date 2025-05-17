@@ -12,14 +12,14 @@ import { TemplateContainer } from "@/features/template-container/TemplateContain
 import { z } from "zod";
 import {CollectionSelector} from "@/features/fields/CollectionSelector";
 
-export default function Settings() {
-  const templateSchema = z.object({
+export const templateSchema = z.object({
     title: z.string().min(1),
     description: z.string().optional(),
     collections: z.array(z.number()).optional(),
-  });
+});
 
-  async function onRequest(values: z.infer<typeof templateSchema>) {
+export default function Settings() {
+    async function onRequest(values: z.infer<typeof templateSchema>) {
     console.log(values);
 
     return values;
