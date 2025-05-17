@@ -1,6 +1,7 @@
 import { Prisma } from "@prisma/client"
 import {notFound} from "next/navigation";
 import {templates} from "@/lib/templates";
+import {getUserByUsername} from "@/lib/users";
 
 
 type UserWithTemplate = Prisma.UserGetPayload<{
@@ -27,14 +28,7 @@ type UserWithTemplate = Prisma.UserGetPayload<{
 }>
 export default async function PortfolioPage({params}: { params: Promise<{ username: string }> }) {
     const {username} = await params
-    const response = await fetch(process.env.BETTER_AUTH_URL + "/api/user/username/" + username)
-
-    if (!response.ok) {
-        console.log("Error fetching user data:", response.statusText)
-        notFound()
-    }
-
-    const user: UserWithTemplate = await response.json()
+    const user = await getUserByUsername(username)
 
     const activeTemplate = user.user_template[0]
 

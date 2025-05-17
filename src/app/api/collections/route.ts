@@ -3,6 +3,34 @@ import prisma from "@/lib/prisma";
 import {auth} from "@/lib/auth";
 import {headers} from "next/headers";
 
+export async function GET(req: NextRequest) {
+    const collectionIds = req.nextUrl.searchParams.get("collectionIds");
+    const userId = req.nextUrl.searchParams.get("userId");
+
+    if (!collectionIds || !userId) {
+        return NextResponse.json(
+            {error: "Missing collectionIds"},
+            {
+                status: 400,
+            }
+        );
+    }
+
+    const collections = await prisma.collection.findMany({
+        where: {
+            id: {
+                in: collectionIds.split(",").map((id) => parseInt(id)),
+            },
+            userId: userId,
+        },
+        include: {
+            artworks: true,
+        },
+    });
+
+    return NextResponse.json(collections);
+}
+
 export async function POST(req: NextRequest) {
     const session = await auth.api.getSession({
         headers: await headers(),

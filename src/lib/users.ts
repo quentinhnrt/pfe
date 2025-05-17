@@ -34,3 +34,11 @@ export async function getUserById(id: string): Promise<UserFromApi> {
 
     return await userResponse.json();
 }
+
+export async function getUserByUsername(username: string): Promise<UserFromApi> {
+    const userResponse = await fetch(
+        process.env.BETTER_AUTH_URL + "/api/user/username/" + username
+    );
+
+    return await userResponse.json();
+}
