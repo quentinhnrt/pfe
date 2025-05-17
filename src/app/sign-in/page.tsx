@@ -39,7 +39,7 @@ export default function SignIn() {
         setError(undefined)
       }
     } catch (err) {
-      setError("An unexpected error occurred")
+      setError("An unexpected error occurred : " + (err as Error).message)
     } finally {
       setIsLoading(false)
     }
