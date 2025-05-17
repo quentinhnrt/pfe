@@ -1,4 +1,3 @@
-import ArtworkFormDialog from "@/features/dialogs/ArtworkFormDialog";
 import PostForm from "@/features/forms/PostForm";
 import { auth } from "@/lib/auth";
 import { Artwork } from "@prisma/client";
@@ -6,6 +5,7 @@ import { Pen } from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import ArtworkForm from "@/features/forms/ArtworkForm";
 
 export default async function Forms() {
   const session = await auth.api.getSession({
@@ -18,14 +18,10 @@ export default async function Forms() {
 
   const artworks: Artwork[] = [];
 
-  function ArtworkDialog() {
-    return <ArtworkFormDialog />;
-  }
-
   return (
     <div className={"w-[1200px] mx-auto space-y-8 mt-12"}>
       <div>
-        <ArtworkDialog />
+        <ArtworkForm />
       </div>
 
       <div className={"grid grid-cols-3 gap-8 w-1/2"}>
@@ -40,7 +36,7 @@ export default async function Forms() {
                 className={"aspect-square w-full object-cover"}
               />
               <div className={"absolute bottom-4 right-4"}>
-                <ArtworkFormDialog artwork={artwork}>
+                <ArtworkForm artwork={artwork}>
                   <div
                     className={
                       "bg-white rounded-full w-12 h-12 p-2 flex items-center justify-center cursor-pointer"
@@ -48,7 +44,7 @@ export default async function Forms() {
                   >
                     <Pen />
                   </div>
-                </ArtworkFormDialog>
+                </ArtworkForm>
               </div>
             </div>
           ))}

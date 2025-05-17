@@ -9,6 +9,9 @@ export type UserFromApi = Prisma.UserGetPayload<{
         };
         followers: true;
         following: true;
+        user_template: {
+            include: { template: true };
+        };
     };
 }>;
 
