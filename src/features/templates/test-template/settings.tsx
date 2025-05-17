@@ -8,28 +8,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { ArtworkGallerySelector } from "@/features/fields/ArtworkGallerySelector";
-import Repeater from "@/features/fields/Repeater";
 import { TemplateContainer } from "@/features/template-container/TemplateContainer";
 import { z } from "zod";
-
-type ArtworkSection = {
-  title: string;
-  subtitle: string;
-  artworks: number[];
-};
+import {CollectionSelector} from "@/features/fields/CollectionSelector";
 
 export default function Settings() {
   const templateSchema = z.object({
     title: z.string().min(1),
     description: z.string().optional(),
-    artworkSections: z
-      .object({
-        title: z.string().optional(),
-        subtitle: z.string().optional(),
-        artworks: z.number().array(),
-      })
-      .array(),
+    collections: z.array(z.number()).optional(),
   });
 
   async function onRequest(values: z.infer<typeof templateSchema>) {
@@ -72,44 +59,12 @@ export default function Settings() {
           )}
         />
         <FormField
-          name="artworkSections"
+          name="collections"
           render={(field) => (
             <FormItem>
-              <FormLabel>Artworks</FormLabel>
+              <FormLabel>Collections</FormLabel>
               <FormControl>
-                <Repeater<ArtworkSection>
-                  name={"artworkSections"}
-                  // @ts-expect-error it works
-                  initialValues={field.value}
-                  renderFields={(item, index, handleChange) => (
-                    <>
-                      <Input
-                        placeholder={"Title"}
-                        type="text"
-                        value={item?.title ?? ""}
-                        onChange={(e) =>
-                          handleChange(index, "title", e.target.value)
-                        }
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                      <Input
-                        placeholder={"Subtitle"}
-                        type="text"
-                        value={item?.subtitle ?? ""}
-                        onChange={(e) =>
-                          handleChange(index, "subtitle", e.target.value)
-                        }
-                        className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                      />
-                      <ArtworkGallerySelector
-                        name={`artworkSections.${index}.artworks`}
-                        onChange={(selectedIds) =>
-                          handleChange(index, "artworks", selectedIds)
-                        }
-                      />
-                    </>
-                  )}
-                />
+                  <CollectionSelector name={field.field.name} label="Sélectionner des collections" />
               </FormControl>
               <FormMessage />
             </FormItem>

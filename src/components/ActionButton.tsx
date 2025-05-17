@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import ArtworkFormDialog from "@/features/dialogs/ArtworkFormDialog";
 import PostForm from "@/features/forms/PostForm";
 import { authClient } from "@/lib/auth-client";
 import { Palette, Plus, SquarePen } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import CollectionForm from "@/features/forms/CollectionForm";
+import ArtworkForm from "@/features/forms/ArtworkForm";
 
 export default function ActionButton() {
   const [open, setOpen] = useState(false);
@@ -58,7 +58,7 @@ export default function ActionButton() {
           (open ? " block" : " hidden")
         }
       >
-        <ArtworkFormDialog>
+        <ArtworkForm>
           <div className={"flex size-max cursor-pointer items-center gap-4"}>
             <p>Créer une oeuvre</p>
 
@@ -71,7 +71,7 @@ export default function ActionButton() {
               <Palette />
             </Button>
           </div>
-        </ArtworkFormDialog>
+        </ArtworkForm>
         <PostForm>
           <div className={"flex size-max cursor-pointer items-center gap-4"}>
             <p>Créer un post</p>
