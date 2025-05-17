@@ -39,7 +39,7 @@ export default function SignIn() {
         setError(undefined)
       }
     } catch (err) {
-      setError("An unexpected error occurred")
+      setError("An unexpected error occurred : " + (err as Error).message)
     } finally {
       setIsLoading(false)
     }
@@ -122,7 +122,7 @@ export default function SignIn() {
           <div className="h-full flex flex-col justify-center w-full z-10 relative bg-primary/10 p-12">
             <h1 className="text-7xl font-bold mb-6">Artilink</h1>
             <p className="text-4xl mb-4">
-              L'art ne vit que lorsqu'il est partagé.
+              L&apos;art ne vit que lorsqu&apos;il est partagé.
             </p>
             <p className="text-4xl">
               Entrez, créez, inspirez.
