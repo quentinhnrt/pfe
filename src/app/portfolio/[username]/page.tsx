@@ -2,30 +2,6 @@ import { Prisma } from "@prisma/client"
 import {notFound} from "next/navigation";
 import {templates} from "@/lib/templates";
 import {getUserByUsername} from "@/lib/users";
-
-
-type UserWithTemplate = Prisma.UserGetPayload<{
-    include: {
-        posts: {
-            include: {
-                artworks: true,
-                question: {
-                    include: {
-                        answers: true,
-                    },
-                },
-            },
-        },
-        user_template: {
-            where: {
-                active: true,
-            },
-            include: {
-                template: true,
-            },
-        }
-    }
-}>
 export default async function PortfolioPage({params}: { params: Promise<{ username: string }> }) {
     const {username} = await params
     const user = await getUserByUsername(username)
