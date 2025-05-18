@@ -1,7 +1,7 @@
 "use client"
 
 import {Button} from "@/components/ui/button"
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
+import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
 import {Input} from "@/components/ui/input"
 import {ImageUploadField} from "@/features/fields/ImageUpload"
 import {zodResolver} from "@hookform/resolvers/zod"
@@ -13,6 +13,7 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {ArrowRightIcon, UserIcon, MusicIcon} from "lucide-react"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import {useState} from "react";
+import {Textarea} from "@/components/ui/textarea";
 
 const MAX_FILE_SIZE = 5000000
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
@@ -28,6 +29,17 @@ const formSchema = z.object({
             (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Formats acceptés: .jpg, .jpeg, .png et .webp",
         ),
+    bannerImage: z
+        .any()
+        .refine((file) => !file || file?.size <= MAX_FILE_SIZE, `La taille maximale est de 5MB.`)
+        .refine(
+            (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file?.type),
+            "Formats acceptés: .jpg, .jpeg, .png et .webp",
+        ),
+    bio: z.string().optional(),
+    website: z.string().optional(),
+    location: z.string().optional(),
+    username: z.string().optional(),
 })
 
 export default function OnBoardingForm({user}: { user: User }) {
@@ -38,6 +50,11 @@ export default function OnBoardingForm({user}: { user: User }) {
             lastname: user.lastname ?? "",
             role: user.role ?? "USER",
             image: null,
+            bannerImage: null,
+            bio: user.bio ?? "",
+            website: user.website ?? "",
+            location: user.location ?? "",
+            username: user.name ?? "",
         },
     })
 
@@ -70,6 +87,8 @@ export default function OnBoardingForm({user}: { user: User }) {
     }
 
     const role = form.watch("role")
+    const firstname = form.watch("firstname")
+    const lastname = form.watch("lastname")
 
     return (
         <Card className="w-full max-w-2xl">
@@ -82,7 +101,7 @@ export default function OnBoardingForm({user}: { user: User }) {
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                         <div>
                             <FormField render={() => (
-                                <ImageUploadField name={"image"} label={"Photo de profil"}/>
+                                <ImageUploadField name={"image"} label={"Photo de profil"} existingImage={user.image ?? undefined}/>
                             )} name={"image"} control={form.control}/>
 
                         </div>
@@ -108,6 +127,75 @@ export default function OnBoardingForm({user}: { user: User }) {
                                         <FormLabel>Nom</FormLabel>
                                         <FormControl>
                                             <Input placeholder="Nom" {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div>
+                            <FormField render={() => (
+                                <ImageUploadField name={"bannerImage"} label={"Bannière"} existingImage={user.bannerImage ?? undefined}/>
+                            )} name={"bannerImage"} control={form.control}/>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-6">
+                            <FormField
+                                control={form.control}
+                                name="username"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Nom d&apos;utilisateur</FormLabel>
+                                        <FormDescription>
+                                            Par défaut : {firstname.toLowerCase()}-{lastname.toLowerCase()}
+                                        </FormDescription>
+                                        <FormControl>
+                                            <Input placeholder="Nom d'utilisateur" {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="location"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Localisation</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Localisation" {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+                        <div>
+                            <FormField
+                                control={form.control}
+                                name="bio"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Bio</FormLabel>
+                                        <FormControl>
+                                            <Textarea placeholder="Bio" {...field} />
+                                        </FormControl>
+                                        <FormMessage/>
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <FormField
+                                control={form.control}
+                                name="website"
+                                render={({field}) => (
+                                    <FormItem>
+                                        <FormLabel>Site web</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Site web" {...field} />
                                         </FormControl>
                                         <FormMessage/>
                                     </FormItem>

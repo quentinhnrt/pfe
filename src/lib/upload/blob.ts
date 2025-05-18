@@ -9,7 +9,14 @@ interface UploadResult {
   source: "vercel" | "local";
 }
 
-export async function uploadImage(file: File): Promise<UploadResult> {
+export async function uploadImage(file: File): Promise<UploadResult|null> {
+  if (file === null) {
+    console.log("============================================================================================================================")
+    return null;
+  }
+
+  console.log("file", file);
+
   const extension = file.name.split(".").pop();
   const filename = `${randomUUID()}.${extension}`;
 
