@@ -28,6 +28,10 @@ model User {
   emailVerified Boolean
   role          Role           @default(USER)
   image         String?
+  bannerImage   String?
+  bio           String?
+  location      String?
+  website       String?
   onBoarded     Boolean        @default(false)
   createdAt     DateTime
   updatedAt     DateTime
