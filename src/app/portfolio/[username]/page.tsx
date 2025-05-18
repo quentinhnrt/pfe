@@ -1,4 +1,3 @@
-import { Prisma } from "@prisma/client"
 import {notFound} from "next/navigation";
 import {templates} from "@/lib/templates";
 import {getUserByUsername} from "@/lib/users";
