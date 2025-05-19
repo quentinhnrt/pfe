@@ -1,31 +1,46 @@
-import {templates} from "@/lib/templates";
-import {notFound, redirect} from "next/navigation";
-import {auth} from "@/lib/auth";
-import {headers} from "next/headers";
+import { headers } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 
-export default async function TemplatePage({params}: { params: Promise<{ slug: string }> }) {
-    const session = await auth.api.getSession({
-        headers: await headers(),
-    })
+import { auth } from "@/lib/auth";
+import { templates } from "@/lib/templates";
 
-    if (!session || !session.user || session.user.role !== "ARTIST") {
-        redirect("/")
-    }
+// export const metadata: Metadata = {
+//     title:
+//     description:
+//     openGraph: {
+//       title:
+//       description:
+//       images:
+//     },
+//   }
 
-    // @ts-expect-error it works
-    const {slug}: { slug: keyof typeof templates } = await params
+export default async function TemplatePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-    const Settings = templates[slug]?.settings.default
+  if (!session || !session.user || session.user.role !== "ARTIST") {
+    redirect("/");
+  }
 
-    if (!Settings) {
-        notFound()
-    }
+  // @ts-expect-error it works
+  const { slug }: { slug: keyof typeof templates } = await params;
 
-    return (
-        <div className={"max-w-7xl mx-auto"}>
-            <div className={"w-full"}>
-                <Settings/>
-            </div>
-        </div>
-    )
+  const Settings = templates[slug]?.settings.default;
+
+  if (!Settings) {
+    notFound();
+  }
+
+  return (
+    <div className={"max-w-7xl mx-auto"}>
+      <div className={"w-full"}>
+        <Settings />
+      </div>
+    </div>
+  );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { Toaster } from "@/components/ui/sonner";
+import TailwindIndicator from "@/components/utils/tailwind-indicator";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import posthog from "posthog-js";
@@ -27,8 +28,9 @@ export const Providers = ({ children }: PropsWithChildren) => {
     <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
       <PHProvider client={posthog}>
         <QueryClientProvider client={queryClient}>
-          <Toaster />
+          <Toaster position="top-right" />
           {children}
+          <TailwindIndicator />
         </QueryClientProvider>
       </PHProvider>
     </ThemeProvider>
