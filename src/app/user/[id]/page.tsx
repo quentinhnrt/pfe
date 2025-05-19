@@ -4,12 +4,15 @@ import FollowButton from "@/components/FollowButton";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { PostWithArtworksQuestionAndAnswers } from "@/features/post-card/PostCard";
 import PostCard from "@/features/post-card/PostCard";
-import { getCurrentUser, getUserById } from "@/lib/users";
+import { getCurrentUser, getUserById, UserFromApi } from "@/lib/users";
 import { motion } from "motion/react";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
-// Loading component for posts
+const POSTS_LOADING_COUNT = 3;
+const ANIMATION_DURATION = 0.3;
+const STAGGER_DELAY = 0.1;
+
 function PostsLoading() {
   return (
     <div
@@ -18,7 +21,7 @@ function PostsLoading() {
       aria-busy="true"
     >
       <p className="sr-only">Loading posts...</p>
-      {[1, 2, 3].map((i) => (
+      {Array.from({ length: POSTS_LOADING_COUNT }).map((_, i) => (
         <Skeleton
           key={`skeleton-${i}`}
           className="h-[200px] w-full rounded-lg"
@@ -29,40 +32,43 @@ function PostsLoading() {
   );
 }
 
-// Animated container for posts
+const containerAnimation = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: STAGGER_DELAY,
+    },
+  },
+};
+
+const itemAnimation = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0 },
+};
+
 function PostsContainer({
   posts,
 }: {
   posts?: PostWithArtworksQuestionAndAnswers[];
 }) {
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const item = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 },
-  };
-
   return (
     <motion.div
       className="space-y-8 max-w-7xl mx-auto"
-      variants={container}
+      variants={containerAnimation}
       initial="hidden"
       animate="show"
       aria-live="polite"
     >
-      {posts && posts.length > 0 ? (
+      {posts?.length ? (
         <>
           <h2 className="sr-only">User Posts</h2>
           {posts.map((post) => (
-            <motion.div key={`post-${post.id}`} variants={item} tabIndex={0}>
+            <motion.div
+              key={`post-${post.id}`}
+              variants={itemAnimation}
+              tabIndex={0}
+            >
               <PostCard post={post} />
             </motion.div>
           ))}
@@ -76,62 +82,87 @@ function PostsContainer({
   );
 }
 
-export default async function ProfilePage({
+export default function ProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = React.use(params);
 
-  // Try/catch block for error handling
-  try {
-    const userPromise = getUserById(id);
-    const currentUserPromise = getCurrentUser();
+  return (
+    <main aria-labelledby="profile-heading">
+      <Suspense fallback={<PostsLoading />}>
+        <ProfileContent id={id} />
+      </Suspense>
+    </main>
+  );
+}
 
-    // Await both promises to handle potential errors
-    const [user, currentUser] = await Promise.all([
-      userPromise,
-      currentUserPromise,
-    ]);
+function ProfileContent({ id }: { id: string }) {
+  const [user, setUser] = useState<UserFromApi | null>(null);
+  const [currentUser, setCurrentUser] = useState<UserFromApi | null>(null);
+  const [error, setError] = useState<Error | null>(null);
 
-    // Handle case where user is not found
-    if (!user) {
-      notFound();
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const [userData, currentUserData] = await Promise.all([
+          getUserById(id),
+          getCurrentUser(),
+        ]);
+
+        if (!userData) {
+          notFound();
+        }
+
+        setUser(userData);
+        setCurrentUser(currentUserData as UserFromApi);
+      } catch (err) {
+        console.error("Error loading profile:", err);
+        setError(
+          err instanceof Error ? err : new Error("Failed to load profile data")
+        );
+      }
     }
 
-    return (
-      <main aria-labelledby="profile-heading">
-        <section className="mb-8">
-          <header className="mb-6">
-            <h1 id="profile-heading" className="text-2xl font-bold mb-4">
-              {user.firstname}&apos;s Profile
-            </h1>
-            <p className="sr-only">Profile page for {user.firstname}</p>
-          </header>
+    loadData();
+  }, [id]);
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <FollowButton user={user} currentUser={currentUser ?? undefined} />
-          </motion.div>
-        </section>
-
-        <section aria-labelledby="user-posts-heading">
-          <h2 id="user-posts-heading" className="sr-only">
-            User Posts
-          </h2>
-          <Suspense fallback={<PostsLoading />}>
-            <PostsContainer posts={user.posts} />
-          </Suspense>
-        </section>
-      </main>
-    );
-  } catch (error) {
-    console.error("Error loading profile:", error);
-    throw new Error("Failed to load profile data");
+  if (error) {
+    throw error;
   }
+
+  if (!user) {
+    return <PostsLoading />;
+  }
+
+  return (
+    <>
+      <section className="mb-8">
+        <header className="mb-6">
+          <h1 id="profile-heading" className="text-2xl font-bold mb-4">
+            {user.firstname}&apos;s Profile
+          </h1>
+          <p className="sr-only">Profile page for {user.firstname}</p>
+        </header>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: ANIMATION_DURATION }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
+          <FollowButton user={user} currentUser={currentUser ?? undefined} />
+        </motion.div>
+      </section>
+
+      <section aria-labelledby="user-posts-heading">
+        <h2 id="user-posts-heading" className="sr-only">
+          User Posts
+        </h2>
+        <PostsContainer posts={user.posts} />
+      </section>
+    </>
+  );
 }
