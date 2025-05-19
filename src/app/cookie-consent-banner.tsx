@@ -107,14 +107,14 @@ export default function CookieConsentBanner() {
             <div className="mt-2 flex items-center gap-2 border-t p-3">
               <Button
                 onClick={handleAcceptCookies}
-                className="h-9 flex-1 rounded-full"
+                className="h-9 flex-1"
                 aria-label="Accept cookies"
               >
                 {t("accept")}
               </Button>
               <Button
                 onClick={handleDeclineCookies}
-                className="h-9 flex-1 rounded-full"
+                className="h-9 flex-1"
                 variant="outline"
                 aria-label="Decline cookies"
               >

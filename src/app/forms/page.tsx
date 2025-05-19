@@ -1,13 +1,24 @@
-import PostForm from "@/features/forms/PostForm";
-import { auth } from "@/lib/auth";
 import { Artwork } from "@prisma/client";
 import { Pen } from "lucide-react";
 import { headers } from "next/headers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import ArtworkForm from "@/features/forms/ArtworkForm";
 
-export default async function Forms() {
+import ArtworkForm from "@/features/forms/ArtworkForm";
+import PostForm from "@/features/forms/PostForm";
+import { auth } from "@/lib/auth";
+
+// export const metadata: Metadata = {
+//     title:
+//     description:
+//     openGraph: {
+//       title:
+//       description:
+//       images:
+//     },
+//   }
+
+export default async function FormsPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
