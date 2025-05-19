@@ -27,9 +27,9 @@ export async function POST(request: Request) {
       description: data.get("description") as string,
       isForSale,
       price: Number.isNaN(price) ? null : price,
-      thumbnail: image.url,
+      thumbnail: image?.url || "",
       userId: session.user.id,
-      sold: false
+      sold: false,
     },
   });
 
@@ -90,12 +90,12 @@ export async function PUT(request: Request) {
   if (data.has("image") && data.get("image") instanceof File) {
     const image = await uploadImage(data.get("image") as File);
 
-    dataObject.thumbnail = image.url;
+    dataObject.thumbnail = image?.url || "";
   }
 
-    if (data.has("sold")) {
-        dataObject.sold = data.get("sold") === "true";
-    }
+  if (data.has("sold")) {
+    dataObject.sold = data.get("sold") === "true";
+  }
 
   const updatedArtwork = await prisma.artwork.update({
     where: {
