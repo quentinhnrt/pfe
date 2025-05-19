@@ -38,7 +38,7 @@ export default async function OnBoardingPage() {
   return (
     <main className="flex min-h-screen flex-col">
       <div className="flex-1 flex">
-        <div className="hidden md:flex md:w-1/3 bg-muted relative">
+        <div className="hidden md:flex md:w-2/6 bg-muted relative">
           <Image
             src="/signin.jpg"
             alt="Image décorative représentant l'art"
@@ -53,7 +53,7 @@ export default async function OnBoardingPage() {
           </div>
         </div>
 
-        <div className="relative w-full md:w-2/3 flex items-center justify-center p-4 md:p-8">
+        <div className="relative w-full md:w-4/5 flex items-center justify-center p-4 md:p-8">
           <Link
             href="/"
             className="absolute top-4 left-3 flex items-center gap-2 z-50 text-sm leading-none font-medium p-2 hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded-md"

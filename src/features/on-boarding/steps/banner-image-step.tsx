@@ -1,5 +1,7 @@
-import { BannerImageCropper } from "@/components/utils/banner-image-cropper";
-import { type FileWithPreview } from "@/components/utils/image-cropper";
+import {
+  ImageCropper,
+  type FileWithPreview,
+} from "@/components/utils/image-cropper";
 import { type User } from "@prisma/client";
 import { ImageIcon } from "lucide-react";
 import Image from "next/image";
@@ -30,7 +32,6 @@ export function BannerImageStep({
   getBannerRootProps,
   getBannerInputProps,
   user,
-  form,
 }: BannerImageStepProps) {
   return (
     <div className="flex flex-col items-center">
@@ -42,12 +43,12 @@ export function BannerImageStep({
       />
 
       {bannerImage?.preview ? (
-        <BannerImageCropper
+        <ImageCropper
           dialogOpen={bannerImageDialogOpen}
           setDialogOpen={setBannerImageDialogOpen}
           selectedFile={bannerImage}
           setSelectedFile={setBannerImage}
-          form={form}
+          aspectRatio={16 / 4}
         />
       ) : user.bannerImage ? (
         <div className="w-full aspect-[4/1] overflow-hidden rounded-md">
