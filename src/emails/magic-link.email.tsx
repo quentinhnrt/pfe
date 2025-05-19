@@ -29,19 +29,19 @@ export const MagicLinkEmail = ({ url }: { url: string }) => {
                 alt="Artilink"
                 className="mx-auto my-0"
               />
-              <Text className="text-sm font-normal tracking-wider text-[#777777] uppercase">
+              <Text className="text-sm font-normal tracking-wider text-black uppercase">
                 Artilink
               </Text>
-              <Heading className="my-4 text-4xl leading-tight font-medium text-[#2b2426]">
+              <Heading className="my-4 text-4xl leading-tight font-medium text-black">
                 Your magic link
               </Heading>
-              <Text className="mb-8 text-lg leading-7 text-[#777777]">
+              <Text className="mb-8 text-base leading-7 text-[#777777]">
                 This link and code will only be valid for the next 5 minutes. If
                 you didn&apos;t request this, please ignore this email.
               </Text>
               <Link
                 href={url}
-                className="inline-flex items-center rounded-full bg-[#2b2426] px-12 py-4 text-center text-sm font-bold text-white no-underline"
+                className="inline-flex items-center rounded-lg bg-black px-10 py-3 text-center text-sm font-bold text-white no-underline"
               >
                 Click here to sign in
               </Link>
