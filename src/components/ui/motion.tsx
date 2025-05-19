@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { forwardRef, type ComponentProps, type ReactNode } from "react";
 
 export const fadeIn = {
@@ -51,7 +51,6 @@ export const popUp = {
   },
 };
 
-// Composants Motion réutilisables
 export const MotionDiv = motion.div;
 export const MotionButton = motion.button;
 export const MotionSpan = motion.span;
@@ -59,7 +58,6 @@ export const MotionUl = motion.ul;
 export const MotionLi = motion.li;
 export const MotionImg = motion.img;
 
-// Composant de carte avec animation
 interface MotionCardProps extends ComponentProps<typeof motion.div> {
   children: ReactNode;
   delay?: number;
@@ -84,7 +82,6 @@ export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps>(
 );
 MotionCard.displayName = "MotionCard";
 
-// Composant pour les animations de liste
 interface MotionListProps extends ComponentProps<typeof motion.div> {
   children: ReactNode;
 }
