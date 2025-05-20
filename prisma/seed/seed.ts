@@ -8,6 +8,7 @@ import users from "./data/users.json";
 
 async function main() {
   console.log("Seeding users...");
+  /**
   for (const user of users) {
     await prisma.user.create({
       data: {
@@ -88,6 +89,8 @@ async function main() {
       },
     });
   }
+
+  **/
 
   for (const template of templates) {
     await prisma.template.create({

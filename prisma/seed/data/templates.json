@@ -4,5 +4,11 @@
     "name": "Test Template",
     "description": "This is a test template",
     "slug": "test-template"
+  },
+  {
+    "id": 2,
+    "name": "Template Bento",
+    "description": "Template with a bento box layout",
+    "slug": "bento-template"
   }
 ]
