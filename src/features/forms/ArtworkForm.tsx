@@ -137,7 +137,7 @@ export default function ArtworkForm({onSuccess, onFailure, artwork, children}: P
             formData.append("artworkId", artwork.id.toString());
         }
 
-        const response = await fetch("/api/artwork", {
+        const response = await fetch("/api/artworks", {
             method: artwork ? "PUT" : "POST",
             body: formData,
         });
