@@ -1,66 +1,38 @@
-"use client";
+import type { Metadata } from "next";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ImageCropper } from "@/components/utils/image-cropper";
-import React from "react";
-import { FileWithPath, useDropzone } from "react-dropzone";
+// import { AnimatedLayout } from "@/components/layout/animated-layout";
+// import { ProfileHeader } from "@/components/profile/profile-header";
+// import { ProfileTabs } from "@/components/profile/profile-tabs";
 
-export type FileWithPreview = FileWithPath & {
-  preview: string;
+export const metadata: Metadata = {
+  title: "My Profile",
+  description: "Manage your profile",
 };
 
-const accept = {
-  "image/*": [],
-};
-
-export default function StaticPage() {
-  const [selectedFile, setSelectedFile] =
-    React.useState<FileWithPreview | null>(null);
-  const [isDialogOpen, setDialogOpen] = React.useState(false);
-
-  const onDrop = React.useCallback(
-    (acceptedFiles: FileWithPath[]) => {
-      const file = acceptedFiles[0];
-      if (!file) {
-        alert("Selected image is too large!");
-        return;
-      }
-
-      const fileWithPreview = Object.assign(file, {
-        preview: URL.createObjectURL(file),
-      });
-
-      setSelectedFile(fileWithPreview);
-      setDialogOpen(true);
-    },
-
-    []
-  );
-
-  const { getRootProps, getInputProps } = useDropzone({
-    onDrop,
-    accept,
-  });
+export default function ProfilePage() {
+  // Mock data for the profile
+  const profile = {
+    id: "1",
+    name: "Sophie Martin",
+    username: "sophieart",
+    avatar: "/female-artist-portrait.png",
+    coverImage: "/abstract-art-studio.png",
+    bio: "Abstract painter based in Paris, France. Exploring the intersection of color and emotion.",
+    specialty: "Abstract Painting",
+    location: "Paris, France",
+    website: "https://sophiemartin.art",
+    followers: 1245,
+    following: 328,
+    joined: "January 2023",
+  };
 
   return (
-    <div className="relative ">
-      {selectedFile ? (
-        <ImageCropper
-          dialogOpen={isDialogOpen}
-          setDialogOpen={setDialogOpen}
-          selectedFile={selectedFile}
-          setSelectedFile={setSelectedFile}
-        />
-      ) : (
-        <Avatar
-          {...getRootProps()}
-          className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200"
-        >
-          <input {...getInputProps()} />
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
-      )}
+    // <AnimatedLayout>
+    //   <ProfileHeader profile={profile} />
+    //   <ProfileTabs profile={profile} />
+    // </AnimatedLayout>
+    <div>
+      <h1>Static Page</h1>
     </div>
   );
 }

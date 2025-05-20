@@ -11,7 +11,6 @@ import ReactCrop, {
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,34 +20,47 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormValues } from "@/features/on-boarding/types";
+import { cn } from "@/lib/utils";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { UseFormReturn } from "react-hook-form";
+import Image from "next/image";
+import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
 export type FileWithPreview = FileWithPath & {
   preview: string;
 };
 
-interface ImageCropperProps {
+interface ImageCropperProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> {
   dialogOpen: boolean;
   setDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
   selectedFile: FileWithPreview | null;
   setSelectedFile: React.Dispatch<React.SetStateAction<FileWithPreview | null>>;
-  form?: UseFormReturn<FormValues>;
+  form?: UseFormReturn<TFieldValues>;
+  fieldName?: TName;
+  aspectRatio?: number;
 }
 
-export function ImageCropper({
+export function ImageCropper<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
   dialogOpen,
   setDialogOpen,
   selectedFile,
   setSelectedFile,
   form,
-}: ImageCropperProps) {
-  const aspect = 1;
+  fieldName,
+  aspectRatio,
+}: ImageCropperProps<TFieldValues, TName>) {
+  // Default to 1:1 aspect ratio if none provided
+  const aspect = aspectRatio !== undefined ? aspectRatio : 1;
   const imgRef = React.useRef<HTMLImageElement | null>(null);
   const [crop, setCrop] = React.useState<Crop>();
   const [croppedImageUrl, setCroppedImageUrl] = React.useState<string>("");
   const [croppedImage, setCroppedImage] = React.useState<string>("");
+  const scale = 1; // Fixed scale value since we removed the slider
 
   function onImageLoad(e: SyntheticEvent<HTMLImageElement>) {
     if (aspect) {
@@ -59,33 +71,49 @@ export function ImageCropper({
 
   function onCropComplete(crop: PixelCrop) {
     if (imgRef.current && crop.width && crop.height) {
-      const croppedImageUrl = getCroppedImg(imgRef.current, crop);
+      const croppedImageUrl = getCroppedImg(imgRef.current, crop, scale);
       setCroppedImageUrl(croppedImageUrl);
     }
   }
 
-  function getCroppedImg(image: HTMLImageElement, crop: PixelCrop): string {
+  function getCroppedImg(
+    image: HTMLImageElement,
+    crop: PixelCrop,
+    scale: number
+  ): string {
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
-    canvas.width = crop.width * scaleX;
-    canvas.height = crop.height * scaleY;
+    // Calculate scaled dimensions
+    const scaledWidth = crop.width * scaleX;
+    const scaledHeight = crop.height * scaleY;
+
+    canvas.width = scaledWidth;
+    canvas.height = scaledHeight;
 
     const ctx = canvas.getContext("2d");
 
     if (ctx) {
       ctx.imageSmoothingEnabled = false;
+
+      // Calculate the scaled crop coordinates
+      const sourceX = crop.x * scaleX;
+      const sourceY = crop.y * scaleY;
+      const sourceWidth = scaledWidth;
+      const sourceHeight = scaledHeight;
+
+      // Apply zoom/scale factor
       ctx.drawImage(
         image,
-        crop.x * scaleX,
-        crop.y * scaleY,
-        crop.width * scaleX,
-        crop.height * scaleY,
+        sourceX - (sourceWidth * (scale - 1)) / 2,
+        sourceY - (sourceHeight * (scale - 1)) / 2,
+        sourceWidth * scale,
+        sourceHeight * scale,
         0,
         0,
-        crop.width * scaleX,
-        crop.height * scaleY
+        scaledWidth,
+        scaledHeight
       );
     }
 
@@ -126,8 +154,8 @@ export function ImageCropper({
         setSelectedFile(croppedFileWithPreview);
 
         // Mettre à jour le formulaire si disponible
-        if (form) {
-          form.setValue("image", croppedFile);
+        if (form && fieldName) {
+          form.setValue(fieldName, croppedFile);
         }
       }
 
@@ -140,23 +168,26 @@ export function ImageCropper({
 
   useEffect(() => {
     // Mettre à jour le formulaire si l'image croppée change
-    if (croppedImage && selectedFile && form) {
+    if (croppedImage && selectedFile && form && fieldName) {
       const filename = selectedFile.name || "cropped-profile.png";
       const croppedFile = dataURLtoFile(croppedImage, filename);
-      form.setValue("image", croppedFile);
+      form.setValue(fieldName, croppedFile);
     }
-  }, [croppedImage, selectedFile, form]);
+  }, [croppedImage, selectedFile, form, fieldName]);
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger>
-        <Avatar className="size-36 cursor-pointer ring-offset-2 ring-2 ring-slate-200">
-          <AvatarImage
-            src={croppedImage || selectedFile?.preview}
-            alt="Profile preview"
-          />
-          <AvatarFallback>CN</AvatarFallback>
-        </Avatar>
+        <Image
+          src={croppedImage || selectedFile?.preview || ""}
+          alt="Profile preview"
+          width={144}
+          height={144}
+          className={cn(
+            "w-full h-full cursor-pointer ring-2 ring-slate-200 rounded-sm",
+            aspectRatio === 1 && "rounded-full"
+          )}
+        />
       </DialogTrigger>
       <DialogContent className="p-0 gap-0">
         <VisuallyHidden>
@@ -169,14 +200,18 @@ export function ImageCropper({
             onComplete={(c) => onCropComplete(c)}
             aspect={aspect}
             className="w-full"
+            circularCrop={false}
           >
             <div className="w-full h-full rounded-none">
-              <img
+              <Image
                 ref={imgRef}
                 className="w-full h-full rounded-none object-contain"
                 alt="Image cropper"
-                src={selectedFile?.preview}
+                src={selectedFile?.preview || ""}
+                width={1600}
+                height={1600}
                 onLoad={onImageLoad}
+                style={{ transform: `scale(${scale})` }}
               />
             </div>
           </ReactCrop>
