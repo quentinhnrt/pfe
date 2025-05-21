@@ -1,14 +1,12 @@
-import {getImageFormat, getTextColor, HexPalette} from "@/lib/images";
+import {HexPalette} from "@/lib/images";
 import {Artwork} from "@prisma/client";
 import Image from "next/image";
 
-export default async function BentoArtworkCard({artwork, colorPalette, className}: {
+export default async function BentoArtworkCard({artwork, className}: {
     artwork: Artwork,
     colorPalette: HexPalette,
     className?: string
 }) {
-    const randomColor = Object.values(colorPalette)[Math.floor(Math.random() * Object.values(colorPalette).length)];
-
     return (
         <div className={className + " overflow-hidden rounded-xl w-full h-full"}>
             <Image src={artwork.thumbnail} alt={artwork.title} width={800} height={800} className={"w-full h-full object-cover"} />
