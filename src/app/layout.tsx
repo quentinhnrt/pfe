@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Encode_Sans } from "next/font/google";
-
-import ActionButton from "@/components/ActionButton";
 import CookieConsentBanner from "./cookie-consent-banner";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -45,7 +43,6 @@ export default async function RootLayout({
           <Providers>
             <CookieConsentBanner />
             {children}
-            <ActionButton />
           </Providers>
         </NextIntlClientProvider>
       </body>

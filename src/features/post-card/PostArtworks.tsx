@@ -4,21 +4,22 @@ import Image from "next/image";
 type Props = {
   artworks: Artwork[];
 };
+
 export default function PostArtworks({ artworks }: Props) {
-  if (!artworks || artworks.length === 0) {
-    return null;
-  }
+  if (!artworks || artworks.length === 0) return null;
 
   return (
-    <div className={"grid grid-cols-3"}>
-      {artworks.map((artwork) => (
-        <Image
-          src={artwork.thumbnail}
-          alt={artwork.title}
-          width={100}
-          height={100}
-          key={"artwork-" + artwork.id}
-        />
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
+      {artworks.slice(0, 4).map((artwork) => (
+        <div key={`artwork-${artwork.id}`} className="aspect-square relative overflow-hidden rounded-lg shadow-md">
+          <Image
+            src={artwork.thumbnail}
+            alt={artwork.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        </div>
       ))}
     </div>
   );

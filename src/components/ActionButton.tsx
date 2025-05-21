@@ -1,19 +1,17 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import PostForm from "@/features/forms/PostForm";
-import { authClient } from "@/lib/auth-client";
-import { Palette, Plus, SquarePen } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import CollectionForm from "@/features/forms/CollectionForm";
 import ArtworkForm from "@/features/forms/ArtworkForm";
+import CollectionForm from "@/features/forms/CollectionForm";
 
 export default function ActionButton() {
   const [open, setOpen] = useState(false);
   const actionRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    const handleClick = (evt: MouseEvent) => {
+    function handleClick(evt: MouseEvent) {
       if (
         actionRef.current &&
         evt.target instanceof Node &&
@@ -21,86 +19,45 @@ export default function ActionButton() {
       ) {
         return;
       }
-
       setOpen(false);
-    };
-
+    }
     window.addEventListener("click", handleClick);
-
-    return () => {
-      window.removeEventListener("click", handleClick);
-    };
+    return () => window.removeEventListener("click", handleClick);
   }, []);
 
-  const { data: session } = authClient.useSession();
-
-  if (!session || !session.user || session.user.role !== "ARTIST") {
-    return;
-  }
-
   return (
-    <div ref={actionRef} className={"fixed right-12 bottom-12"}>
+    <div ref={actionRef} className="relative">
       <Button
         onClick={() => setOpen(!open)}
-        variant={"outline"}
-        className={
-          "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
-        }
+        className="bg-white text-black px-4 py-2 rounded-full hover:bg-white/80 transition-colors"
       >
-        <Plus
-          className={"w-5 text-black duration-500 " + (open ? "rotate-45" : "")}
-        />
+        Publier
       </Button>
 
-      <div
-        className={
-          "absolute -top-4 right-0 flex w-fit -translate-y-full flex-col items-end gap-4" +
-          (open ? " block" : " hidden")
-        }
-      >
-        <ArtworkForm>
-          <div className={"flex size-max cursor-pointer items-center gap-4"}>
-            <p>Créer une oeuvre</p>
-
-            <Button
-              variant={"outline"}
-              className={
-                "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
-              }
-            >
-              <Palette />
+      {open && (
+        <div
+          onClick={(e) => e.stopPropagation()} // <-- STOP PROPAGATION ICI
+          className="absolute right-0 mt-2 w-48 flex flex-col gap-2 rounded border border-gray-700 bg-black p-3 shadow-lg z-50"
+        >
+          <ArtworkForm>
+            <Button variant="ghost" className="w-full text-left">
+              Créer une oeuvre
             </Button>
-          </div>
-        </ArtworkForm>
-        <PostForm>
-          <div className={"flex size-max cursor-pointer items-center gap-4"}>
-            <p>Créer un post</p>
+          </ArtworkForm>
 
-            <Button
-              variant={"outline"}
-              className={
-                "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
-              }
-            >
-              <SquarePen />
+          <PostForm>
+            <Button variant="ghost" className="w-full text-left">
+              Créer un post
             </Button>
-          </div>
-        </PostForm>
-        <CollectionForm>
-          <div className={"flex size-max cursor-pointer items-center gap-4"}>
-            <p>Créer une collection</p>
+          </PostForm>
 
-            <Button
-                variant={"outline"}
-                className={
-                  "flex aspect-square h-12 cursor-pointer items-center justify-center rounded-full border-black/50 bg-white"
-                }
-            >
-              <SquarePen />
+          <CollectionForm>
+            <Button variant="ghost" className="w-full text-left">
+              Créer une collection
             </Button>
-          </div>
-        </CollectionForm>
-      </div>
+          </CollectionForm>
+        </div>
+      )}
     </div>
   );
 }

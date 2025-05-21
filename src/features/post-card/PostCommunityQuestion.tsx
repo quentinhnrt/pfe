@@ -48,15 +48,15 @@ export default function PostCommunityQuestion({ question }: Props) {
   }
 
   return (
-    <div className={"mt-4 rounded-lg bg-gray-100 p-4"}>
-      <h2 className={"text-lg font-semibold"}>
+    <div className={"mt-4 rounded-lg bg-gray-800 p-4"}>
+      <h2 className={"text-lg text-white font-semibold mb-4"}>
         {question.question} - {numberOfUserAnswers}
       </h2>
       <ul className={"list-none space-y-4"}>
         {question.answers.map((answer) => (
           <li
             key={"answer-" + answer.id}
-            className={"relative rounded bg-gray-200 p-2"}
+            className={"relative text-white rounded bg-gray-600 p-2"}
           >
             <button
               onClick={() => handleAnswerClick(answer)}
@@ -71,7 +71,7 @@ export default function PostCommunityQuestion({ question }: Props) {
                 {answer.content} ({answer.votes})
               </span>
               <div
-                className={"absolute top-0 left-0 z-0 h-full bg-gray-300"}
+                className={"absolute top-0 left-0 z-0 h-full bg-gray-600"}
                 style={{ width: getAnswerVotePercentage(answer) + "%" }}
               ></div>
             </button>
