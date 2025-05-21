@@ -30,10 +30,6 @@ export default async function PortfolioPage({
 
   return (
     <div>
-      <h1>Portfolio</h1>
-      <p>Portfolio of {username}</p>
-      <p>Active template: {templateId}</p>
-
       <Template data={activeTemplate.data} user={user} />
     </div>
   );
