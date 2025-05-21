@@ -1,0 +1,71 @@
+.__0 {
+    grid-area: a;
+}
+
+.__1 {
+    grid-area: b;
+}
+
+.__2 {
+    grid-area: c;
+}
+
+.__3 {
+    grid-area: d;
+}
+
+.__4 {
+    grid-area: e;
+}
+
+.__5 {
+    grid-area: f;
+}
+
+.__6 {
+    grid-area: g;
+}
+
+.__7 {
+    grid-area: h;
+}
+
+.__8 {
+    grid-area: i;
+}
+
+.__9 {
+    grid-area: j;
+}
+
+.__10 {
+    grid-area: k;
+}
+
+.__11 {
+    grid-area: l;
+}
+
+.__12 {
+    grid-area: m;
+}
+
+.__13 {
+    grid-area: n;
+}
+
+.__14 {
+    grid-area: o;
+}
+
+.bento1 {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-areas:
+    "a a a a a c c c d d"
+    "a a a a a c c c d d"
+    "e e f f f f g g g g"
+    "i i b b h h j j j j"
+    "i i b b h h j j j j";
+}

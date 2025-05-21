@@ -1,6 +1,6 @@
 import {Prisma} from "@prisma/client";
 
-type CollectionFromAPI = Prisma.CollectionGetPayload<{
+export type CollectionFromAPI = Prisma.CollectionGetPayload<{
     include: {
         artworks: true;
     };

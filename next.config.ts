@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
         hostname: "**.pixabay.com",
         protocol: "https",
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.jsdelivr.net',
+        pathname: '/gh/faker-js/assets-person-portrait/**',
+      },
+      {
+        hostname: "picsum.photos",
+        protocol: "https",
+      },
     ],
   },
   output: "standalone",
