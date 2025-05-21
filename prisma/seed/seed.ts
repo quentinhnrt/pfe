@@ -1,114 +1,112 @@
-import prisma from "@/lib/prisma";
-import { Role } from "@prisma/client";
-import answers from "./data/answers.json";
-import artworks from "./data/artworks.json";
-import posts from "./data/posts.json";
+import {faker} from '@faker-js/faker'
+import prisma from '@/lib/prisma'
 import templates from "./data/templates.json";
-import users from "./data/users.json";
+
 
 async function main() {
-  console.log("Seeding users...");
-  for (const user of users) {
-    await prisma.user.create({
-      data: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        image: user.image,
-        emailVerified: user.emailVerified,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-        role: user.role as Role,
-        onBoarded: user.onBoarded,
-      },
-    });
-  }
+    console.log('🌱 Starting seed...')
 
-  for (const artwork of artworks) {
-    await prisma.artwork.create({
-      data: {
-        title: artwork.title,
-        description: artwork.description,
-        thumbnail: artwork.thumbnail,
-        isForSale: artwork.isForSale,
-        price: artwork.price,
-        createdAt: artwork.createdAt,
-        updatedAt: artwork.updatedAt,
-        user: {
-          connect: {
-            id: artwork.userId,
-          },
-        },
-        sold: artwork.sold ?? false,
-      },
-    });
-  }
-
-  for (const post of posts) {
-    await prisma.post.create({
-      data: {
-        content: post.content,
-        createdAt: post.createdAt,
-        updatedAt: post.updatedAt,
-        artworks: {
-          connect:
-            post.artworks.map((artwork: { id: number }) => {
-              return {
-                id: artwork.id,
-              };
-            }) || [],
-        },
-        user: {
-          connect: {
-            id: post.userId,
-          },
-        },
-        question: {
-          connectOrCreate: {
-            where: {
-              id: post.question.id,
+    for (const template of templates) {
+        await prisma.template.create({
+            data: {
+                name: template.name,
+                slug: template.slug,
+                description: template.description,
             },
-            create: {
-              question: post.question.question,
-              id: post.question.id,
-            },
-          },
-        },
-      },
-    });
-  }
+        })
+    }
 
-  for (const answer of answers) {
-    await prisma.answer.create({
-      data: {
-        content: answer.content,
-        questionId: answer.questionId,
-      },
-    });
-  }
+    console.log(`📦 ${templates.length} templates importés.`)
 
-  for (const template of templates) {
-    await prisma.template.create({
-      data: {
-        id: template.id,
-        name: template.name,
-        description: template.description,
-        slug: template.slug,
-      },
-    });
-  }
+    // 2. Créer des utilisateurs
+    const users = await Promise.all(
+        Array.from({length: 10}).map(() =>
+            prisma.user.create({
+                data: {
+                    email: faker.internet.email(),
+                    firstname: faker.person.firstName(),
+                    lastname: faker.person.lastName(),
+                    name: faker.internet.username(),
+                    emailVerified: true,
+                    role: 'ARTIST',
+                    image: faker.image.personPortrait(),
+                    bannerImage: faker.image.urlPicsumPhotos(),
+                    bio: faker.lorem.sentence(),
+                    location: faker.location.city(),
+                    website: faker.internet.url(),
+                    onBoarded: true,
+                    createdAt: faker.date.past(),
+                    updatedAt: new Date(),
+                },
+            })
+        )
+    )
 
-  console.log("✅ Seeding done!");
+    for (const user of users) {
+        const artworks = await Promise.all(
+            Array.from({length: 20}).map(() => {
+                    const {width, height} = getRandomDimensions();
+                    return prisma.artwork.create({
+                        data: {
+                            userId: user.id,
+                            title: faker.lorem.words(3),
+                            description: faker.lorem.paragraph(),
+                            isForSale: faker.datatype.boolean(),
+                            price: faker.number.int({min: 10, max: 500}),
+                            sold: faker.datatype.boolean(),
+                            thumbnail: faker.image.urlPicsumPhotos({width, height, grayscale: false, blur: 0}),
+                        },
+                    })
+                }
+            )
+        )
+
+        for (let i = 0; i < 5; i++) {
+            const shuffled = faker.helpers.shuffle(artworks)
+            const selected = shuffled.slice(0, 5)
+
+            await prisma.collection.create({
+                data: {
+                    userId: user.id,
+                    title: faker.lorem.words(2),
+                    description: faker.lorem.sentences(2),
+                    artworks: {
+                        connect: selected.map((a) => ({id: a.id})),
+                    },
+                },
+            })
+        }
+    }
+
+    console.log('✅ Seed terminé avec succès.')
 }
 
+function getRandomDimensions(): { width: number; height: number } {
+    const type = faker.helpers.arrayElement(['square', 'portrait', 'landscape']);
+
+    // base size
+    const base = faker.number.int({min: 300, max: 800});
+
+    let width = base;
+    let height = base;
+
+    const ratio = faker.number.float({min: 1.2, max: 1.8});
+
+    if (type === 'portrait') {
+        height = Math.round(base * ratio);
+    } else if (type === 'landscape') {
+        width = Math.round(base * ratio);
+    }
+
+    return {width, height};
+}
+
+
 main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error("❌ Error while seeding:", e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+    .catch((e) => {
+        console.error('❌ Seed failed:', e)
+        process.exit(1)
+    })
+    .finally(async () => {
+        await prisma.$disconnect()
+    })

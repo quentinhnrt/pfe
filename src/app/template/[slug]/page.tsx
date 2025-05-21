@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
 import { templates } from "@/lib/templates";
+import {Template} from "@prisma/client";
 
 // export const metadata: Metadata = {
 //     title:
@@ -36,10 +37,18 @@ export default async function TemplatePage({
     notFound();
   }
 
+  const response = await fetch(process.env.BETTER_AUTH_URL + "/api/templates/" + slug);
+
+  if (response.status === 404) {
+    return notFound();
+  }
+
+  const template: Template = await response.json();
+
   return (
     <div className={"max-w-7xl mx-auto"}>
       <div className={"w-full"}>
-        <Settings />
+        <Settings templateId={template.id} />
       </div>
     </div>
   );
