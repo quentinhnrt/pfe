@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ProfileHeader } from "@/features/profile/profile-header";
+import { ProfileTabs } from "@/features/profile/profile-tabs";
 import { getCurrentUser, getUserById } from "@/lib/users";
 import { notFound } from "next/navigation";
 
@@ -46,7 +47,9 @@ export default async function ProfilePage({
 
   return (
     <div className="container mx-auto">
+      <code>{JSON.stringify(userData.posts)}</code>
       <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
+      <ProfileTabs profile={profile} posts={userData.posts} />
     </div>
   );
 }
