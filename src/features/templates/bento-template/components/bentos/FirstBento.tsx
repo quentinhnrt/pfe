@@ -1,6 +1,5 @@
 import {CollectionFromAPI} from "@/lib/collections";
 import {getTextColor, HexPalette} from "@/lib/images";
-import Image from "next/image";
 import BentoArtworkCard from "@/features/templates/bento-template/components/BentoArtworkCard";
 import styles from './styles.module.css';
 import {Artwork} from "@prisma/client";
