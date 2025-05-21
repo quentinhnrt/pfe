@@ -54,7 +54,7 @@ async function main() {
                             isForSale: faker.datatype.boolean(),
                             price: faker.number.int({min: 10, max: 500}),
                             sold: faker.datatype.boolean(),
-                            thumbnail: faker.image.urlPicsumPhotos({width, height, grayscale: false}),
+                            thumbnail: faker.image.urlPicsumPhotos({width, height, grayscale: false, blur: 0}),
                         },
                     })
                 }

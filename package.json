@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "prisma generate",
-    "dev": "npm i && prisma generate && next dev --turbopack",
+    "dev": "prisma generate && next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
