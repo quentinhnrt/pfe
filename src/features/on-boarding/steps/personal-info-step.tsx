@@ -61,6 +61,7 @@ export function PersonalInfoStep({
                     selectedFile={profileImage}
                     setSelectedFile={setProfileImage}
                     form={form}
+                    fieldName="image"
                     aspectRatio={1 / 1}
                   />
                 ) : user.image ? (

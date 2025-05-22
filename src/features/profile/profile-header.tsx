@@ -1,9 +1,10 @@
 import { Calendar, Globe, MapPin } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { memo } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import Image from "next/image";
 
 interface ProfileHeaderProps {
   profile: {
@@ -18,30 +19,33 @@ interface ProfileHeaderProps {
     followers: number;
     following: number;
     joined: string;
+    isFollowing?: boolean;
   };
   isOwnProfile?: boolean;
 }
 
-export function ProfileHeader({
+export const ProfileHeader = memo(function ProfileHeader({
   profile,
   isOwnProfile = false,
 }: ProfileHeaderProps) {
   return (
     <div className="mb-8">
       <div className="relative">
-        <div className="h-[250px] w-full overflow-hidden rounded-sm aspect-[8/4] md:aspect-[10/4] object-cover">
+        <div className="h-[250px] w-full overflow-hidden rounded-sm aspect-[8/4] md:aspect-[10/4]">
           <Image
-            src={profile.coverImage || "/banner-placeholder.svg"}
+            src={profile.coverImage}
             alt="Cover"
             width={1000}
             height={400}
+            priority
             className="h-full w-full object-cover"
+            sizes="100vw"
           />
         </div>
         <div className="absolute bottom-4 left-12 transform translate-y-1/2">
           <Avatar className="h-[150px] w-[150px] border-4 border-background">
             <AvatarImage
-              src={profile.avatar || "/avatar-placeholder.svg"}
+              src={profile.avatar}
               alt={profile.name}
               width={150}
               height={150}
@@ -51,9 +55,13 @@ export function ProfileHeader({
         </div>
         <div className="absolute bottom-2 right-4">
           {isOwnProfile ? (
-            <Button>Edit Profile</Button>
+            <Button asChild>
+              <Link href={`/settings/profile`}>Edit Profile</Link>
+            </Button>
           ) : (
-            <Button>Follow</Button>
+            <Button asChild>
+              <Link href={`/settings/profile`}>follow</Link>
+            </Button>
           )}
         </div>
       </div>
@@ -64,13 +72,15 @@ export function ProfileHeader({
           <p className="text-muted-foreground">@{profile.username}</p>
         </div>
 
-        <p className="mb-4">{profile.bio}</p>
+        {profile.bio && <p className="mb-4">{profile.bio}</p>}
 
         <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
-          <div className="flex items-center">
-            <MapPin className="mr-1 h-4 w-4" />
-            {profile.location}
-          </div>
+          {profile.location && (
+            <div className="flex items-center">
+              <MapPin className="mr-1 h-4 w-4" />
+              {profile.location}
+            </div>
+          )}
           {profile.website && (
             <div className="flex items-center">
               <Globe className="mr-1 h-4 w-4" />
@@ -91,14 +101,20 @@ export function ProfileHeader({
         </div>
 
         <div className="flex gap-4 text-sm">
-          <Link href="#" className="hover:underline">
+          <Link
+            href={`/user/${profile.id}/following`}
+            className="hover:underline"
+          >
             <span className="font-semibold">{profile.following}</span> following
           </Link>
-          <Link href="#" className="hover:underline">
+          <Link
+            href={`/user/${profile.id}/followers`}
+            className="hover:underline"
+          >
             <span className="font-semibold">{profile.followers}</span> followers
           </Link>
         </div>
       </div>
     </div>
   );
-}
+});

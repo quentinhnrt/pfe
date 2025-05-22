@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { ProfileHeader } from "@/features/profile/profile-header";
-import { ProfileTabs } from "@/features/profile/profile-tabs";
 import { getCurrentUser, getUserById } from "@/lib/users";
-import { notFound } from "next/navigation";
+import { formatDateToLocale } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "User Profile",
@@ -17,18 +17,23 @@ export default async function ProfilePage({
 }) {
   const { id } = params;
 
+  // Parallel data fetching for better performance
   const [userData, currentUserData] = await Promise.all([
-    getUserById(id),
-    getCurrentUser(),
+    getUserById(id).catch(() => null),
+    getCurrentUser().catch(() => null),
   ]);
 
   if (!userData) {
     notFound();
   }
 
+  const fullName = [userData.firstname, userData.lastname]
+    .filter(Boolean)
+    .join(" ");
+
   const profile = {
     id: userData.id,
-    name: `${userData.firstname} ${userData.lastname}`,
+    name: fullName || userData.name || "Anonymous User",
     username: userData.name || "",
     avatar: userData.image || "/avatar-placeholder.svg",
     coverImage: userData.bannerImage || "/banner-placeholder.svg",
@@ -37,7 +42,7 @@ export default async function ProfilePage({
     website: userData.website || "",
     followers: userData.followers?.length || 0,
     following: userData.following?.length || 0,
-    joined: new Date(userData.createdAt).toLocaleDateString("en-US", {
+    joined: formatDateToLocale(userData.createdAt, {
       month: "long",
       year: "numeric",
     }),
@@ -46,10 +51,9 @@ export default async function ProfilePage({
   const isOwnProfile = currentUserData?.id === userData.id;
 
   return (
-    <div className="container mx-auto">
-      <code>{JSON.stringify(userData.posts)}</code>
+    <main className="container mx-auto">
       <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
-      <ProfileTabs profile={profile} posts={userData.posts} />
-    </div>
+      {/* <ProfileTabs profile={profile} posts={userData.posts || []} /> */}
+    </main>
   );
 }
