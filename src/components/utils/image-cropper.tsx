@@ -155,7 +155,8 @@ export function ImageCropper<
 
         // Mettre à jour le formulaire si disponible
         if (form && fieldName) {
-          form.setValue(fieldName, croppedFile);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          form.setValue(fieldName, croppedFileWithPreview as any);
         }
       }
 
@@ -171,7 +172,12 @@ export function ImageCropper<
     if (croppedImage && selectedFile && form && fieldName) {
       const filename = selectedFile.name || "cropped-profile.png";
       const croppedFile = dataURLtoFile(croppedImage, filename);
-      form.setValue(fieldName, croppedFile);
+      const croppedFileWithPreview = Object.assign(croppedFile, {
+        preview: croppedImage,
+        path: selectedFile.path,
+      }) as FileWithPreview;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      form.setValue(fieldName, croppedFileWithPreview as any);
     }
   }, [croppedImage, selectedFile, form, fieldName]);
 
