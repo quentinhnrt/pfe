@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 export type UserFromApi = Prisma.UserGetPayload<{
   include: {
     posts: {
-      include: { artworks: true; question: { include: { answers: true } } };
+      include: { artworks: true; question: { include: { answers: true } }, user: true };
     };
     followers: true;
     following: true;

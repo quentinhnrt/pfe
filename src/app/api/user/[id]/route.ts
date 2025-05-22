@@ -41,6 +41,7 @@ export async function GET(
                             answers: true,
                         },
                     },
+                    user: true
                 },
             },
             followers: true,

@@ -23,7 +23,7 @@ import {
 import { cn } from "@/lib/utils";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import Image from "next/image";
-import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
+import {FieldPath, FieldValues, PathValue, UseFormReturn} from "react-hook-form";
 
 export type FileWithPreview = FileWithPath & {
   preview: string;
@@ -155,7 +155,7 @@ export function ImageCropper<
 
         // Mettre à jour le formulaire si disponible
         if (form && fieldName) {
-          form.setValue(fieldName, croppedFile);
+          form.setValue(fieldName, croppedFile as PathValue<TFieldValues, TName>);
         }
       }
 
@@ -171,7 +171,7 @@ export function ImageCropper<
     if (croppedImage && selectedFile && form && fieldName) {
       const filename = selectedFile.name || "cropped-profile.png";
       const croppedFile = dataURLtoFile(croppedImage, filename);
-      form.setValue(fieldName, croppedFile);
+      form.setValue(fieldName, croppedFile as PathValue<TFieldValues, TName>);
     }
   }, [croppedImage, selectedFile, form, fieldName]);
 

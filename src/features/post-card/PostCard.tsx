@@ -11,8 +11,16 @@ export type PostWithArtworksQuestionAndAnswers = Prisma.PostGetPayload<{
   };
 }>;
 
+export type PostInUserFromApi = Prisma.PostGetPayload<{
+    include: {
+        artworks: true;
+        question: { include: { answers: true } };
+        user: true
+    };
+}>
+
 type Props = {
-  post: PostWithArtworksQuestionAndAnswers;
+  post: PostWithArtworksQuestionAndAnswers|PostInUserFromApi;
 };
 
 export default function PostCard({ post }: Props) {
