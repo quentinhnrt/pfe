@@ -95,12 +95,33 @@ async function main() {
                 }
             })
 
-            await prisma.question.create({
+            const question = await prisma.question.create({
                 data: {
                     question: faker.lorem.sentence(),
                     postId: post.id,
                 }
             })
+            // Réponses proposées par l'auteur du post
+            const answerCount = faker.number.int({ min: 2, max: 4 })
+
+            for (let j = 0; j < answerCount; j++) {
+                // Sélectionner des utilisateurs qui vont voter (sauf l’auteur du post)
+                const voters = faker.helpers.arrayElements(
+                    users.filter(u => u.id !== user.id),
+                    faker.number.int({ min: 2, max: 6 })
+                )
+
+                await prisma.answer.create({
+                    data: {
+                        content: faker.lorem.sentence(),
+                        questionId: question.id,
+                        votes: voters.length,
+                        users: {
+                            connect: voters.map(v => ({ id: v.id })),
+                        },
+                    }
+                })
+            }
         }
     }
 
