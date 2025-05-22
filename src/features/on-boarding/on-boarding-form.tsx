@@ -227,7 +227,6 @@ export default function OnBoardingForm({ user }: { user: User }) {
     return isValid;
   };
 
-  // Marquer une étape comme validée
   const markStepAsValid = (stepIndex: number) => {
     if (!validSteps.includes(stepIndex)) {
       setValidSteps((prev) => [...prev, stepIndex]);
@@ -393,6 +392,7 @@ export default function OnBoardingForm({ user }: { user: User }) {
     currentStep,
     user.image,
     user.bannerImage,
+    markStepAsValid
   ]);
 
   return (

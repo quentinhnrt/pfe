@@ -71,7 +71,7 @@ export function TemplateContainer<TValues extends z.ZodTypeAny>({
         }
 
         setFormExistingData()
-    }, [session]);
+    }, [session, form, templateId]);
 
     const onSubmit = async (values: z.infer<TValues>) => {
         try {

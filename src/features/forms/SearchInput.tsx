@@ -36,13 +36,13 @@ export default function SearchInput({
   }, [debouncedValue, onSearch]);
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full w-40">
       <Input
         type="text"
         placeholder="Rechercher..."
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        className="w-full rounded border border-gray-300 p-2"
+        className="w-full h-12 rounded-full border border-white-300 bg-gray-300 p-2"
       />
     </div>
   );

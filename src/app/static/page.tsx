@@ -6,6 +6,8 @@ export const metadata: Metadata = {
 };
 
 export default function ProfilePage() {
+
+
   return (
     <div>
       <h1>Static Page</h1>
