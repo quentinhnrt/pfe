@@ -13,9 +13,9 @@ const nextConfig: NextConfig = {
         protocol: "https",
       },
       {
-        protocol: 'https',
-        hostname: 'cdn.jsdelivr.net',
-        pathname: '/gh/faker-js/assets-person-portrait/**',
+        protocol: "https",
+        hostname: "cdn.jsdelivr.net",
+        pathname: "/gh/faker-js/assets-person-portrait/**",
       },
       {
         hostname: "picsum.photos",
