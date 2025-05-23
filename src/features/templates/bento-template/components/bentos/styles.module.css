@@ -69,3 +69,14 @@
     "i i b b h h j j j j"
     "i i b b h h j j j j";
 }
+
+@media (max-width: 600px) {
+    .bento1 {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bentofiller {
+        display: none;
+    }
+}

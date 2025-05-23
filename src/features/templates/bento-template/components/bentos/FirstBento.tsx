@@ -16,7 +16,7 @@ export default function FirstBento({collection, colorPalette}: { collection: Col
 
     function BentoFiller({index}: {index: number, key: string}) {
         const realIndex = index + 1;
-        return <div className={( styles['__'+realIndex] ?? "" ) + " rounded-xl"} style={{backgroundColor: colorPalette.Muted}}/>
+        return <div className={( styles['__'+realIndex] ?? "" ) + " rounded-xl " + styles.bentofiller} style={{backgroundColor: colorPalette.Muted}}/>
     }
 
     function BentoChooseElement() {
@@ -55,13 +55,18 @@ export default function FirstBento({collection, colorPalette}: { collection: Col
             <div style={{
                 backgroundColor: colorPalette.Vibrant,
                 color: textColor,
-            }} className={styles.__0 + " overflow-hidden rounded-xl font-bold uppercase text-8xl p-8 min-h-[200px] h-full"}>
+            }} className={styles.__0 + " hidden lg:block overflow-hidden rounded-xl font-bold uppercase text-2xl lg:text-8xl p-8 lg:min-h-[200px] h-full"}>
                 {collection.title}
+            </div>
+
+            <div className={"lg:hidden"}>
+                <p className={"font-bold text-6xl mb-4"}>{collection.title}</p>
+                <p className={"mt-auto text-xl"}>{collection.description}</p>
             </div>
 
             {BentoChooseElement()}
 
-            <div className={styles.__9 + " overflow-hidden rounded-xl min-h-[200px] bg-gray-200 p-8"} style={{backgroundColor: colorPalette.LightMuted ?? "#cdcdcd"}}>
+            <div className={styles.__9 + " hidden lg:block overflow-hidden rounded-xl min-h-[200px] p-8"} style={{backgroundColor: colorPalette.LightMuted ?? "#cdcdcd"}}>
                 <p className={"mt-auto text-4xl"}>{collection.description}</p>
             </div>
 

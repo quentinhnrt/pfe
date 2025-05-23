@@ -177,6 +177,10 @@ body {
   font-style: 100%;
 }
 
+html, body {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
