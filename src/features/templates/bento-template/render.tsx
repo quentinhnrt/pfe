@@ -96,7 +96,6 @@ export default async function Render({data, user}: { user: UserFromApi, data: z.
                                 </div>
                             </div>
                         </div>
-                        {/* arrow to scroll */}
                         <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
                             <a href="#collections">
                                 <svg

@@ -70,7 +70,6 @@
     "i i b b h h j j j j";
 }
 
-/* on phone make it just the one below the others */
 @media (max-width: 600px) {
     .bento1 {
         display: flex;
