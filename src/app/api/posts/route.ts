@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
 type POST_PARAMS = {
   artworks: number[];
@@ -35,6 +35,63 @@ type CREATE_POST_QUERY = {
     };
   };
 };
+
+type GET_POST_QUERY = {
+    orderBy: {
+        createdAt: "desc";
+    };
+    include: {
+        artworks: true;
+        question: {
+        include: {
+            answers: true;
+        };
+        };
+    };
+    take: number;
+    skip: number;
+    where?: {
+        userId?: string;
+    };
+}
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const limit = searchParams.get("limit") || "10";
+  const page = searchParams.get("page") || "1";
+  const userId = searchParams.get("userId");
+
+  const query: GET_POST_QUERY = {
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      artworks: true,
+      question: {
+        include: {
+          answers: true,
+        },
+      },
+    },
+    take: Number(limit),
+    skip: (Number(page) - 1) * Number(limit),
+  }
+
+    if (userId) {
+        query.where = {
+        userId: userId,
+        };
+    }
+
+  const posts = await prisma.post.findMany(query)
+
+    return NextResponse.json(posts, {
+        status: 200,
+        headers: {
+        "Content-Type": "application/json",
+        },
+    });
+}
 
 export async function POST(request: Request) {
   try {
