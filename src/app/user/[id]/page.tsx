@@ -2,7 +2,7 @@
 
 import FollowButton from "@/components/FollowButton";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { PostWithArtworksQuestionAndAnswers } from "@/features/post-card/PostCard";
+import {PostInUserFromApi} from "@/features/post-card/PostCard";
 import PostCard from "@/features/post-card/PostCard";
 import { getCurrentUser, getUserById, UserFromApi } from "@/lib/users";
 import { motion } from "motion/react";
@@ -50,7 +50,7 @@ const itemAnimation = {
 function PostsContainer({
   posts,
 }: {
-  posts?: PostWithArtworksQuestionAndAnswers[];
+  posts?: PostInUserFromApi[];
 }) {
   return (
     <motion.div

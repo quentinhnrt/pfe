@@ -53,7 +53,7 @@ export function PersonalInfoStep({
               required
             />
             <div className="flex flex-col items-center">
-              <div className="mb-2 w-40 h-40">
+              <div className="mb-1 w-40 h-40">
                 {profileImage?.preview ? (
                   <ImageCropper
                     dialogOpen={profileImageDialogOpen}
@@ -61,6 +61,7 @@ export function PersonalInfoStep({
                     selectedFile={profileImage}
                     setSelectedFile={setProfileImage}
                     form={form}
+                    aspectRatio={1 / 1}
                   />
                 ) : user.image ? (
                   <Image

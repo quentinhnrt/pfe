@@ -17,7 +17,16 @@ export async function getPaletteFromCollection(collection: CollectionFromAPI): P
     if (collection.artworks.length === 0) {
         return {};
     }
-    const palette = await Vibrant.from(collection.artworks[0].thumbnail).getPalette();
+
+    let palette = null;
+
+    try {
+        palette = await Vibrant.from(collection.artworks[0].thumbnail).getPalette();
+    } catch (e) {
+        console.error("Error while getting palette from image:", e);
+        return {};
+    }
+
     const hexPalette: HexPalette = {};
 
     for (const type of Object.keys(palette) as PaletteType[]) {
@@ -46,16 +55,24 @@ export function pickBackgroundForTextCard(palette: HexPalette): string {
 }
 
 export function getTextColor(backgroundHex: string): "white" | "black" {
-    const { r, g, b } = hexToRgb(backgroundHex);
-    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-    return luminance > 0.5 ? "black" : "white";
+    backgroundHex = backgroundHex.replace("#", "");
+    const rgb = hexToRgb(backgroundHex);
+    const luminance = (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]) / 255;
+    return luminance > 0.8 ? "black" : "white";
 }
 
 export async function getImageFormat(
     url: string,
     tolerance: number = 0.05
 ): Promise<"portrait" | "landscape" | "square"> {
-    const res = await fetch(url);
+    let res
+    try {
+        res = await fetch(url);
+    } catch (e) {
+        console.error("Error while fetching image:", e);
+        return "square"
+    }
+
     const buffer = await res.arrayBuffer();
 
     const { width, height } = sizeOf(Buffer.from(buffer));

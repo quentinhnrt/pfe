@@ -3,14 +3,17 @@ import SearchInput from "@/features/forms/SearchInput";
 import { User } from "@prisma/client";
 import Link from "next/link";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function SearchArtist() {
-  const [artists, setArtists] = useState([]);
+  const [artists, setArtists] = useState<User[]>([]);
+  const [showAll, setShowAll] = useState(false);
 
   async function handleSearch(query: string) {
     if (query.length < 3) {
       if (artists.length > 0) {
         setArtists([]);
+        setShowAll(false);
       }
       return;
     }
@@ -21,25 +24,51 @@ export default function SearchArtist() {
     }
     const data = await response.json();
     setArtists(data);
+    setShowAll(false);
   }
+
+  const displayedArtists = showAll ? artists : artists.slice(0, 4);
 
   return (
     <div className="flex flex-col items-center">
-      <h1 className="mb-4 text-2xl font-bold">Rechercher un artiste</h1>
       <SearchInput onSearch={handleSearch} />
 
       {artists.length > 0 && (
-        <ul className="mt-4">
-          {artists.map((artist: User) => (
+        <div className="mt-4 flex items-center space-x-4 overflow-x-auto max-w-full">
+          {displayedArtists.map((artist: User) => (
             <Link
-              href={"/user/" + artist.id}
+              href={`/user/${artist.id}`}
               key={artist.id}
-              className="border-b p-2"
+              className="flex items-center gap-2 border-b border-transparent hover:border-white px-3 py-1 transition-colors whitespace-nowrap"
             >
-              {artist.firstname} {artist.lastname}
+              {artist.image ? (
+                <div className="w-8 h-8 rounded-full overflow-hidden">
+                  <Image
+                    src={artist.image}
+                    alt={artist.firstname ?? "Artiste"}
+                    width={32}
+                    height={32}
+                    className="object-cover w-full h-full"
+                  />
+                </div>
+              ) : (
+                <div className="w-8 h-8 flex items-center justify-center bg-gray-600 text-white text-xs rounded-full">
+                  {artist.firstname ? artist.firstname.charAt(0) : "?"}
+                </div>
+              )}
+              <span>{(artist.firstname ?? "") + " " + (artist.lastname ?? "")}</span>
             </Link>
           ))}
-        </ul>
+
+          {!showAll && artists.length > 4 && (
+            <button
+              onClick={() => setShowAll(true)}
+              className="text-sm underline text-blue-400 hover:text-blue-600 whitespace-nowrap"
+            >
+              Voir plus
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

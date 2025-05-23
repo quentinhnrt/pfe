@@ -1,5 +1,4 @@
 import { StepType } from "@/features/on-boarding/types";
-import { CheckIcon } from "lucide-react";
 
 interface StepIndicatorProps {
   steps: StepType[];
@@ -15,6 +14,10 @@ export function StepIndicator({
   validSteps = [],
 }: StepIndicatorProps) {
   const isStepValid = (stepIndex: number) => validSteps.includes(stepIndex);
+  const isStepAccessible = (stepIndex: number) => {
+    // Allow access to current step, past steps, and valid future steps
+    return stepIndex <= currentStep || isStepValid(stepIndex);
+  };
 
   return (
     <div className="mb-0">
@@ -23,14 +26,14 @@ export function StepIndicator({
           const isValid = isStepValid(index);
           const isCurrent = index === currentStep;
           const isPast = index < currentStep;
-          const isFuture = index > currentStep;
+          const isAccessible = isStepAccessible(index);
 
           return (
             <button
               key={index}
-              onClick={() => index <= currentStep && goToStep(index)}
+              onClick={() => isAccessible && goToStep(index)}
               className="flex flex-col items-center text-center w-1/4 group"
-              disabled={isFuture}
+              disabled={!isAccessible}
               aria-current={isCurrent ? "step" : undefined}
               type="button"
             >
@@ -39,26 +42,26 @@ export function StepIndicator({
                   flex items-center justify-center rounded-full w-12 h-12 mb-2
                   transition-colors duration-200
                   ${
-                    isValid
-                      ? "bg-green-600 text-white"
-                      : isCurrent
-                        ? "bg-primary text-primary-foreground"
+                    isCurrent
+                      ? "bg-primary text-primary-foreground"
+                      : isValid
+                        ? "bg-green-600 text-white"
                         : isPast
                           ? "bg-primary/20 text-primary"
                           : "bg-muted text-muted-foreground"
                   }
-                  ${!isFuture ? "cursor-pointer" : "cursor-not-allowed"}
+                  ${isAccessible ? "cursor-pointer" : "cursor-not-allowed"}
                 `}
                 aria-hidden="true"
               >
-                {isValid ? <CheckIcon className="w-6 h-6" /> : step.icon}
+                {step.icon}
               </div>
               <span
                 className={`font-medium text-xs mt-2 ${
-                  isValid
-                    ? "text-green-600"
-                    : isCurrent
-                      ? "text-primary font-semibold"
+                  isCurrent
+                    ? "text-primary font-semibold"
+                    : isValid
+                      ? "text-green-600"
                       : isPast
                         ? "text-primary/70"
                         : "text-muted-foreground"

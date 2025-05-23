@@ -21,6 +21,10 @@ const nextConfig: NextConfig = {
         hostname: "picsum.photos",
         protocol: "https",
       },
+      {
+        hostname: "avatars.githubusercontent.com",
+        protocol: "https",
+      },
     ],
   },
   output: "standalone",
