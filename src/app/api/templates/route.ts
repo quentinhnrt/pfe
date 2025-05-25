@@ -16,7 +16,7 @@ type PUT_TYPE = {
     userTemplateId: number;
 }
 
-export async function POST(request: Request) {
+export async function GET() {
     try {
         const session = await auth.api.getSession({
             headers: await headers(),
@@ -26,13 +26,60 @@ export async function POST(request: Request) {
             return NextResponse.json({error: "Not authorized"}, {status: 403});
         }
 
-        const {data, templateId, active}: POST_TYPE = await request.json();
+        const templates = await prisma.template.findMany({
+            include: {
+                user_template: {
+                    where: {
+                        userId: session.user.id,
+                    },
+                    select: {
+                        active: true,
+                        data: true,
+                    },
+                },
+            },
+        });
+
+        return NextResponse.json(templates, {status: 200});
+    } catch (error) {
+        console.error("Erreur dans GET /template", error);
+        return NextResponse.json(
+            {error: "Internal Server Error"},
+            {status: 500}
+        );
+    }
+}
+
+export async function POST(request: Request) {
+    try {
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        });
+
+        if (!session || !session.user || session.user.role !== "ARTIST") {
+            return NextResponse.json({ error: "Not authorized" }, { status: 403 });
+        }
+
+        const { data, templateId, active }: POST_TYPE = await request.json();
 
         if (!data || !templateId) {
             return NextResponse.json(
-                {error: "Missing data or templateId"},
-                {status: 400}
+                { error: "Missing data or templateId" },
+                { status: 400 }
             );
+        }
+
+        // 🔄 Si on active ce template, désactiver tous les autres
+        if (active) {
+            await prisma.userTemplate.updateMany({
+                where: {
+                    userId: session.user.id,
+                    active: true,
+                },
+                data: {
+                    active: false,
+                },
+            });
         }
 
         const newUserTemplate = await prisma.userTemplate.create({
@@ -49,13 +96,13 @@ export async function POST(request: Request) {
                 success: true,
                 userTemplateId: newUserTemplate.id,
             },
-            {status: 201}
+            { status: 201 }
         );
     } catch (error) {
         console.error("Erreur dans POST /template", error);
         return NextResponse.json(
-            {error: "Internal Server Error"},
-            {status: 500}
+            { error: "Internal Server Error" },
+            { status: 500 }
         );
     }
 }
@@ -67,15 +114,15 @@ export async function PUT(request: NextRequest) {
         });
 
         if (!session || !session.user || session.user.role !== "ARTIST") {
-            return NextResponse.json({error: "Not authorized"}, {status: 403});
+            return NextResponse.json({ error: "Not authorized" }, { status: 403 });
         }
 
-        const {data, templateId, active}: PUT_TYPE = await request.json();
+        const { data, templateId, active }: PUT_TYPE = await request.json();
 
         if (!data || !templateId) {
             return NextResponse.json(
-                {error: "Missing data or templateId"},
-                {status: 400}
+                { error: "Missing data or templateId" },
+                { status: 400 }
             );
         }
 
@@ -84,15 +131,30 @@ export async function PUT(request: NextRequest) {
                 userId_templateId: {
                     userId: session.user.id,
                     templateId: templateId,
-                }
+                },
             },
         });
 
         if (!existingUserTemplate) {
             return NextResponse.json(
-                {error: "User template not found"},
-                {status: 404}
+                { error: "User template not found" },
+                { status: 404 }
             );
+        }
+
+        if (active) {
+            await prisma.userTemplate.updateMany({
+                where: {
+                    userId: session.user.id,
+                    active: true,
+                    NOT: {
+                        id: existingUserTemplate.id,
+                    },
+                },
+                data: {
+                    active: false,
+                },
+            });
         }
 
         const updatedUserTemplate = await prisma.userTemplate.update({
@@ -110,13 +172,13 @@ export async function PUT(request: NextRequest) {
                 success: true,
                 userTemplateId: updatedUserTemplate.id,
             },
-            {status: 200}
+            { status: 200 }
         );
     } catch (error) {
         console.error("Erreur dans PUT /template", error);
         return NextResponse.json(
-            {error: "Internal Server Error"},
-            {status: 500}
+            { error: "Internal Server Error" },
+            { status: 500 }
         );
     }
 }
