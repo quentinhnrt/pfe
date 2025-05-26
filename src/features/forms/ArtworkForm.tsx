@@ -1,10 +1,8 @@
 "use client";
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
-    DialogClose,
     DialogContent,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
     DialogTrigger
@@ -17,22 +15,15 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import {Input} from "@/components/ui/input";
-import {Switch} from "@/components/ui/switch";
-import {Textarea} from "@/components/ui/textarea";
-import {ImageUploadField} from "@/features/fields/ImageUpload";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {Artwork} from "@prisma/client";
-import {useForm} from "react-hook-form";
-import {z} from "zod";
-import {useState} from "react";
-
-type Props = {
-    onSuccess?: (data: object) => void;
-    onFailure?: (data: object) => void;
-    artwork?: Artwork | null;
-    children?: React.ReactNode;
-};
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { ImageUploadField } from "@/features/fields/ImageUpload";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { useState } from "react";
+import { Loader2, X, Euro, ShoppingCart, CheckCircle } from "lucide-react";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -49,14 +40,14 @@ function isImageCorrect(image: File) {
     if (!size) {
         return {
             correct: false,
-            message: "Max image size is 5MB.",
+            message: "La taille maximale de l'image est de 5MB.",
         };
     }
 
     if (!format) {
         return {
             correct: false,
-            message: "Only .jpg, .jpeg, .png and .webp formats are supported.",
+            message: "Seuls les formats .jpg, .jpeg, .png et .webp sont supportés.",
         };
     }
 
@@ -66,97 +57,123 @@ function isImageCorrect(image: File) {
     };
 }
 
-export default function ArtworkForm({onSuccess, onFailure, artwork, children}: Props) {
+export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, children }: { onSuccess?: (data: object) => void; onFailure?: (data: object) => void; onArtworkCreated?: () => void; children?: React.ReactNode; }) {
     const [open, setOpen] = useState(false);
-    const formSchema = z
-        .object({
-            title: z.string().min(1).max(255),
-            description: z.string().optional(),
-            isForSale: z.boolean(),
-            price: z.string().optional(),
-            image: z.any().optional(),
-            sold: z.boolean().optional(),
-        })
-        .superRefine((data, ctx) => {
-            if (data.isForSale && (data.price === undefined || data.price === null)) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: "Le prix est requis lorsque l'œuvre est à vendre",
-                    path: ["price"],
-                });
-            }
+    const [isLoading, setIsLoading] = useState(false);
 
-            if (!artwork && !data.image) {
+    const formSchema = z.object({
+        title: z.string().min(1, "Le titre est requis").max(255, "Le titre ne peut pas dépasser 255 caractères"),
+        description: z.string().optional(),
+        isForSale: z.boolean(),
+        price: z.string().optional(),
+        image: z.any().optional(),
+        sold: z.boolean().optional(),
+    }).superRefine((data, ctx) => {
+        if (data.isForSale && (!data.price || data.price.trim() === "")) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Le prix est requis lorsque l'œuvre est à vendre",
+                path: ["price"],
+            });
+        }
+
+        if (!data.image) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "L'image est obligatoire",
+                path: ["image"],
+            });
+        }
+
+        if (data.image) {
+            const imageCorrect = isImageCorrect(data.image);
+            if (!imageCorrect.correct) {
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "L'image est obligatoire",
+                    message: imageCorrect.message,
                     path: ["image"],
                 });
             }
-
-            if (!artwork && data.image) {
-                const imageCorrect = isImageCorrect(data.image);
-
-                if (!imageCorrect.correct) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: imageCorrect.message,
-                        path: ["image"],
-                    });
-                }
-            }
-        });
+        }
+    });
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: artwork?.title ?? "",
-            description: artwork?.description ?? "",
-            isForSale: artwork?.isForSale ?? false,
+            title: "",
+            description: "",
+            isForSale: false,
             image: null,
-            price: artwork?.price?.toString() ?? undefined,
-            sold: false
+            price: "",
+            sold: false,
         },
     });
 
     async function onSubmit(values: z.infer<typeof formSchema>) {
-        const formData = new FormData();
+        setIsLoading(true);
 
-        for (const key in values) {
-            // @ts-expect-error it works
-            const value = values[key];
+        try {
+            const formData = new FormData();
 
-            if (artwork && (value === null || value === undefined)) {
-                continue;
+            for (const key in values) {
+                // @ts-expect-error it works
+                const value = values[key];
+                if (value === null || value === undefined) continue;
+                formData.append(key, value);
             }
 
-            formData.append(key, value);
-        }
+            const response = await fetch("/api/artworks", {
+                method: "POST",
+                body: formData,
+            });
 
-        if (artwork) {
-            formData.append("artworkId", artwork.id.toString());
-        }
+            const data = await response.json();
 
-        const response = await fetch("/api/artworks", {
-            method: artwork ? "PUT" : "POST",
-            body: formData,
-        });
+            if (!response.ok) {
+                if (onFailure) {
+                    onFailure(data);
+                }
+                return;
+            }
 
-        const data = await response.json();
+            if (onSuccess) {
+                onSuccess(data);
+            }
 
-        if (!response.ok) {
+            setOpen(false);
+            form.reset({
+                title: "",
+                description: "",
+                isForSale: false,
+                image: null,
+                price: "",
+                sold: false,
+            });
+
+            if (onArtworkCreated) {
+                onArtworkCreated();
+            }
+        } catch (error) {
+            console.error("Erreur lors de la création de l'œuvre:", error);
             if (onFailure) {
-                onFailure(data);
+                onFailure({ error: "Une erreur inattendue s'est produite" });
             }
-            return;
+        } finally {
+            setIsLoading(false);
         }
-
-        if (onSuccess) {
-            onSuccess(data);
-        }
-
-        setOpen(false);
     }
+
+    const handleCancel = () => {
+        setOpen(false);
+        form.reset({
+            title: "",
+            description: "",
+            isForSale: false,
+            image: null,
+            price: "",
+            sold: false,
+        });
+    };
 
     const isForSale = form.watch("isForSale");
 
@@ -164,118 +181,193 @@ export default function ArtworkForm({onSuccess, onFailure, artwork, children}: P
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children || (
-                    <Button className={"hover:cursor-pointer"}>Créer une oeuvre</Button>
+                    <Button className="bg-black text-white hover:bg-gray-800 border-0 transition-all duration-200 font-medium">
+                        Créer une œuvre
+                    </Button>
                 )}
             </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Créer une nouvelle oeuvre</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className={"space-y-8"}>
-                        <FormField
-                            control={form.control}
-                            name="image"
-                            render={() => (
-                                <FormItem>
-                                    <FormControl>
-                                        <ImageUploadField
-                                            name={"image"}
-                                            label={"Image"}
-                                            existingImage={artwork?.thumbnail}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="title"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Titre</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Titre" {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="description"
-                            render={({field}) => (
-                                <FormItem>
-                                    <FormLabel>Description</FormLabel>
-                                    <FormControl>
-                                        <Textarea placeholder={"Description"} {...field} />
-                                    </FormControl>
-                                    <FormMessage/>
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="isForSale"
-                            render={({field}) => (
-                                <FormItem
-                                    className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                                    <div className="space-y-0.5">
-                                        <FormLabel>Cette oeuvre est-elle à vendre ?</FormLabel>
-                                    </div>
-                                    <FormControl>
-                                        <Switch
-                                            checked={field.value}
-                                            onCheckedChange={field.onChange}
-                                        />
-                                    </FormControl>
-                                </FormItem>
-                            )}
-                        />
 
-                        {isForSale && (
+            <DialogContent className="!max-w-4xl max-h-[90vh] bg-white border-2 border-black shadow-2xl overflow-hidden flex flex-col">
+                <DialogHeader className="border-b border-gray-200 pb-4 flex-shrink-0">
+                    <DialogTitle className="text-black text-2xl font-bold">
+                        Créer une nouvelle œuvre
+                    </DialogTitle>
+                </DialogHeader>
+
+                <div className="flex-1 overflow-y-auto px-1">
+                    <Form {...form}>
+                        <div className="space-y-6 pt-4 pb-6">
                             <FormField
                                 control={form.control}
-                                name="price"
-                                render={({field}) => (
+                                name="image"
+                                render={() => (
                                     <FormItem>
-                                        <FormLabel>Prix</FormLabel>
+                                        <FormLabel className="text-black font-semibold text-base">
+                                            Image de l&apos;œuvre
+                                        </FormLabel>
                                         <FormControl>
-                                            <Input type={"number"} placeholder={"Prix"} {...field} />
+                                            <div className="border-2 border-gray-300 hover:border-black transition-colors duration-200 rounded-lg p-4 bg-gray-50">
+                                                <ImageUploadField
+                                                    name="image"
+                                                    label="Téléchargez une image de votre œuvre"
+                                                />
+                                            </div>
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage className="text-red-600 font-medium" />
                                     </FormItem>
                                 )}
                             />
-                        )}
 
-                        {isForSale && (
                             <FormField
                                 control={form.control}
-                                name="sold"
-                                render={({field}) => (
-                                    <FormItem
-                                        className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                                        <div className="space-y-0.5">
-                                            <FormLabel>Cette oeuvre est-elle vendue ?</FormLabel>
-                                        </div>
+                                name="title"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-black font-semibold text-base">
+                                            Titre de l&apos;œuvre
+                                        </FormLabel>
                                         <FormControl>
-                                            <Switch
-                                                checked={field.value}
-                                                onCheckedChange={field.onChange}
+                                            <Input 
+                                                placeholder="Donnez un titre à votre création" 
+                                                {...field} 
+                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200"
                                             />
                                         </FormControl>
+                                        <FormMessage className="text-red-600 font-medium" />
                                     </FormItem>
                                 )}
                             />
-                        )}
 
-                        <DialogFooter className="pt-4">
-                            <DialogClose>Annuler</DialogClose>
-                            <Button type="submit">{artwork ? "Modifier" : "Créer"}</Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-black font-semibold text-base">
+                                            Description (optionnelle)
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Textarea 
+                                                placeholder="Décrivez votre œuvre, sa technique, son inspiration..." 
+                                                {...field} 
+                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 min-h-[100px] resize-none"
+                                            />
+                                        </FormControl>
+                                        <FormMessage className="text-red-600 font-medium" />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
+                                    <ShoppingCart className="w-5 h-5 mr-2" />
+                                    Informations de vente
+                                </h3>
+
+                                <FormField
+                                    control={form.control}
+                                    name="isForSale"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border-2 border-gray-300 p-4 shadow-sm bg-white hover:border-black transition-colors duration-200 mb-4">
+                                            <div className="space-y-0.5">
+                                                <FormLabel className="text-black font-semibold text-base">
+                                                    Cette œuvre est-elle à vendre ?
+                                                </FormLabel>
+                                            </div>
+                                            <FormControl>
+                                                <Switch
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                    className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-300"
+                                                />
+                                            </FormControl>
+                                        </FormItem>
+                                    )}
+                                />
+
+                                {isForSale && (
+                                    <div className="space-y-4 animate-in slide-in-from-top-2 duration-200">
+                                        <FormField
+                                            control={form.control}
+                                            name="price"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel className="text-black font-semibold text-base flex items-center">
+                                                        <Euro className="w-4 h-4 mr-2" />
+                                                        Prix de vente
+                                                    </FormLabel>
+                                                    <FormControl>
+                                                        <div className="relative">
+                                                            <Input 
+                                                                type="number" 
+                                                                placeholder="0" 
+                                                                {...field} 
+                                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 pl-8"
+                                                            />
+                                                            <Euro className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
+                                                        </div>
+                                                    </FormControl>
+                                                    <FormMessage className="text-red-600 font-medium" />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="sold"
+                                            render={({ field }) => (
+                                                <FormItem className="flex flex-row items-center justify-between rounded-lg border-2 border-gray-300 p-4 shadow-sm bg-white hover:border-black transition-colors duration-200">
+                                                    <div className="space-y-0.5">
+                                                        <FormLabel className="text-black font-semibold text-base flex items-center">
+                                                            <CheckCircle className="w-4 h-4 mr-2" />
+                                                            Cette œuvre est-elle vendue ?
+                                                        </FormLabel>
+                                                    </div>
+                                                    <FormControl>
+                                                        <Switch
+                                                            checked={field.value}
+                                                            onCheckedChange={field.onChange}
+                                                            className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-300"
+                                                        />
+                                                    </FormControl>
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </Form>
+                </div>
+
+                <div className="flex-shrink-0 border-t border-gray-200 pt-4 bg-white">
+                    <div className="flex justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleCancel}
+                            disabled={isLoading}
+                            className="border-2 border-gray-300 text-black hover:bg-gray-100 hover:border-black transition-all duration-200"
+                        >
+                            <X className="w-4 h-4 mr-2" />
+                            Annuler
+                        </Button>
+                        <Button
+                            onClick={form.handleSubmit(onSubmit)}
+                            disabled={isLoading}
+                            className="bg-black text-white hover:bg-gray-800 active:bg-gray-900 disabled:bg-gray-400 transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                    Création...
+                                </>
+                            ) : (
+                                "Créer"
+                            )}
+                        </Button>
+                    </div>
+                </div>
             </DialogContent>
         </Dialog>
     );
