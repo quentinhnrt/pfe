@@ -107,16 +107,16 @@ export function TemplateContainer<TShape extends ZodRawShape>({
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-                <Card className="p-8 shadow-lg border border-gray-200 bg-white">
+            <div className="flex items-center justify-center">
+                <Card className="p-8 shadow-lg ">
                     <div className="flex flex-col items-center space-y-4">
                         <div className="relative">
                             <Loader2 className="w-8 h-8 text-gray-700 animate-spin" />
                             <div className="absolute inset-0 w-8 h-8 border-2 border-gray-300 rounded-full animate-pulse" />
                         </div>
                         <div className="text-center space-y-2">
-                            <h3 className="text-lg font-semibold text-gray-900">Loading Template</h3>
-                            <p className="text-sm text-gray-600">Please wait while we load your settings...</p>
+                            <h3 className="text-lg font-semibold ">Loading Template</h3>
+                            <p className="text-sm ">Please wait while we load your settings...</p>
                         </div>
                     </div>
                 </Card>
@@ -126,16 +126,16 @@ export function TemplateContainer<TShape extends ZodRawShape>({
 
     if (showSuccess) {
         return (
-            <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
-                <Card className="p-8 shadow-lg border border-gray-200 bg-white">
+            <div className="flex items-center justify-center">
+                <Card className="p-8 shadow-lg">
                     <div className="flex flex-col items-center space-y-4">
                         <div className="relative">
                             <CheckCircle className="w-12 h-12 text-green-500" />
                             <div className="absolute inset-0 w-12 h-12 border-2 border-gray-300 rounded-full animate-ping" />
                         </div>
                         <div className="text-center space-y-2">
-                            <h3 className="text-xl font-semibold text-gray-900">Settings Saved!</h3>
-                            <p className="text-sm text-gray-600">Redirecting to your portfolio...</p>
+                            <h3 className="text-xl font-semibold ">Settings Saved!</h3>
+                            <p className="text-sm ">Redirecting...</p>
                         </div>
                     </div>
                 </Card>
@@ -149,7 +149,7 @@ export function TemplateContainer<TShape extends ZodRawShape>({
                 {children}
 
                 {/* Template Status Card */}
-                <Card className="shadow-lg border border-gray-200 bg-white overflow-hidden">
+                <Card className="shadow-lg overflow-hidden">
                     <CardContent className="p-6">
                         <FormField
                             control={form.control}
@@ -160,17 +160,17 @@ export function TemplateContainer<TShape extends ZodRawShape>({
                                         <div className="space-y-2">
                                             <div className="flex items-center gap-3">
                                                 {isActive ? (
-                                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                                    <div className="p-2 rounded-lg">
                                                         <Eye className="w-5 h-5 text-green-600" />
                                                     </div>
                                                 ) : (
-                                                    <div className="p-2 bg-gray-100 rounded-lg">
+                                                    <div className="p-2  rounded-lg">
                                                         <EyeOff className="w-5 h-5 text-gray-600" />
                                                     </div>
                                                 )}
                                                 <div>
-                                                    <FormLabel className="text-lg font-semibold text-gray-900">Template Status</FormLabel>
-                                                    <FormDescription className="text-sm text-gray-600 mt-1">
+                                                    <FormLabel className="text-lg font-semibold ">Template Status</FormLabel>
+                                                    <FormDescription className="text-sm  mt-1">
                                                         {isActive
                                                             ? "Your template is currently active and visible to visitors"
                                                             : "Your template is currently disabled and hidden from visitors"}
@@ -181,16 +181,13 @@ export function TemplateContainer<TShape extends ZodRawShape>({
                                         <FormControl>
                                             <div className="flex items-center space-x-3">
                         <span
-                            className={`text-sm font-medium transition-colors ${
-                                isActive ? "text-gray-900" : "text-gray-500"
-                            }`}
+                            className={`text-sm font-medium`}
                         >
                           {isActive ? "Active" : "Inactive"}
                         </span>
                                                 <Switch
                                                     checked={field.value as boolean}
                                                     onCheckedChange={field.onChange}
-                                                    className="data-[state=checked]:bg-gray-900"
                                                 />
                                             </div>
                                         </FormControl>
@@ -206,7 +203,7 @@ export function TemplateContainer<TShape extends ZodRawShape>({
                     <Button
                         type="submit"
                         disabled={isSubmitting}
-                        className="min-w-[140px] h-12 text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200 bg-gray-900 hover:bg-gray-800 text-white"
+                        className="min-w-[140px] h-12 text-base font-medium"
                     >
                         {isSubmitting ? (
                             <div className="flex items-center gap-2">

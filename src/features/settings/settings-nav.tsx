@@ -1,6 +1,6 @@
 "use client";
 
-import { Cog, ImageIcon, User } from "lucide-react";
+import {Cog, ImageIcon, PaletteIcon, User} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -22,6 +22,11 @@ const settingsLinks = [
     label: "Account",
     icon: Cog,
   },
+  {
+    href: "/settings/portfolio",
+    label: "Portfolio",
+    icon: PaletteIcon
+  }
 ];
 
 export function SettingsNav() {
