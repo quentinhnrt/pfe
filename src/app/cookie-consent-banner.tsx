@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { CookieIcon } from "lucide-react";

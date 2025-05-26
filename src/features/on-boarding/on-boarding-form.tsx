@@ -9,7 +9,7 @@ import { useDropzone } from "react-dropzone";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { Form } from "@/components/ui/form";
+import { Form } from "@/components/ui/shadcn/form";
 import { type FileWithPreview } from "@/components/utils/image-cropper";
 
 import { NavButtons } from "@/features/on-boarding/nav-buttons";
@@ -392,7 +392,7 @@ export default function OnBoardingForm({ user }: { user: User }) {
     currentStep,
     user.image,
     user.bannerImage,
-    markStepAsValid
+    markStepAsValid,
   ]);
 
   return (

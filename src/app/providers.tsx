@@ -1,6 +1,6 @@
 "use client";
 
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/shadcn/sonner";
 import TailwindIndicator from "@/components/utils/tailwind-indicator";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import PostForm from "@/features/forms/PostForm";
+import { Button } from "@/components/ui/shadcn/button";
 import ArtworkForm from "@/features/forms/ArtworkForm";
 import CollectionForm from "@/features/forms/CollectionForm";
+import PostForm from "@/features/forms/PostForm";
+import { useEffect, useRef, useState } from "react";
 
 export default function ActionButton() {
   const [open, setOpen] = useState(false);

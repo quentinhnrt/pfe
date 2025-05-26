@@ -1,12 +1,12 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/shadcn/dialog";
 import {
   Form,
   FormControl,
@@ -14,10 +14,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/shadcn/form";
+import { Input } from "@/components/ui/shadcn/input";
+import { Switch } from "@/components/ui/shadcn/switch";
+import { Textarea } from "@/components/ui/shadcn/textarea";
 import { ArtworkGallerySelector } from "@/features/fields/ArtworkGallerySelector";
 import Repeater from "@/features/fields/Repeater";
 import { zodResolver } from "@hookform/resolvers/zod";

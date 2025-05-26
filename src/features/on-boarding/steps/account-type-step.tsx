@@ -4,8 +4,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+} from "@/components/ui/shadcn/form";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/shadcn/radio-group";
 import { MusicIcon, UserIcon } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { FormValues } from "../types";

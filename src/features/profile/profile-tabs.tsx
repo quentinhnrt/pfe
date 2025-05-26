@@ -1,7 +1,12 @@
 "use client";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/shadcn/alert";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/shadcn/tabs";
 import { AlertCircle } from "lucide-react";
 import React, {
   useCallback,
@@ -267,9 +272,9 @@ const createInitialState = (): DataState => ({
   initialized: {} as Record<TabKey, boolean>,
 });
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/shadcn/button";
+import { Card, CardContent } from "@/components/ui/shadcn/card";
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 const ErrorState: React.FC<{
   error: ApiError | null;
@@ -522,15 +527,19 @@ const PostCard: React.FC<{
 
 PostCard.displayName = "PostCard";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/shadcn/avatar";
+import { Badge } from "@/components/ui/shadcn/badge";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from "@/components/ui/shadcn/dialog";
+import { ScrollArea } from "@/components/ui/shadcn/scroll-area";
 
 const ArtworkDialog: React.FC<{
   artwork: Artwork;

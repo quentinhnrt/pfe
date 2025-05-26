@@ -11,7 +11,7 @@ import ReactCrop, {
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Dialog,
   DialogClose,
@@ -19,7 +19,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
+} from "@/components/ui/shadcn/dialog";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";

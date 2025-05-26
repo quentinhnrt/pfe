@@ -3,8 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/shadcn/avatar";
+import { Button } from "@/components/ui/shadcn/button";
 
 interface ProfileHeaderProps {
   profile: {

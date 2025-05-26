@@ -1,6 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/shadcn/input";
 import { useEffect, useState } from "react";
 
 type SearchInputProps = {

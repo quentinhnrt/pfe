@@ -3,10 +3,10 @@
 import { AlertCircleIcon, CheckCircleIcon } from "lucide-react";
 import { useState } from "react";
 
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/shadcn/alert";
+import { Button } from "@/components/ui/shadcn/button";
+import { Input } from "@/components/ui/shadcn/input";
+import { Label } from "@/components/ui/shadcn/label";
 import { authClient } from "@/lib/auth-client";
 import { redirect } from "next/navigation";
 
