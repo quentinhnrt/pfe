@@ -40,7 +40,6 @@ export function CollectionSelector({
                                    }: CollectionSelectorProps) {
     const { control, setValue, watch } = useFormContext()
     const selectedIds: number[] = watch(name, initialSelectedIds) || []
-
     const [collections, setCollections] = useState<Collection[]>([])
     const [loading, setLoading] = useState(true)
     const [searchTerm, setSearchTerm] = useState("")
@@ -48,7 +47,7 @@ export function CollectionSelector({
     const [page, setPage] = useState(0)
     const [hasMore, setHasMore] = useState(true)
 
-    // Debounce la recherche
+
     useEffect(() => {
         const timeout = setTimeout(() => {
             setDebouncedSearchTerm(searchTerm)
@@ -71,10 +70,7 @@ export function CollectionSelector({
             const searchParams = new URLSearchParams(params)
             const response = await fetch("/api/me/collections?" + searchParams.toString())
             const data = await response.json()
-
             const newCollections = [...data.initialCollections, ...data.collections]
-
-            // Supprimer les doublons
             const uniqueMap = new Map<number, Collection>()
             const all = [...(page === 0 ? [] : collections), ...newCollections]
             all.forEach((col) => uniqueMap.set(col.id, col))

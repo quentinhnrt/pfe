@@ -1,5 +1,7 @@
+"use client";
 import React, { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { Trash2 } from "lucide-react";
 
 type ValueType = object | number | string | (object | number | string)[];
 
@@ -13,6 +15,7 @@ interface FormRepeaterProps<T> {
   onAdd?: () => void;
   onRemove?: (index: number) => void;
   name: string;
+  addButtonRenderer?: (props: { onAdd: () => void }) => React.ReactNode;
 }
 
 export default function Repeater<T>({
@@ -21,6 +24,7 @@ export default function Repeater<T>({
   onAdd,
   onRemove,
   name,
+  addButtonRenderer,
 }: FormRepeaterProps<T>) {
   const [items, setItems] = useState<T[]>([initialValues]);
   const { control, setValue } = useFormContext();
@@ -52,30 +56,39 @@ export default function Repeater<T>({
       render={() => (
         <>
           {items.map((item, index) => (
-            <div key={index} className="mb-4 rounded-lg border p-4 shadow-sm">
-              <div>
-                {renderFields(item, index, (i, name, value) =>
-                  handleChange(i, name, value)
+            <div
+              key={index}
+              className="mb-4 rounded-lg border p-4 shadow-sm flex items-start justify-between"
+            >
+              <div className="flex-1">
+                {renderFields(item, index, (i, fieldName, value) =>
+                  handleChange(i, fieldName, value)
                 )}
               </div>
               {items.length > 1 && (
                 <button
                   type="button"
                   onClick={() => handleRemove(index)}
-                  className="mt-2 text-sm text-red-600"
+                  className="ml-4 mt-1 text-red-600 hover:text-red-800"
+                  aria-label="Supprimer la réponse"
                 >
-                  Remove
+                  <Trash2 className="w-6 h-6" />
                 </button>
               )}
             </div>
           ))}
-          <button
-            type="button"
-            onClick={handleAdd}
-            className="mt-2 rounded-md bg-indigo-500 px-4 py-2 text-white hover:bg-indigo-600"
-          >
-            Add More
-          </button>
+
+          {addButtonRenderer ? (
+            addButtonRenderer({ onAdd: handleAdd })
+          ) : (
+            <button
+              type="button"
+              onClick={handleAdd}
+              className="mt-2 rounded-md px-4 py-2 text-white bg-black border hover:bg-gray-900 w-full"
+            >
+              Ajouter une entrée
+            </button>
+          )}
         </>
       )}
     />

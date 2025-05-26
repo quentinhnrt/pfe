@@ -8,18 +8,16 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { Search, Loader2 } from "lucide-react";  // <--- Loader2 ajouté ici
 
 interface Artwork {
   id: number;
@@ -50,7 +48,6 @@ export function ArtworkGallerySelector({
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
 
-  // Debounce
   useEffect(() => {
     const timeout = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
@@ -62,45 +59,31 @@ export function ArtworkGallerySelector({
   useEffect(() => {
     const fetchArtworks = async () => {
       setLoading(true);
-
-      const params = {
-        perPage: "20",
+      const params = new URLSearchParams({
+        perPage: "5",
         page: page.toString(),
-        artworks: initialSelectedIds.join(),
         title: debouncedSearchTerm,
-      };
-
-      const searchParams = new URLSearchParams(params);
-      const response = await fetch(
-        "/api/me/artworks?" + searchParams.toString()
-      );
-      const data = await response.json();
-
-      const newArtworks = [...data.initialArtworks, ...data.artworks];
-
-      // Remove duplicates by ID
-      const uniqueMap = new Map<number, Artwork>();
-      const allArtworks = [...(page === 0 ? [] : artworks), ...newArtworks];
-      allArtworks.forEach((art) => uniqueMap.set(art.id, art));
-
-      // Move selected artworks to the top
-      const sorted = Array.from(uniqueMap.values()).sort((a, b) => {
-        const aSelected = selectedIds.includes(a.id) ? 0 : 1;
-        const bSelected = selectedIds.includes(b.id) ? 0 : 1;
-        return aSelected - bSelected;
       });
 
-      setArtworks(sorted);
-      setHasMore(data.artworks.length > 0);
+      const response = await fetch("/api/me/artworks?" + params.toString());
+      const data = await response.json();
+
+      const fetchedArtworks = data.artworks as Artwork[];
+
+      if (page === 0) {
+        setArtworks(fetchedArtworks);
+      } else {
+        setArtworks((prev) => [...prev, ...fetchedArtworks]);
+      }
+
+      setHasMore(fetchedArtworks.length === 5);
       setLoading(false);
     };
 
     fetchArtworks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debouncedSearchTerm, page]);
 
-  // @ts-expect-error TODO: fix param e type
-  const loadMore = (e) => {
+  const loadMore = (e: React.MouseEvent) => {
     e.preventDefault();
     setPage((prev) => prev + 1);
   };
@@ -110,10 +93,7 @@ export function ArtworkGallerySelector({
       ? selectedIds.filter((i) => i !== id)
       : [...selectedIds, id];
     setValue(name, updated);
-
-    if (onChange) {
-      onChange(updated);
-    }
+    onChange?.(updated);
   };
 
   return (
@@ -124,35 +104,35 @@ export function ArtworkGallerySelector({
         <FormItem>
           <FormLabel className="flex items-center justify-between">
             {label}
-            <Input
-              type="search"
-              className="w-64"
-              placeholder="Chercher par titre"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+            <div className="relative w-64">
+              <input
+                type="search"
+                placeholder="Chercher par titre"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full rounded border border-gray-300 pl-10 pr-3 py-2 text-black placeholder-gray-400 focus:border-black focus:ring-1 focus:ring-black"
+                aria-label="Chercher par titre"
+              />
+              <Search
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                size={16}
+              />
+            </div>
           </FormLabel>
           <FormControl>
             <div className="mt-4 rounded-md border">
               <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[40px]" />
-                    <TableHead className="w-[60px]">Preview</TableHead>
-                    <TableHead>Title</TableHead>
-                  </TableRow>
-                </TableHeader>
                 <TableBody>
                   {artworks.map((artwork) => (
                     <TableRow key={artwork.id}>
-                      <TableCell className="text-center">
+                      <TableCell className="w-[40px] text-center">
                         <Checkbox
                           checked={selectedIds.includes(artwork.id)}
                           onCheckedChange={() => toggleSelection(artwork.id)}
                           aria-label={`Select ${artwork.title}`}
                         />
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="w-[60px]">
                         <Image
                           src={artwork.thumbnail}
                           alt={artwork.title}
@@ -166,6 +146,13 @@ export function ArtworkGallerySelector({
                   ))}
                 </TableBody>
               </Table>
+
+              {loading && (
+                <div className="flex justify-center py-4">
+                  <Loader2 className="w-6 h-6 animate-spin text-gray-500" />
+                </div>
+              )}
+
               {hasMore && (
                 <div className="p-4 text-center">
                   <Button onClick={loadMore} variant="outline">
@@ -176,7 +163,6 @@ export function ArtworkGallerySelector({
             </div>
           </FormControl>
           <FormMessage />
-          <p>{loading && "loading"}</p>
         </FormItem>
       )}
     />

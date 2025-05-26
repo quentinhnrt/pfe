@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 "use client";
 
 import { useState, useRef, useEffect } from "react";
@@ -5,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import PostForm from "@/features/forms/PostForm";
 import ArtworkForm from "@/features/forms/ArtworkForm";
 import CollectionForm from "@/features/forms/CollectionForm";
+import { Plus, Image, FileText, FolderPlus } from "lucide-react";
+
 
 export default function ActionButton() {
   const [open, setOpen] = useState(false);
@@ -29,33 +32,60 @@ export default function ActionButton() {
     <div ref={actionRef} className="relative">
       <Button
         onClick={() => setOpen(!open)}
-        className="bg-white text-black px-4 py-2 rounded-full hover:bg-white/80 transition-colors"
+        className="flex items-center gap-2 bg-black hover:bg-gray-800 text-white px-6 py-2.5 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl"
       >
-        Publier
+        <Plus 
+          size={18} 
+          className={`transition-transform duration-300 ${open ? 'rotate-45' : 'rotate-0'}`}
+        />
+        <span>Publier</span>
       </Button>
-
       {open && (
         <div
-          onClick={(e) => e.stopPropagation()} // <-- STOP PROPAGATION ICI
-          className="absolute right-0 mt-2 w-48 flex flex-col gap-2 rounded border border-gray-700 bg-black p-3 shadow-lg z-50"
+          onClick={(e) => e.stopPropagation()}
+          className="absolute right-0 mt-3 w-64 rounded-2xl border border-gray-200 bg-white shadow-xl z-50 overflow-hidden animate-in slide-in-from-top-2 duration-200"
         >
-          <ArtworkForm>
-            <Button variant="ghost" className="w-full text-left">
-              Créer une oeuvre
-            </Button>
-          </ArtworkForm>
-
-          <PostForm>
-            <Button variant="ghost" className="w-full text-left">
-              Créer un post
-            </Button>
-          </PostForm>
-
-          <CollectionForm>
-            <Button variant="ghost" className="w-full text-left">
-              Créer une collection
-            </Button>
-          </CollectionForm>
+          <div className="py-3 px-2">
+            <ArtworkForm>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start px-4 py-3 mb-1 rounded-xl hover:bg-gray-50 transition-colors duration-200 group"
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <div className="w-10 h-10 rounded-xl group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+                    <Image size={20} className="text-gray-700" />
+                  </div>
+                  <span className="text-gray-900 font-medium">Créer une œuvre</span>
+                </div>
+              </Button>
+            </ArtworkForm>
+            <PostForm>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start px-4 py-3 mb-1 rounded-xl hover:bg-gray-50 transition-colors duration-200 group"
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <div className="w-10 h-10 rounded-xl group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+                    <FileText size={20} className="text-gray-700" />
+                  </div>
+                  <span className="text-gray-900 font-medium">Créer un post</span>
+                </div>
+              </Button>
+            </PostForm>
+            <CollectionForm>
+              <Button 
+                variant="ghost" 
+                className="w-full justify-start px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors duration-200 group"
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <div className="w-10 h-10 rounded-xl group-hover:bg-gray-200 flex items-center justify-center transition-colors duration-200 flex-shrink-0">
+                    <FolderPlus size={20} className="text-gray-700" />
+                  </div>
+                  <span className="text-gray-900 font-medium">Créer une collection</span>
+                </div>
+              </Button>
+            </CollectionForm>
+          </div>
         </div>
       )}
     </div>
