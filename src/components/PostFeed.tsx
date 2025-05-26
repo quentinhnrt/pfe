@@ -48,7 +48,6 @@ export default function PostFeed({ session }: PostFeed) {
       const data: ApiResponse = await res.json();
 
       setPosts((prev) => {
-        // Évite les doublons
         const newPosts = data.posts.filter(
           (p) => !prev.find((existing) => existing.id === p.id)
         );

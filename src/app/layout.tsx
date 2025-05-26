@@ -2,15 +2,13 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Encode_Sans } from "next/font/google";
-
-import ActionButton from "@/components/ActionButton";
 import CookieConsentBanner from "./cookie-consent-banner";
 import "./globals.css";
 import { Providers } from "./providers";
-import Header from "@/features/header/Header";
 import { SessionProvider } from "@/hooks/useSession";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import ConditionalHeader from "./conditional-header";
 
 const fontSans = Encode_Sans({
   variable: "--encode-sans",
@@ -89,9 +87,8 @@ export default async function RootLayout({
           <SessionProvider initialSession={session}>
             <Providers>
               <CookieConsentBanner />
-              <Header />
+              <ConditionalHeader />
               {children}
-              <ActionButton />
             </Providers>
           </SessionProvider>
         </NextIntlClientProvider>

@@ -34,7 +34,7 @@ export default function ArtworksFeed({ isAuthenticated = false }: ArtworksFeedPr
       setIsLoading(true);
       setError(null);
 
-      const res = await fetch('/api/artworks');
+       const res = await fetch('/api/artworks?limit=10&page=1');
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -44,7 +44,7 @@ export default function ArtworksFeed({ isAuthenticated = false }: ArtworksFeedPr
       setArtworks(data);
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Erreur inconnue');
-      setArtworks([]); // 👈 plus de mockArtworks ici
+      setArtworks([]);
     } finally {
       setIsLoading(false);
     }

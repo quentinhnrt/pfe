@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import ActionButton from '@/components/ActionButton';
-
 import { useSession } from '@/hooks/useSession';
 
 export default function Header() {
@@ -18,20 +17,12 @@ export default function Header() {
           </Link>
           <div className="flex items-center gap-4">
             {!session?.user ? (
-              <div className="flex items-center gap-3">
-                <Link
-                  href="/sign-in"
-                  className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium transition-colors duration-300"
-                >
-                  Se connecter
-                </Link>
-                <Link
-                  href="/sign-up"
-                  className="px-6 py-2.5 bg-black text-white font-medium rounded-xl hover:bg-gray-800 transition-colors duration-300"
-                >
-                  S&apos;inscrire
-                </Link>
-              </div>
+              <Link
+                href="/sign-in"
+                className="px-6 py-2.5 bg-black text-white font-medium rounded-xl hover:bg-gray-800 transition-colors duration-300"
+              >
+                Se connecter / S’inscrire
+              </Link>
             ) : (
               <div className="flex items-center gap-4">
                 <ActionButton />
@@ -54,7 +45,6 @@ export default function Header() {
                       {session.user.firstname?.charAt(0) || 'U'}
                     </div>
                   )}
-
                   <div className="hidden sm:block">
                     <p className="text-sm font-medium text-gray-900">
                       {session.user.firstname || 'Utilisateur'}
