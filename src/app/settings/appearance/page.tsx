@@ -23,6 +23,8 @@ export default async function AppearanceSettingsPage() {
           Customize how ArtiLink looks on your device
         </p>
       </div>
+
+      {/* @ts-expect-error Server Component */}
       <AppearanceForm user={user} />
     </div>
   );

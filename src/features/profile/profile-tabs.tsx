@@ -273,11 +273,11 @@ const ErrorState: React.FC<{
 }> = React.memo(({ error, onRetry, tabLabel }) => {
   const getErrorMessage = useCallback((errorType: ErrorType): string => {
     const messages: Record<ErrorType, string> = {
-      [ERROR_TYPES.NETWORK]: "Erreur de connexion réseau",
-      [ERROR_TYPES.PARSING]: "Erreur de traitement des données",
-      [ERROR_TYPES.UNAUTHORIZED]: "Accès non autorisé",
-      [ERROR_TYPES.NOT_FOUND]: "Ressource introuvable",
-      [ERROR_TYPES.GENERIC]: "Une erreur inattendue s'est produite",
+      NETWORK_ERROR: "Erreur de connexion réseau",
+      PARSING_ERROR: "Erreur de traitement des données",
+      UNAUTHORIZED: "Accès non autorisé",
+      NOT_FOUND: "Ressource introuvable",
+      GENERIC_ERROR: "Une erreur inattendue s'est produite",
     };
     return messages[errorType] || messages[ERROR_TYPES.GENERIC];
   }, []);
@@ -772,11 +772,7 @@ const useProfileData = (
   }, []);
 
   const fetchData = useCallback(
-    async (
-      tabKey: TabKey,
-      page: number = 1,
-      reset: boolean = false
-    ): Promise<void> => {
+    async (tabKey: TabKey, page = 1, reset = false): Promise<void> => {
       const config = TABS_CONFIGURATION[tabKey];
       if (!config) {
         console.error(`Configuration non trouvée pour l'onglet: ${tabKey}`);
@@ -786,54 +782,37 @@ const useProfileData = (
       const cacheKey = createCacheKey(tabKey, page);
       const currentConfig = configRef.current;
 
-      dispatch((currentState) => {
-        const cached = currentState.cache[cacheKey];
-        if (
-          cached &&
-          Date.now() - cached.timestamp < currentConfig.cacheTimeout &&
-          !reset
-        ) {
-          return {
-            ...currentState,
-            data: {
-              ...currentState.data,
-              [tabKey]: reset
-                ? (cached.data as Artwork[] | Post[])
-                : [
-                    ...(currentState.data[tabKey] || []),
-                    ...(cached.data as Artwork[] | Post[]),
-                  ],
-            },
-            pages: {
-              ...currentState.pages,
-              [tabKey]: page,
-            },
-            hasMore: {
-              ...currentState.hasMore,
-              [tabKey]:
-                Array.isArray(cached.data) &&
-                cached.data.length === currentConfig.limit,
-            },
-            initialized: {
-              ...currentState.initialized,
-              [tabKey]: true,
-            },
-          };
-        }
+      const cachedEntry = state.cache[cacheKey];
+      const isCacheValid =
+        cachedEntry &&
+        Date.now() - cachedEntry.timestamp < currentConfig.cacheTimeout;
 
-        // Pas de cache, démarrer le chargement
-        return {
-          ...currentState,
-          errors: {
-            ...currentState.errors,
-            [tabKey]: null,
-          },
-          loading: {
-            ...currentState.loading,
-            [tabKey]: true,
-          },
-        };
-      });
+      if (isCacheValid && !reset) {
+        const cachedData = cachedEntry.data as Artwork[] | Post[];
+        dispatch({
+          type: ACTION_TYPES.SET_DATA,
+          tabKey,
+          data: cachedData,
+          reset,
+        });
+        dispatch({
+          type: ACTION_TYPES.SET_PAGINATION,
+          tabKey,
+          page,
+          hasMore:
+            Array.isArray(cachedData) &&
+            cachedData.length === currentConfig.limit,
+        });
+        dispatch({
+          type: ACTION_TYPES.SET_INITIALIZED,
+          tabKey,
+          initialized: true,
+        });
+        return;
+      }
+
+      dispatch({ type: ACTION_TYPES.CLEAR_ERROR, tabKey });
+      dispatch({ type: ACTION_TYPES.SET_LOADING, tabKey, isLoading: true });
 
       try {
         const params = new URLSearchParams({

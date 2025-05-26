@@ -23,6 +23,7 @@ export default async function ProfileSettingsPage() {
           Manage your profile information and how others see you
         </p>
       </div>
+      {/* @ts-expect-error Server Component */}
       <ProfileForm user={user} />
     </div>
   );
