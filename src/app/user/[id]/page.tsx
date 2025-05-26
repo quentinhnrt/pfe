@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProfileHeader } from "@/features/profile/profile-header";
-import { ProfileTabs } from "@/features/profile/profile-tabs";
+import ProfileTabs from "@/features/profile/profile-tabs";
 import { getCurrentUser, getUserById } from "@/lib/users";
-import { formatDateToLocale, formatUserPosts } from "@/lib/utils";
+import { formatDateToLocale } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "User Profile",
@@ -50,12 +50,11 @@ export default async function ProfilePage({
   };
 
   const isOwnProfile = currentUserData?.id === userData.id;
-  const formattedPosts = formatUserPosts(userData.posts || []);
 
   return (
     <main className="container mx-auto">
       <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
-      <ProfileTabs profile={profile} posts={formattedPosts} />
+      <ProfileTabs userId={id} />
     </main>
   );
 }

@@ -42,8 +42,8 @@ interface ImageCropperProps<
   aspectRatio?: number;
   getInputProps?: () => Record<string, unknown>;
   getRootProps?: () => Record<string, unknown>;
-  quality?: number; // Nouveau: Qualité JPEG (0.1 à 1.0, défaut 1.0)
-  outputFormat?: "preserve" | "png" | "jpeg"; // Nouveau: Format de sortie
+  quality?: number;
+  outputFormat?: "preserve" | "png" | "jpeg";
 }
 
 export function ImageCropper<
@@ -57,10 +57,9 @@ export function ImageCropper<
   form,
   fieldName,
   aspectRatio,
-  getInputProps,
   getRootProps,
-  quality = 1.0, // Qualité maximale par défaut
-  outputFormat = "preserve", // Préserver le format original par défaut
+  quality = 1.0,
+  outputFormat = "preserve",
 }: ImageCropperProps<TFieldValues, TName>) {
   const aspect = aspectRatio ?? 1;
   const imgRef = useRef<HTMLImageElement | null>(null);
@@ -81,15 +80,6 @@ export function ImageCropper<
       path: file.name,
       isExisting,
     }) as FileWithPreview;
-  }
-
-  function fileToDataUrl(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => resolve(e.target?.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
   }
 
   function getCroppedImg(image: HTMLImageElement, crop: PixelCrop): string {
@@ -156,7 +146,6 @@ export function ImageCropper<
         }
       }
     }
-    // outputFormat === 'png' utilise déjà les valeurs par défaut
 
     return canvas.toDataURL(mimeType, qualityParam);
   }
@@ -172,7 +161,6 @@ export function ImageCropper<
       u8arr[n] = bstr.charCodeAt(n);
     }
 
-    // Préserver l'extension appropriée selon le format
     let finalFilename = filename;
     if (
       mime.includes("jpeg") &&
@@ -206,10 +194,14 @@ export function ImageCropper<
 
       // Mettre à jour le formulaire
       if (form && fieldName) {
-        form.setValue(fieldName, newFileWithPreview as any, {
-          shouldDirty: true,
-          shouldValidate: true,
-        });
+        form.setValue(
+          fieldName,
+          newFileWithPreview as unknown as TFieldValues[TName],
+          {
+            shouldDirty: true,
+            shouldValidate: true,
+          }
+        );
       }
 
       // Réinitialiser le crop
@@ -313,11 +305,15 @@ export function ImageCropper<
 
       // Mettre à jour le formulaire
       if (form && fieldName) {
-        form.setValue(fieldName, croppedFileWithPreview as any, {
-          shouldDirty: true,
-          shouldTouch: true,
-          shouldValidate: true,
-        });
+        form.setValue(
+          fieldName,
+          croppedFileWithPreview as unknown as TFieldValues[TName],
+          {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          }
+        );
         await form.trigger(fieldName);
       }
 
@@ -381,7 +377,7 @@ export function ImageCropper<
         onChange={handleFileChange}
       />
 
-      <div className="relative group">
+      <div className="group">
         {selectedFile?.preview ? (
           <>
             <Image
@@ -445,7 +441,7 @@ export function ImageCropper<
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
-        <DialogContent className="p-0 gap-0">
+        <DialogContent className="p-0 gap-0 overflow-y-auto max-h-[90vh]">
           <DialogHeader className="p-4 pb-0">
             <DialogTitle>Crop the image</DialogTitle>
           </DialogHeader>

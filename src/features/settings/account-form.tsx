@@ -69,7 +69,7 @@ export function AccountForm({ user }: AccountFormProps) {
     },
   });
 
-  const onSubmit = async (data: AccountFormValues) => {
+  const onSubmit = async () => {
     try {
       setIsSubmitting(true);
       // TODO: Implement actual API call

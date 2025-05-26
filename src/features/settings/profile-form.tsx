@@ -244,7 +244,7 @@ export function ProfileForm({ user }: { user: User }) {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="space-y-2">
           <FormLabel>Banner Image</FormLabel>
-          <div className="relative w-full overflow-hidden rounded-lg border">
+          <div className="relative max-h-[200px] w-full h-auto overflow-hidden rounded-lg border aspect-[16/4]">
             <FormField
               control={form.control}
               name="bannerImage"
@@ -271,7 +271,7 @@ export function ProfileForm({ user }: { user: User }) {
 
         <div className="space-y-2">
           <FormLabel>Profile Picture</FormLabel>
-          <div className="relative h-[100px] w-[100px] overflow-hidden rounded-full border">
+          <div className="relative h-[100px] w-[100px] overflow-hidden rounded-full border aspect-square">
             <FormField
               control={form.control}
               name="image"

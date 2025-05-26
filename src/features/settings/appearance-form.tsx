@@ -16,14 +16,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { toast } from "sonner";
 
-interface AppearanceFormProps {
-  user: {
-    id: string;
-    name?: string;
-  };
-}
-
-export function AppearanceForm({ user }: AppearanceFormProps) {
+export function AppearanceForm() {
   const { theme, setTheme } = useTheme();
   const [selectedTheme, setSelectedTheme] = useState(theme || "system");
 
