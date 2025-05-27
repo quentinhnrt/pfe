@@ -14,9 +14,9 @@ export const metadata: Metadata = {
 export default async function ProfilePage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { id } = params;
+  const { id } = await params;
 
   // Parallel data fetching for better performance
   const [userData, currentUserData] = await Promise.all([

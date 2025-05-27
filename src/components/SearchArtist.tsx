@@ -111,17 +111,17 @@ export default function SearchArtist({value = "", onChange, disableSuggestions}:
                             </Link>
                         ))}
                         {artists.length === 3 && (
-                            <Button variant={"default"} className={"rounded-2xl py-6"}>
+                            <Button variant={"default"} className={"rounded-2xl p-0"}>
                                 <Link
                                     href={`/search?query=${encodeURIComponent(query)}`}
-                                    className="group flex-shrink-0 flex items-center gap-2  hover:shadow-lg transition-all duration-300 min-w-fit"
+                                    className="group flex items-center gap-2 transition-all duration-300 w-full h-full p-6"
                                 >
                 <span
-                    className="text-sm font-medium  transition-colors duration-300">
+                    className="text-sm font-medium ">
                   Voir plus
                 </span>
                                     <div
-                                        className="flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full group-hover:bg-gray-300 transition-all duration-300">
+                                        className="flex items-center justify-center w-6 h-6 transition-all duration-300">
                                         <ChevronRight size={14} className="text-gray-600 group-hover:text-gray-700"/>
                                     </div>
                                 </Link>

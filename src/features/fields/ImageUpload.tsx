@@ -28,6 +28,7 @@ export function ImageUploadField({
   const { control, setValue, watch } = useFormContext();
   const file = watch(name);
   const [preview, setPreview] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -89,7 +90,7 @@ export function ImageUploadField({
       control={control}
       render={() => (
         <FormItem className="space-y-4">
-          <FormLabel className="text-black font-semibold text-base">
+          <FormLabel className="font-semibold text-base">
             {label}
           </FormLabel>
 
@@ -109,21 +110,17 @@ export function ImageUploadField({
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
                   onClick={openFileDialog}
-                  className={`relative border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-all duration-200 ${
-                    isDragOver
-                      ? "border-black bg-gray-100"
-                      : "border-gray-300 hover:border-black hover:bg-gray-50"
-                  }`}
+                  className={`relative border-2 border-dashed hover:border-solid rounded-lg p-8 text-center cursor-pointer transition-all duration-200`}
                 >
                   <div className="flex flex-col items-center space-y-4">
                     <div className="p-4 bg-gray-100 rounded-full">
                       <Upload className="w-8 h-8 text-gray-600" />
                     </div>
                     <div className="space-y-2">
-                      <p className="text-lg font-medium text-black">
+                      <p className="text-lg font-medium ">
                         Téléchargez une image
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm ">
                         Glissez-déposez votre image ici ou cliquez pour
                         parcourir
                       </p>
@@ -134,7 +131,7 @@ export function ImageUploadField({
                     <Button
                       type="button"
                       variant="outline"
-                      className="border-2 border-gray-300 text-black hover:bg-gray-100 hover:border-black transition-all duration-200"
+                      className="transition-all duration-200"
                     >
                       <Camera className="w-4 h-4 mr-2" />
                       Choisir un fichier

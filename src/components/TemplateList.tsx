@@ -29,6 +29,7 @@ import {
   Settings,
 } from "lucide-react";
 import Link from "next/link";
+import {authClient} from "@/lib/auth-client";
 
 export type TemplateWithStatus = Template & {
   user_template: {
@@ -42,6 +43,8 @@ export default function TemplateList({
 }: {
   templates: TemplateWithStatus[];
 }) {
+  const {data: session} = authClient.useSession();
+
   return (
     <div className="p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -56,6 +59,13 @@ export default function TemplateList({
           <p className="text-lg  max-w-2xl mx-auto">
             Manage your portfolio templates and customize your online presence
           </p>
+          {session?.user && (
+            <Button>
+              <Link href={"/portfolio/"+session.user.name} target={"_blank"}>
+                Voir mon portfolio
+              </Link>
+            </Button>
+          )}
         </div>
 
         {templates.length > 0 ? (
@@ -93,6 +103,10 @@ export default function TemplateList({
                       const isActive = ut?.active ?? false;
                       const hasData =
                         ut?.data && Object.keys(ut.data).length > 0;
+
+                      if (process.env.NODE_ENV === "production" && template.slug === 'test-template') {
+                        return null;
+                      }
 
                       return (
                         <TableRow key={template.id} className="">

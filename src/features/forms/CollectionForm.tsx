@@ -64,7 +64,8 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
             if (onCollectionCreated) {
                 onCollectionCreated();
             }
-            
+
+            window.location.reload()
         } catch (error) {
             console.error("Erreur lors de la création de la collection:", error);
         } finally {
@@ -85,14 +86,14 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children || (
-                    <Button className="bg-black text-white hover:bg-gray-800 border-0 transition-all duration-200 font-medium">
+                    <Button className="border-0 transition-all duration-200 font-medium">
                         Créer une collection
                     </Button>
                 )}
             </DialogTrigger>
-            <DialogContent className="!max-w-5xl max-h-[90vh] bg-white border-2 border-black shadow-2xl overflow-hidden flex flex-col">
-                <DialogHeader className="border-b border-gray-200 pb-4 flex-shrink-0">
-                    <DialogTitle className="text-black text-2xl font-bold flex items-center">
+            <DialogContent className="!max-w-5xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col">
+                <DialogHeader className=" pb-4 flex-shrink-0">
+                    <DialogTitle className=" text-2xl font-bold flex items-center">
                         Créer une collection
                     </DialogTitle>
                 </DialogHeader>
@@ -105,14 +106,14 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
                                 name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-black font-semibold text-base">
+                                        <FormLabel className="font-semibold text-base">
                                             Titre de la collection
                                         </FormLabel>
                                         <FormControl>
                                             <Input 
                                                 placeholder="Donnez un nom à votre collection" 
                                                 {...field} 
-                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200"
+                                                className="transition-all duration-200"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-600 font-medium" />
@@ -124,14 +125,14 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-black font-semibold text-base">
+                                        <FormLabel className="font-semibold text-base">
                                             Description (optionnelle)
                                         </FormLabel>
                                         <FormControl>
                                             <Textarea 
                                                 placeholder="Décrivez votre collection, son thème ou son inspiration..." 
                                                 {...field} 
-                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 min-h-[100px] resize-none"
+                                                className=" transition-all duration-200 min-h-[100px] resize-none"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-600 font-medium" />
@@ -143,11 +144,11 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
                                 name="artworks"
                                 render={() => (
                                     <FormItem>
-                                        <FormLabel className="text-black font-semibold text-base">
+                                        <FormLabel className="font-semibold text-base">
                                             Œuvres à inclure
                                         </FormLabel>
                                         <FormControl>
-                                            <div className="border-2 border-gray-300 hover:border-black transition-colors duration-200 rounded-lg p-4 bg-gray-50">
+                                            <div className=" transition-colors duration-200 rounded-lg p-4 ">
                                                 <ArtworkGallerySelector
                                                     name="artworks"
                                                     label="Sélectionner un ou plusieurs œuvres à ajouter à la collection"
@@ -161,14 +162,14 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
                         </div>
                     </Form>
                 </div>
-                <div className="flex-shrink-0 border-t border-gray-200 pt-4 bg-white">
+                <div className="flex-shrink-0  pt-4 ">
                     <div className="flex justify-end gap-3">
                         <Button
                             type="button"
                             variant="outline"
                             onClick={handleCancel}
                             disabled={isLoading}
-                            className="border-2 border-gray-300 text-black hover:bg-gray-100 hover:border-black transition-all duration-200"
+                            className=" transition-all duration-200"
                         >
                             <X className="w-4 h-4 mr-2" />
                             Annuler
@@ -176,7 +177,7 @@ export default function CollectionForm({ children, onCollectionCreated }: Props)
                         <Button
                             onClick={form.handleSubmit(onSubmit)}
                             disabled={isLoading}
-                            className="bg-black text-white hover:bg-gray-800 active:bg-gray-900 disabled:bg-gray-400 transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
+                            className="transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
                         >
                             {isLoading ? (
                                 <>
