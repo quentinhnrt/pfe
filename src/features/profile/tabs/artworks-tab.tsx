@@ -21,9 +21,7 @@ export default function ArtworksTab({userId, isActive}: { userId: string, isActi
     async function fetchArtworks() {
         try {
             setIsLoading(true)
-            const response = await fetch(`/api/artworks?userId=${userId}&page=${page}&limit=${limit}`, {
-                cache: "force-cache",
-            })
+            const response = await fetch(`/api/artworks?userId=${userId}&page=${page}&limit=${limit}`)
 
             if (!response.ok) {
                 throw new Error("Failed to fetch artworks")

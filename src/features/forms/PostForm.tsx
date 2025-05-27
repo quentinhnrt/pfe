@@ -10,8 +10,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/shadcn/dialog";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Form,
   FormField,
@@ -19,10 +19,10 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-} from "@/components/ui/form";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
+} from "@/components/ui/shadcn/form";
+import { Textarea } from "@/components/ui/shadcn/textarea";
+import { Input } from "@/components/ui/shadcn/input";
+import { Switch } from "@/components/ui/shadcn/switch";
 import { ArtworkGallerySelector } from "@/features/fields/ArtworkGallerySelector";
 import Repeater from "@/features/fields/Repeater";
 import { Loader2, X } from "lucide-react";

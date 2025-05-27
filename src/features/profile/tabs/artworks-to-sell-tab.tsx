@@ -21,9 +21,7 @@ export default function ArtworksToSellTab({userId, isActive}: { userId: string, 
     async function fetchArtworks() {
         try {
             setIsLoading(true)
-            const response = await fetch(`/api/artworks?userId=${userId}&page=${page}&limit=${limit}&isForSale=true`, {
-                cache: "force-cache",
-            })
+            const response = await fetch(`/api/artworks?userId=${userId}&page=${page}&limit=${limit}&isForSale=true`)
 
             if (!response.ok) {
                 throw new Error("Failed to fetch artworks")

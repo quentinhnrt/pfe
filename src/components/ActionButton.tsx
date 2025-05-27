@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import PostForm from "@/features/forms/PostForm";
 import ArtworkForm from "@/features/forms/ArtworkForm";
 import CollectionForm from "@/features/forms/CollectionForm";

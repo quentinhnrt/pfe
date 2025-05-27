@@ -1,14 +1,14 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/shadcn/button"
+import { Checkbox } from "@/components/ui/shadcn/checkbox"
 import {
     FormControl,
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from "@/components/ui/shadcn/form"
+import { Input } from "@/components/ui/shadcn/input"
 import {
     Table,
     TableBody,
@@ -16,7 +16,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/shadcn/table"
 import { useEffect, useState } from "react"
 import { Controller, useFormContext } from "react-hook-form"
 
