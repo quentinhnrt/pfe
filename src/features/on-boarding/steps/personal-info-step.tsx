@@ -4,8 +4,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/shadcn/form";
+import { Input } from "@/components/ui/shadcn/input";
 import {
   ImageCropper,
   type FileWithPreview,
@@ -61,6 +61,7 @@ export function PersonalInfoStep({
                     selectedFile={profileImage}
                     setSelectedFile={setProfileImage}
                     form={form}
+                    fieldName="image"
                     aspectRatio={1 / 1}
                   />
                 ) : user.image ? (

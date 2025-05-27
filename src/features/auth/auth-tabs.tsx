@@ -1,6 +1,6 @@
 "use client";
 
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/shadcn/tabs";
 import { LoginForm } from "@/features/auth/login-form";
 import { useState } from "react";
 

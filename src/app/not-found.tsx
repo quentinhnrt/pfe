@@ -2,9 +2,9 @@ import { ArrowLeft, Compass, Home, Search } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { MotionDiv, MotionImg } from "@/components/motion";
+import { Button } from "@/components/ui/shadcn/button";
+import { Input } from "@/components/ui/shadcn/input";
 
 export const metadata: Metadata = {
   title: "Page non trouvée",
@@ -16,7 +16,6 @@ export default function NotFound() {
     <div className="min-h-screen flex flex-col">
       <main className="flex-1 container py-12 flex flex-col items-center justify-center mx-auto">
         <div className="max-w-md w-full mx-auto text-center space-y-8">
-          {/* Animated illustration */}
           <MotionDiv
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -35,7 +34,6 @@ export default function NotFound() {
             />
           </MotionDiv>
 
-          {/* Error message */}
           <MotionDiv
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

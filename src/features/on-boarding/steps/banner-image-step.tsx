@@ -32,6 +32,7 @@ export function BannerImageStep({
   getBannerRootProps,
   getBannerInputProps,
   user,
+  form,
 }: BannerImageStepProps) {
   return (
     <div className="flex flex-col items-center">
@@ -48,6 +49,8 @@ export function BannerImageStep({
           setDialogOpen={setBannerImageDialogOpen}
           selectedFile={bannerImage}
           setSelectedFile={setBannerImage}
+          form={form}
+          fieldName="bannerImage"
           aspectRatio={16 / 4}
         />
       ) : user.bannerImage ? (

@@ -1,7 +1,7 @@
 "use client";
 
-import { CropIcon, Trash2Icon } from "lucide-react";
-import React, { useEffect, type SyntheticEvent } from "react";
+import { CropIcon, RefreshCw, Trash2Icon } from "lucide-react";
+import React, { useRef, useState, type SyntheticEvent } from "react";
 import { FileWithPath } from "react-dropzone";
 import ReactCrop, {
   centerCrop,
@@ -11,22 +11,22 @@ import ReactCrop, {
 } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/shadcn/dialog";
 import { cn } from "@/lib/utils";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import Image from "next/image";
 import { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
 export type FileWithPreview = FileWithPath & {
   preview: string;
+  isExisting?: boolean;
 };
 
 interface ImageCropperProps<
@@ -40,6 +40,10 @@ interface ImageCropperProps<
   form?: UseFormReturn<TFieldValues>;
   fieldName?: TName;
   aspectRatio?: number;
+  getInputProps?: () => Record<string, unknown>;
+  getRootProps?: () => Record<string, unknown>;
+  quality?: number;
+  outputFormat?: "preserve" | "png" | "jpeg";
 }
 
 export function ImageCropper<
@@ -53,39 +57,37 @@ export function ImageCropper<
   form,
   fieldName,
   aspectRatio,
+  getRootProps,
+  quality = 1.0,
+  outputFormat = "preserve",
 }: ImageCropperProps<TFieldValues, TName>) {
-  // Default to 1:1 aspect ratio if none provided
-  const aspect = aspectRatio !== undefined ? aspectRatio : 1;
-  const imgRef = React.useRef<HTMLImageElement | null>(null);
-  const [crop, setCrop] = React.useState<Crop>();
-  const [croppedImageUrl, setCroppedImageUrl] = React.useState<string>("");
-  const [croppedImage, setCroppedImage] = React.useState<string>("");
-  const scale = 1; // Fixed scale value since we removed the slider
+  const aspect = aspectRatio ?? 1;
+  const imgRef = useRef<HTMLImageElement | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function onImageLoad(e: SyntheticEvent<HTMLImageElement>) {
-    if (aspect) {
-      const { width, height } = e.currentTarget;
-      setCrop(centerAspectCrop(width, height, aspect));
-    }
+  // États simples - pas de useCallback/useMemo
+  const [crop, setCrop] = useState<Crop>();
+  const [croppedImageUrl, setCroppedImageUrl] = useState<string>("");
+
+  // Fonctions directes sans useCallback
+  function createFileWithPreview(
+    file: File,
+    isExisting = false
+  ): FileWithPreview {
+    const preview = URL.createObjectURL(file);
+    return Object.assign(file, {
+      preview,
+      path: file.name,
+      isExisting,
+    }) as FileWithPreview;
   }
 
-  function onCropComplete(crop: PixelCrop) {
-    if (imgRef.current && crop.width && crop.height) {
-      const croppedImageUrl = getCroppedImg(imgRef.current, crop, scale);
-      setCroppedImageUrl(croppedImageUrl);
-    }
-  }
-
-  function getCroppedImg(
-    image: HTMLImageElement,
-    crop: PixelCrop,
-    scale: number
-  ): string {
+  function getCroppedImg(image: HTMLImageElement, crop: PixelCrop): string {
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
 
-    // Calculate scaled dimensions
+    // Utiliser les dimensions naturelles pour la meilleure qualité
     const scaledWidth = crop.width * scaleX;
     const scaledHeight = crop.height * scaleY;
 
@@ -93,23 +95,23 @@ export function ImageCropper<
     canvas.height = scaledHeight;
 
     const ctx = canvas.getContext("2d");
-
     if (ctx) {
-      ctx.imageSmoothingEnabled = false;
+      // Paramètres pour la meilleure qualité
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
 
-      // Calculate the scaled crop coordinates
+      // Paramètres additionnels pour améliorer la qualité
+      ctx.globalCompositeOperation = "source-over";
+
       const sourceX = crop.x * scaleX;
       const sourceY = crop.y * scaleY;
-      const sourceWidth = scaledWidth;
-      const sourceHeight = scaledHeight;
 
-      // Apply zoom/scale factor
       ctx.drawImage(
         image,
-        sourceX - (sourceWidth * (scale - 1)) / 2,
-        sourceY - (sourceHeight * (scale - 1)) / 2,
-        sourceWidth * scale,
-        sourceHeight * scale,
+        sourceX,
+        sourceY,
+        scaledWidth,
+        scaledHeight,
         0,
         0,
         scaledWidth,
@@ -117,131 +119,409 @@ export function ImageCropper<
       );
     }
 
-    return canvas.toDataURL("image/png", 1.0);
+    // Déterminer le format de sortie
+    let mimeType = "image/png";
+    let qualityParam = undefined;
+
+    if (outputFormat === "jpeg") {
+      mimeType = "image/jpeg";
+      qualityParam = quality;
+      // Ajouter un fond blanc pour JPEG (pas de transparence)
+      if (ctx) {
+        ctx.globalCompositeOperation = "destination-over";
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+      }
+    } else if (outputFormat === "preserve") {
+      // Détecter le format original
+      const originalFormat = image.src.toLowerCase();
+      if (originalFormat.includes("jpg") || originalFormat.includes("jpeg")) {
+        mimeType = "image/jpeg";
+        qualityParam = quality;
+        // Ajouter un fond blanc pour JPEG
+        if (ctx) {
+          ctx.globalCompositeOperation = "destination-over";
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, scaledWidth, scaledHeight);
+        }
+      }
+    }
+
+    return canvas.toDataURL(mimeType, qualityParam);
   }
 
-  // Convertir l'URL de données en fichier
-  const dataURLtoFile = (dataUrl: string, filename: string): File => {
+  function dataURLtoFile(dataUrl: string, filename: string): File {
     const arr = dataUrl.split(",");
-    const mime = arr[0].match(/:(.*?);/)?.[1] || "image/png";
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch?.[1] || "image/png";
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
 
-    return new File([u8arr], filename, { type: mime });
-  };
+    let finalFilename = filename;
+    if (
+      mime.includes("jpeg") &&
+      !filename.toLowerCase().includes(".jpg") &&
+      !filename.toLowerCase().includes(".jpeg")
+    ) {
+      finalFilename = filename.replace(/\.[^/.]+$/, "") + ".jpg";
+    } else if (
+      mime.includes("png") &&
+      !filename.toLowerCase().includes(".png")
+    ) {
+      finalFilename = filename.replace(/\.[^/.]+$/, "") + ".png";
+    }
 
-  async function onCrop() {
+    return new File([u8arr], finalFilename, { type: mime });
+  }
+
+  // Gestionnaires d'événements directs
+  async function handleFileSelection(file: File) {
+    console.log("Handling file selection:", file.name);
+
     try {
-      setCroppedImage(croppedImageUrl);
-
-      // Convertir l'URL de l'image croppée en fichier
-      if (croppedImageUrl && selectedFile) {
-        const filename = selectedFile.name || "cropped-profile.png";
-        const croppedFile = dataURLtoFile(croppedImageUrl, filename);
-
-        // Créer une nouvelle preview
-        const croppedFileWithPreview = Object.assign(croppedFile, {
-          preview: croppedImageUrl,
-          path: selectedFile.path,
-        }) as FileWithPreview;
-
-        // Mettre à jour le state
-        setSelectedFile(croppedFileWithPreview);
-
-        // Mettre à jour le formulaire si disponible
-        if (form && fieldName) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          form.setValue(fieldName, croppedFileWithPreview as any);
-        }
+      // Nettoyer l'ancienne image
+      if (selectedFile?.preview?.startsWith("blob:")) {
+        URL.revokeObjectURL(selectedFile.preview);
       }
 
+      // Créer le nouveau FileWithPreview
+      const newFileWithPreview = createFileWithPreview(file, false);
+      setSelectedFile(newFileWithPreview);
+
+      // Mettre à jour le formulaire
+      if (form && fieldName) {
+        form.setValue(
+          fieldName,
+          newFileWithPreview as unknown as TFieldValues[TName],
+          {
+            shouldDirty: true,
+            shouldValidate: true,
+          }
+        );
+      }
+
+      // Réinitialiser le crop
+      setCrop(undefined);
+      setCroppedImageUrl("");
+
+      // Ouvrir le dialogue de crop
+      setTimeout(() => setDialogOpen(true), 100);
+    } catch (error) {
+      console.error("Error handling file selection:", error);
+      alert("Failed to process the image. Please try again.");
+    }
+  }
+
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      handleFileSelection(files[0]);
+    }
+    // Réinitialiser l'input
+    e.target.value = "";
+  }
+
+  function openFileSelector() {
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    }
+  }
+
+  function onImageLoad(e: SyntheticEvent<HTMLImageElement>) {
+    if (aspect) {
+      const { width, height } = e.currentTarget;
+      const initialCrop = centerAspectCrop(width, height, aspect);
+      setCrop(initialCrop);
+
+      // Générer la preview initiale
+      setTimeout(() => {
+        if (imgRef.current && initialCrop.width && initialCrop.height) {
+          const pixelCrop: PixelCrop = {
+            x: (initialCrop.x / 100) * width,
+            y: (initialCrop.y / 100) * height,
+            width: (initialCrop.width / 100) * width,
+            height: (initialCrop.height / 100) * height,
+            unit: "px",
+          };
+
+          const croppedImg = getCroppedImg(imgRef.current, pixelCrop);
+          setCroppedImageUrl(croppedImg);
+        }
+      }, 100);
+    }
+  }
+
+  function onCropComplete(crop: PixelCrop) {
+    if (imgRef.current && crop.width && crop.height) {
+      const croppedImg = getCroppedImg(imgRef.current, crop);
+      setCroppedImageUrl(croppedImg);
+    }
+  }
+
+  async function applyCrop() {
+    if (!croppedImageUrl || !selectedFile) {
+      return;
+    }
+
+    try {
+      // Nettoyer l'ancienne preview
+      if (selectedFile.preview?.startsWith("blob:")) {
+        URL.revokeObjectURL(selectedFile.preview);
+      }
+
+      // Déterminer le format et l'extension
+      const originalName = selectedFile.name;
+      const isOriginalJpeg =
+        originalName.toLowerCase().includes("jpg") ||
+        originalName.toLowerCase().includes("jpeg");
+
+      let extension = ".png";
+      if (outputFormat === "jpeg") {
+        extension = ".jpg";
+      } else if (outputFormat === "preserve" && isOriginalJpeg) {
+        extension = ".jpg";
+      }
+
+      // Créer le nom de fichier avec le bon format
+      const filename =
+        originalName.replace(/\.[^/.]+$/, "") + "-cropped" + extension;
+
+      const croppedFile = dataURLtoFile(croppedImageUrl, filename);
+
+      console.log(
+        `Image croppée sauvegardée: ${croppedFile.name}, Taille: ${(croppedFile.size / 1024 / 1024).toFixed(2)}MB, Type: ${croppedFile.type}, Qualité: ${quality}`
+      );
+
+      // Créer le nouveau FileWithPreview
+      const croppedFileWithPreview = createFileWithPreview(croppedFile, false);
+
+      // Mettre à jour les états
+      setSelectedFile(croppedFileWithPreview);
+
+      // Mettre à jour le formulaire
+      if (form && fieldName) {
+        form.setValue(
+          fieldName,
+          croppedFileWithPreview as unknown as TFieldValues[TName],
+          {
+            shouldDirty: true,
+            shouldTouch: true,
+            shouldValidate: true,
+          }
+        );
+        await form.trigger(fieldName);
+      }
+
+      // Fermer le dialog
       setDialogOpen(false);
     } catch (error) {
-      console.error("Error during image cropping:", error);
+      console.error("Error applying crop:", error);
       alert("Something went wrong with the image cropping");
     }
   }
 
-  useEffect(() => {
-    // Mettre à jour le formulaire si l'image croppée change
-    if (croppedImage && selectedFile && form && fieldName) {
-      const filename = selectedFile.name || "cropped-profile.png";
-      const croppedFile = dataURLtoFile(croppedImage, filename);
-      const croppedFileWithPreview = Object.assign(croppedFile, {
-        preview: croppedImage,
-        path: selectedFile.path,
-      }) as FileWithPreview;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      form.setValue(fieldName, croppedFileWithPreview as any);
+  function handleDialogClose(open: boolean) {
+    if (!open) {
+      // Nettoyer l'URL de crop
+      if (croppedImageUrl?.startsWith("blob:")) {
+        URL.revokeObjectURL(croppedImageUrl);
+      }
+      setCroppedImageUrl("");
+      setCrop(undefined);
     }
-  }, [croppedImage, selectedFile, form, fieldName]);
+    setDialogOpen(open);
+  }
+
+  // Source d'image pour le crop (utilise preview ou convertit en dataURL)
+  const [imageSrc, setImageSrc] = useState<string>("");
+
+  // Préparer l'image pour le crop quand le dialog s'ouvre
+  React.useEffect(() => {
+    if (dialogOpen && selectedFile && !imageSrc) {
+      if (selectedFile.preview.startsWith("blob:")) {
+        // Pour les nouvelles images, utiliser directement la preview
+        setImageSrc(selectedFile.preview);
+      } else {
+        // Pour les images existantes, convertir en dataURL avec la meilleure qualité
+        const file = selectedFile as unknown as File;
+        if (file instanceof File) {
+          // Utiliser FileReader pour préserver la qualité maximale
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const result = e.target?.result as string;
+            setImageSrc(result);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // Fallback pour les URLs HTTP
+          setImageSrc(selectedFile.preview);
+        }
+      }
+    } else if (!dialogOpen) {
+      setImageSrc("");
+    }
+  }, [dialogOpen, selectedFile, imageSrc]);
 
   return (
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogTrigger>
-        <Image
-          src={croppedImage || selectedFile?.preview || ""}
-          alt="Profile preview"
-          width={144}
-          height={144}
-          className={cn(
-            "w-full h-full cursor-pointer ring-2 ring-slate-200 rounded-sm",
-            aspectRatio === 1 && "rounded-full"
-          )}
-        />
-      </DialogTrigger>
-      <DialogContent className="p-0 gap-0">
-        <VisuallyHidden>
-          <DialogTitle>Profile Image Cropper</DialogTitle>
-        </VisuallyHidden>
-        <div className="p-6 size-full">
-          <ReactCrop
-            crop={crop}
-            onChange={(_, percentCrop) => setCrop(percentCrop)}
-            onComplete={(c) => onCropComplete(c)}
-            aspect={aspect}
-            className="w-full"
-            circularCrop={false}
-          >
-            <div className="w-full h-full rounded-none">
-              <Image
-                ref={imgRef}
-                className="w-full h-full rounded-none object-contain"
-                alt="Image cropper"
-                src={selectedFile?.preview || ""}
-                width={1600}
-                height={1600}
-                onLoad={onImageLoad}
-                style={{ transform: `scale(${scale})` }}
-              />
+    <>
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
+      <div className="group">
+        {selectedFile?.preview ? (
+          <>
+            <Image
+              src={selectedFile.preview}
+              alt="Preview"
+              width={144}
+              height={144}
+              className={cn(
+                "w-full h-full cursor-pointer ring-2 ring-slate-200 rounded-sm",
+                aspectRatio === 1 && "rounded-full"
+              )}
+              onClick={() => setDialogOpen(true)}
+            />
+            <div
+              className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Button
+                size="sm"
+                type="button"
+                variant="secondary"
+                className="w-fit text-xs"
+                onClick={() => setDialogOpen(true)}
+              >
+                <CropIcon className="mr-1.5 h-3 w-3" />
+                Crop
+              </Button>
+              <Button
+                size="sm"
+                type="button"
+                variant="secondary"
+                className="w-fit text-xs"
+                onClick={openFileSelector}
+              >
+                <RefreshCw className="mr-1.5 h-3 w-3" />
+                Replace
+              </Button>
             </div>
-          </ReactCrop>
-        </div>
-        <DialogFooter className="p-6 pt-0 justify-center">
-          <DialogClose asChild>
+          </>
+        ) : getRootProps ? (
+          <div
+            {...getRootProps()}
+            className={cn(
+              "w-full h-full cursor-pointer border-2 border-dashed border-muted-foreground/50 rounded-sm flex items-center justify-center hover:border-primary/50 transition-colors",
+              aspectRatio === 1 && "rounded-full"
+            )}
+          >
+            <span className="text-xs text-muted-foreground">Add an image</span>
+          </div>
+        ) : (
+          <div
+            className={cn(
+              "w-full h-full cursor-pointer border-2 border-dashed border-muted-foreground/50 rounded-sm flex items-center justify-center hover:border-primary/50 transition-colors",
+              aspectRatio === 1 && "rounded-full"
+            )}
+            onClick={openFileSelector}
+          >
+            <span className="text-xs text-muted-foreground">Add an image</span>
+          </div>
+        )}
+      </div>
+
+      <Dialog open={dialogOpen} onOpenChange={handleDialogClose}>
+        <DialogContent className="p-0 gap-0 overflow-y-auto max-h-[90vh]">
+          <DialogHeader className="p-4 pb-0">
+            <DialogTitle>Crop the image</DialogTitle>
+          </DialogHeader>
+          <div className="p-6 pt-2 size-full">
+            {imageSrc ? (
+              <ReactCrop
+                crop={crop}
+                onChange={(_, percentCrop) => setCrop(percentCrop)}
+                onComplete={onCropComplete}
+                aspect={aspect}
+                className="w-full"
+                circularCrop={aspectRatio === 1}
+              >
+                <div className="w-full h-full rounded-none">
+                  <Image
+                    ref={imgRef}
+                    className="w-full h-full rounded-none object-contain"
+                    alt="Image cropper"
+                    src={imageSrc}
+                    width={1600}
+                    height={1600}
+                    onLoad={onImageLoad}
+                    unoptimized
+                    priority
+                  />
+                </div>
+              </ReactCrop>
+            ) : (
+              <div className="w-full h-64 flex items-center justify-center">
+                <div className="text-center">
+                  <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
+                  <p className="text-sm text-muted-foreground">
+                    Loading image...
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter className="p-6 pt-0 justify-between">
             <Button
               size="sm"
-              type="reset"
+              type="button"
               className="w-fit"
               variant="outline"
-              onClick={() => setSelectedFile(null)}
+              onClick={() => {
+                setDialogOpen(false);
+                setTimeout(openFileSelector, 100);
+              }}
             >
-              <Trash2Icon className="mr-1.5 size-4" />
-              Cancel
+              <RefreshCw className="mr-1.5 size-4" />
+              Change image
             </Button>
-          </DialogClose>
-          <Button type="submit" size="sm" className="w-fit" onClick={onCrop}>
-            <CropIcon className="mr-1.5 size-4" />
-            Crop
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+
+            <div className="flex gap-2">
+              <DialogClose asChild>
+                <Button
+                  size="sm"
+                  type="button"
+                  className="w-fit"
+                  variant="outline"
+                >
+                  <Trash2Icon className="mr-1.5 size-4" />
+                  Cancel
+                </Button>
+              </DialogClose>
+              <Button
+                type="button"
+                size="sm"
+                className="w-fit"
+                onClick={applyCrop}
+                disabled={!croppedImageUrl}
+              >
+                <CropIcon className="mr-1.5 size-4" />
+                Crop
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

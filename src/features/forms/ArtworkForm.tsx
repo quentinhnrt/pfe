@@ -1,12 +1,12 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import {
     Dialog,
     DialogContent,
     DialogHeader,
     DialogTitle,
     DialogTrigger
-} from "@/components/ui/dialog";
+} from "@/components/ui/shadcn/dialog";
 import {
     Form,
     FormControl,
@@ -14,16 +14,17 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/shadcn/form";
+import { Input } from "@/components/ui/shadcn/input";
+import { Switch } from "@/components/ui/shadcn/switch";
+import { Textarea } from "@/components/ui/shadcn/textarea";
 import { ImageUploadField } from "@/features/fields/ImageUpload";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
 import { Loader2, X, Euro, ShoppingCart, CheckCircle } from "lucide-react";
+import {Artwork} from "@prisma/client";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -57,7 +58,15 @@ function isImageCorrect(image: File) {
     };
 }
 
-export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, children }: { onSuccess?: (data: object) => void; onFailure?: (data: object) => void; onArtworkCreated?: () => void; children?: React.ReactNode; }) {
+type Props = {
+    onSuccess?: (data: Artwork) => void;
+    onFailure?: (data: object) => void;
+    onArtworkCreated?: () => void;
+    children?: React.ReactNode;
+    artwork?: Artwork | null;
+}
+
+export default function ArtworkForm({ onSuccess, onFailure, children, artwork }: Props) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -77,7 +86,7 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
             });
         }
 
-        if (!data.image) {
+        if (!artwork && !data.image) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "L'image est obligatoire",
@@ -100,12 +109,12 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
-            title: "",
-            description: "",
-            isForSale: false,
+            title: artwork?.title || "",
+            description: artwork?.description || "",
+            isForSale: artwork?.isForSale || false,
             image: null,
-            price: "",
-            sold: false,
+            price: artwork?.price ? String(artwork.price) : "",
+            sold: artwork?.sold || false,
         },
     });
 
@@ -118,12 +127,20 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
             for (const key in values) {
                 // @ts-expect-error it works
                 const value = values[key];
-                if (value === null || value === undefined) continue;
+
+                if (artwork && (value === null || value === undefined)) {
+                    continue;
+                }
+
                 formData.append(key, value);
             }
 
+            if (artwork) {
+                formData.append("artworkId", artwork.id.toString());
+            }
+
             const response = await fetch("/api/artworks", {
-                method: "POST",
+                method: artwork ? "PUT" : "POST",
                 body: formData,
             });
 
@@ -141,18 +158,6 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
             }
 
             setOpen(false);
-            form.reset({
-                title: "",
-                description: "",
-                isForSale: false,
-                image: null,
-                price: "",
-                sold: false,
-            });
-
-            if (onArtworkCreated) {
-                onArtworkCreated();
-            }
         } catch (error) {
             console.error("Erreur lors de la création de l'œuvre:", error);
             if (onFailure) {
@@ -166,12 +171,12 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
     const handleCancel = () => {
         setOpen(false);
         form.reset({
-            title: "",
-            description: "",
-            isForSale: false,
+            title: artwork?.title || "",
+            description: artwork?.description || "",
+            isForSale: artwork?.isForSale || false,
             image: null,
-            price: "",
-            sold: false,
+            price: artwork?.price ? String(artwork.price) : "",
+            sold: artwork?.sold || false,
         });
     };
 
@@ -210,10 +215,10 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
                                                 <ImageUploadField
                                                     name="image"
                                                     label="Téléchargez une image de votre œuvre"
+                                                    existingImage={artwork?.thumbnail || undefined}
                                                 />
                                             </div>
                                         </FormControl>
-                                        <FormMessage className="text-red-600 font-medium" />
                                     </FormItem>
                                 )}
                             />
@@ -227,9 +232,9 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
                                             Titre de l&apos;œuvre
                                         </FormLabel>
                                         <FormControl>
-                                            <Input 
-                                                placeholder="Donnez un titre à votre création" 
-                                                {...field} 
+                                            <Input
+                                                placeholder="Donnez un titre à votre création"
+                                                {...field}
                                                 className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200"
                                             />
                                         </FormControl>
@@ -247,9 +252,9 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
                                             Description (optionnelle)
                                         </FormLabel>
                                         <FormControl>
-                                            <Textarea 
-                                                placeholder="Décrivez votre œuvre, sa technique, son inspiration..." 
-                                                {...field} 
+                                            <Textarea
+                                                placeholder="Décrivez votre œuvre, sa technique, son inspiration..."
+                                                {...field}
                                                 className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 min-h-[100px] resize-none"
                                             />
                                         </FormControl>
@@ -298,10 +303,10 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
                                                     </FormLabel>
                                                     <FormControl>
                                                         <div className="relative">
-                                                            <Input 
-                                                                type="number" 
-                                                                placeholder="0" 
-                                                                {...field} 
+                                                            <Input
+                                                                type="number"
+                                                                placeholder="0"
+                                                                {...field}
                                                                 className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 pl-8"
                                                             />
                                                             <Euro className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
@@ -360,10 +365,10 @@ export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, ch
                             {isLoading ? (
                                 <>
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                    Création...
+                                    {artwork ? "Modification..." : "Création..."}
                                 </>
                             ) : (
-                                "Créer"
+                                <p>{artwork ? "Modifier" : "Créer"}</p>
                             )}
                         </Button>
                     </div>

@@ -1,19 +1,19 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/shadcn/button";
+import { Checkbox } from "@/components/ui/shadcn/checkbox";
 import {
   FormControl,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "@/components/ui/shadcn/form";
 import {
   Table,
   TableBody,
   TableCell,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/shadcn/table";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";

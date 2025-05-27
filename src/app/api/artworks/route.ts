@@ -3,14 +3,57 @@ import prisma from "@/lib/prisma";
 import {uploadImage} from "@/lib/upload/blob";
 import {Artwork} from "@prisma/client";
 import {headers} from "next/headers";
-import {NextResponse} from "next/server";
+import {NextRequest, NextResponse} from "next/server";
 
-export async function GET() {
-    const artworks = await prisma.artwork.findMany({
+type PrismaArtworkQuery = {
+    where?: {
+        userId?: string;
+        isForSale?: boolean;
+        sold?: boolean;
+    };
+    orderBy?: {
+        createdAt: "asc" | "desc";
+    };
+    skip?: number;
+    take?: number;
+}
+export async function GET(request: NextRequest) {
+    const searchParams = request.nextUrl.searchParams;
+
+    const query:PrismaArtworkQuery = {
         orderBy: {
             createdAt: "desc",
         },
-    });
+    }
+
+    if (searchParams.has("userId")) {
+        const userId = searchParams.get("userId") as string;
+        query.where = {
+            userId,
+        };
+    }
+
+    if (searchParams.has("page")) {
+        const page = parseInt(searchParams.get("page") as string);
+        const limit = parseInt(searchParams.get("limit") as string) || 10;
+
+        query.skip = (page - 1) * limit;
+        query.take = limit;
+    }
+
+    if (searchParams.has("isForSale")) {
+        const toBuy = searchParams.get("isForSale") as string;
+
+        if (toBuy === "true") {
+            query.where = {
+                ...query.where,
+                isForSale: true,
+                sold: false,
+            };
+        }
+    }
+
+    const artworks = await prisma.artwork.findMany(query);
 
     return NextResponse.json(artworks);
 }

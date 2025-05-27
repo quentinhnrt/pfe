@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import { StepType } from "@/features/on-boarding/types";
 import { ArrowLeftIcon, ArrowRightIcon, UserIcon } from "lucide-react";
 
