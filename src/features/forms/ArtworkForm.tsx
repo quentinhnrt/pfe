@@ -66,7 +66,7 @@ type Props = {
     artwork?: Artwork | null;
 }
 
-export default function ArtworkForm({ onSuccess, onFailure, onArtworkCreated, children, artwork }: Props) {
+export default function ArtworkForm({ onSuccess, onFailure, children, artwork }: Props) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
