@@ -1,15 +1,50 @@
+"use client"
+
 import TemplateList, {
   type TemplateWithStatus,
 } from "@/components/TemplateList";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { AlertTriangle } from "lucide-react";
+import {useEffect, useState} from "react";
 
-export default async function PortfolioSettings() {
-  const response = await fetch(process.env.BETTER_AUTH_URL + "/api/templates");
+export default function PortfolioSettings() {
+  const [templates, setTemplates] = useState<TemplateWithStatus[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!response.ok) {
-    const errorData = await response.json();
-    console.error("Error fetching templates:", errorData);
+  async function fetchTemplates() {
+    const response = await fetch("/api/templates");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      setError(errorData.error || "Failed to load templates");
+      setLoading(false);
+      return;
+    }
+
+    const templates: TemplateWithStatus[] = await response.json();
+
+    setTemplates(templates);
+    setLoading(false);
+  }
+
+  useEffect(() => {
+    fetchTemplates()
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <Card className="shadow-lg max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <p>Chargement...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
     return (
       <div className="flex items-center justify-center p-4">
         <Card className="shadow-lg border border-gray-200 max-w-md w-full">
@@ -22,8 +57,7 @@ export default async function PortfolioSettings() {
                 Error Loading Templates
               </h1>
               <p className="text-gray-600">
-                {errorData.error ||
-                  "Failed to load templates. Please try again later."}
+                {error}
               </p>
             </div>
           </CardContent>
@@ -31,8 +65,6 @@ export default async function PortfolioSettings() {
       </div>
     );
   }
-
-  const templates: TemplateWithStatus[] = await response.json();
 
   return <TemplateList templates={templates} />;
 }
