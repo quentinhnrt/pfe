@@ -51,7 +51,15 @@ export async function GET(req: NextRequest) {
             user: true,
             question: {
                 include: {
-                    answers: true,
+                    answers: {
+                        include: {
+                            users: {
+                                where: {
+                                    id: currentUserId,
+                                }
+                            },
+                        },
+                    }
                 },
             },
             artworks: true,

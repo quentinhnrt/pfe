@@ -93,7 +93,6 @@ export default function PostFeed({ session }: PostFeed) {
   return (
     <section className="py-2">
       <div className="container mx-auto px-4 text-black">
-        <h2 className="text-2xl text-white font-bold mb-6">Explorez les créations</h2>
         <div className="flex flex-col gap-6 items-center">
           {posts.map((post) => (
             <div key={post.id} className="w-[1000px]">

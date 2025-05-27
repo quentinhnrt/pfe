@@ -57,13 +57,9 @@ export default function SearchInput({ value, onChange, delay = 500 }: SearchInpu
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className="
-            w-full h-14 pl-12 pr-12 
-            text-black placeholder:text-gray-500 
-            backdrop-blur-md 
-            border-2 border-gray-700/50 
-            rounded-2xl 
-            focus:border-gray-600/70 focus:ring-0 focus:ring-offset-0
-            hover:border-gray-600/60
+            w-full h-14 pl-12 pr-12
+            backdrop-blur-md
+            rounded-2xl
             transition-all duration-300
             shadow-xl shadow-black/20
             font-medium

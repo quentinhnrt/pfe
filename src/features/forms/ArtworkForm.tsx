@@ -186,15 +186,15 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 {children || (
-                    <Button className="bg-black text-white hover:bg-gray-800 border-0 transition-all duration-200 font-medium">
+                    <Button className="border-0 transition-all duration-200 font-medium">
                         Créer une œuvre
                     </Button>
                 )}
             </DialogTrigger>
 
-            <DialogContent className="!max-w-4xl max-h-[90vh] bg-white border-2 border-black shadow-2xl overflow-hidden flex flex-col">
-                <DialogHeader className="border-b border-gray-200 pb-4 flex-shrink-0">
-                    <DialogTitle className="text-black text-2xl font-bold">
+            <DialogContent className="!max-w-4xl max-h-[90vh]  shadow-2xl overflow-hidden flex flex-col">
+                <DialogHeader className=" pb-4 flex-shrink-0">
+                    <DialogTitle className=" text-2xl font-bold">
                         Créer une nouvelle œuvre
                     </DialogTitle>
                 </DialogHeader>
@@ -207,11 +207,11 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                 name="image"
                                 render={() => (
                                     <FormItem>
-                                        <FormLabel className="text-black font-semibold text-base">
+                                        <FormLabel className="font-semibold text-base">
                                             Image de l&apos;œuvre
                                         </FormLabel>
                                         <FormControl>
-                                            <div className="border-2 border-gray-300 hover:border-black transition-colors duration-200 rounded-lg p-4 bg-gray-50">
+                                            <div className="transition-colors duration-200 rounded-lg p-4 ">
                                                 <ImageUploadField
                                                     name="image"
                                                     label="Téléchargez une image de votre œuvre"
@@ -228,14 +228,14 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                 name="title"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-black font-semibold text-base">
+                                        <FormLabel className="font-semibold text-base">
                                             Titre de l&apos;œuvre
                                         </FormLabel>
                                         <FormControl>
                                             <Input
                                                 placeholder="Donnez un titre à votre création"
                                                 {...field}
-                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200"
+                                                className="transition-all duration-200"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-600 font-medium" />
@@ -248,14 +248,14 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                 name="description"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="text-black font-semibold text-base">
+                                        <FormLabel className="font-semibold text-base">
                                             Description (optionnelle)
                                         </FormLabel>
                                         <FormControl>
                                             <Textarea
                                                 placeholder="Décrivez votre œuvre, sa technique, son inspiration..."
                                                 {...field}
-                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 min-h-[100px] resize-none"
+                                                className="transition-all duration-200 min-h-[100px] resize-none"
                                             />
                                         </FormControl>
                                         <FormMessage className="text-red-600 font-medium" />
@@ -273,9 +273,9 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                     control={form.control}
                                     name="isForSale"
                                     render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border-2 border-gray-300 p-4 shadow-sm bg-white hover:border-black transition-colors duration-200 mb-4">
+                                        <FormItem className="flex flex-row items-center justify-between rounded-lg p-4 shadow-sm  transition-colors duration-200 mb-4">
                                             <div className="space-y-0.5">
-                                                <FormLabel className="text-black font-semibold text-base">
+                                                <FormLabel className="font-semibold text-base">
                                                     Cette œuvre est-elle à vendre ?
                                                 </FormLabel>
                                             </div>
@@ -283,7 +283,6 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                                 <Switch
                                                     checked={field.value}
                                                     onCheckedChange={field.onChange}
-                                                    className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-300"
                                                 />
                                             </FormControl>
                                         </FormItem>
@@ -307,7 +306,7 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                                                 type="number"
                                                                 placeholder="0"
                                                                 {...field}
-                                                                className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder:text-gray-500 transition-all duration-200 pl-8"
+                                                                className="transition-all duration-200 pl-8"
                                                             />
                                                             <Euro className="w-4 h-4 absolute left-2 top-1/2 -translate-y-1/2 text-gray-500" />
                                                         </div>
@@ -321,9 +320,9 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                             control={form.control}
                                             name="sold"
                                             render={({ field }) => (
-                                                <FormItem className="flex flex-row items-center justify-between rounded-lg border-2 border-gray-300 p-4 shadow-sm bg-white hover:border-black transition-colors duration-200">
+                                                <FormItem className="flex flex-row items-center justify-between rounded-lg p-4 shadow-sm transition-colors duration-200">
                                                     <div className="space-y-0.5">
-                                                        <FormLabel className="text-black font-semibold text-base flex items-center">
+                                                        <FormLabel className="font-semibold text-base flex items-center">
                                                             <CheckCircle className="w-4 h-4 mr-2" />
                                                             Cette œuvre est-elle vendue ?
                                                         </FormLabel>
@@ -332,7 +331,6 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                                         <Switch
                                                             checked={field.value}
                                                             onCheckedChange={field.onChange}
-                                                            className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-gray-300"
                                                         />
                                                     </FormControl>
                                                 </FormItem>
@@ -352,7 +350,6 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                             variant="outline"
                             onClick={handleCancel}
                             disabled={isLoading}
-                            className="border-2 border-gray-300 text-black hover:bg-gray-100 hover:border-black transition-all duration-200"
                         >
                             <X className="w-4 h-4 mr-2" />
                             Annuler
@@ -360,7 +357,7 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                         <Button
                             onClick={form.handleSubmit(onSubmit)}
                             disabled={isLoading}
-                            className="bg-black text-white hover:bg-gray-800 active:bg-gray-900 disabled:bg-gray-400 transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
+                            className="transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
                         >
                             {isLoading ? (
                                 <>

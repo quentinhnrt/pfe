@@ -44,7 +44,15 @@ type GET_POST_QUERY = {
         artworks: true;
         question: {
             include: {
-                answers: true;
+                answers: {
+                    include: {
+                        users: {
+                            where: {
+                                id: string;
+                            };
+                        };
+                    };
+                }
             };
         };
         user: true;
@@ -57,10 +65,15 @@ type GET_POST_QUERY = {
 }
 
 export async function GET(request: NextRequest) {
+    const session = await auth.api.getSession({
+        headers: await headers(),
+    });
+
     const searchParams = request.nextUrl.searchParams;
     const limit = searchParams.get("limit") || "10";
     const page = searchParams.get("page") || "1";
     const userId = searchParams.get("userId");
+    const currentUserId = session?.user?.id || "";
 
     const query: GET_POST_QUERY = {
         orderBy: {
@@ -70,7 +83,15 @@ export async function GET(request: NextRequest) {
             artworks: true,
             question: {
                 include: {
-                    answers: true,
+                    answers: {
+                        include: {
+                            users: {
+                                where: {
+                                    id: currentUserId || "",
+                                },
+                            },
+                        },
+                    },
                 },
             },
             user: true

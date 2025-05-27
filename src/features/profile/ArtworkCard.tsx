@@ -1,6 +1,6 @@
 import {Artwork} from "@prisma/client";
 import Image from "next/image";
-import {Card, CardContent} from "@/components/ui/shadcn/card";
+import {Card} from "@/components/ui/shadcn/card";
 import {Badge} from "@/components/ui/shadcn/badge";
 
 type Props = {
@@ -11,18 +11,21 @@ type Props = {
 export default function ArtworkCard({artwork, onClick}: Props) {
 
     return (
-        <Card className={"relative aspect-video cursor-pointer group"} key={artwork.id} onClick={() => onClick && onClick(artwork)}>
+        <Card className={"relative aspect-video cursor-pointer group overflow-hidden"} key={artwork.id}
+              onClick={() => onClick && onClick(artwork)}>
             <Image
                 src={artwork.thumbnail}
                 alt={artwork.title}
                 fill
-                className="rounded-lg object-cover z-0"
+                className="rounded-lg object-cover z-0 group-hover:scale-105 duration-400"
             />
 
-            <div className={"absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10"}>
-                <CardContent className="text-white text-center">
-                    <h3 className="text-lg font-semibold">{artwork.title}</h3>
-                </CardContent>
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent transform translate-y-full group-hover:translate-y-0 transition-transform duration-400 ease-out">
+                <div className="p-4 text-center">
+                    <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2">
+                        {artwork.title}
+                    </h3>
+                </div>
             </div>
 
             {artwork.isForSale && (

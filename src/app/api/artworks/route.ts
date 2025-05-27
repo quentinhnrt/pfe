@@ -16,6 +16,9 @@ type PrismaArtworkQuery = {
     };
     skip?: number;
     take?: number;
+    include?: {
+        user?: boolean;
+    };
 }
 export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
@@ -24,6 +27,9 @@ export async function GET(request: NextRequest) {
         orderBy: {
             createdAt: "desc",
         },
+        include: {
+            user: true
+        }
     }
 
     if (searchParams.has("userId")) {
