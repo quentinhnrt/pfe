@@ -106,8 +106,8 @@ export default function ArtworksTab({userId, isActive}: { userId: string, isActi
             ) : (
                 <div className="space-y-4">
                     <div className={"grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"}>
-                        {artworks.map((artwork, index) => (
-                            <ArtworkCard key={artwork.id} artwork={artwork} onClick={handleOpenDialog} index={index} />
+                        {artworks.map((artwork) => (
+                            <ArtworkCard key={artwork.id} artwork={artwork} onClick={handleOpenDialog} />
                         ))}
                     </div>
 

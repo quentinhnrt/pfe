@@ -6,7 +6,6 @@ import {Badge} from "@/components/ui/shadcn/badge";
 type Props = {
     artwork: Artwork;
     onClick?: (artwork: Artwork) => void;
-    index: number;
 }
 
 export default function ArtworkCard({artwork, onClick}: Props) {
