@@ -28,6 +28,7 @@ export function ImageUploadField({
   const { control, setValue, watch } = useFormContext();
   const file = watch(name);
   const [preview, setPreview] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

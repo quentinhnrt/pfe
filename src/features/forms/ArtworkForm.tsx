@@ -25,7 +25,6 @@ import { z } from "zod";
 import { useState } from "react";
 import { Loader2, X, Euro, ShoppingCart, CheckCircle } from "lucide-react";
 import {Artwork} from "@prisma/client";
-import {useRouter} from "next/navigation";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -70,7 +69,6 @@ type Props = {
 export default function ArtworkForm({ onSuccess, onFailure, children, artwork }: Props) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const router = useRouter()
 
     const formSchema = z.object({
         title: z.string().min(1, "Le titre est requis").max(255, "Le titre ne peut pas dépasser 255 caractères"),
