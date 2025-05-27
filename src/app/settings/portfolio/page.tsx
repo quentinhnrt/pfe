@@ -3,12 +3,9 @@ import TemplateList, {
 } from "@/components/TemplateList";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { AlertTriangle } from "lucide-react";
-import { headers } from "next/headers";
 
 export default async function PortfolioSettings() {
-  const response = await fetch(process.env.BETTER_AUTH_URL + "/api/templates", {
-    headers: await headers(),
-  });
+  const response = await fetch(process.env.BETTER_AUTH_URL + "/api/templates");
 
   if (!response.ok) {
     const errorData = await response.json();
