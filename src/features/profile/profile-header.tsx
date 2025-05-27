@@ -70,7 +70,7 @@ export const ProfileHeader = memo(function ProfileHeader({
                             <Link href={`/settings/profile`}>Edit Profile</Link>
                         </Button>
                     ) : (
-                        <FollowButton user={user} currentUser={currentUser || undefined} />
+                        <FollowButton user={user} currentUser={currentUser || undefined}/>
                     )}
                 </div>
             </div>
@@ -110,18 +110,14 @@ export const ProfileHeader = memo(function ProfileHeader({
                 </div>
 
                 <div className="flex gap-4 text-sm">
-                    <Link
-                        href={`/user/${profile.id}/following`}
-                        className="hover:underline"
-                    >
+                    <div>
                         <span className="font-semibold">{profile.following}</span> following
-                    </Link>
-                    <Link
-                        href={`/user/${profile.id}/followers`}
-                        className="hover:underline"
-                    >
+
+                    </div>
+                    <div>
                         <span className="font-semibold">{profile.followers}</span> followers
-                    </Link>
+                    </div>
+
                 </div>
             </div>
         </div>

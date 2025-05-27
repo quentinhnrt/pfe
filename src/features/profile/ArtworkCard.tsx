@@ -17,6 +17,7 @@ export default function ArtworkCard({artwork, onClick}: Props) {
                 src={artwork.thumbnail}
                 alt={artwork.title}
                 fill
+                sizes={"(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
                 className="rounded-lg object-cover z-0 group-hover:scale-105 duration-400"
             />
 

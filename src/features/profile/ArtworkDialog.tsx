@@ -51,7 +51,7 @@ export default function ArtworkDialog({
                             className="rounded-lg object-cover h-96 w-auto"
                         />
 
-                        <div className="space-y-2 text-sm text-gray-700">
+                        <div className="space-y-2 text-sm ">
                             <p>
                                 <span className="font-semibold">Description:</span>{" "}
                                 {artwork.description}
@@ -78,8 +78,7 @@ export default function ArtworkDialog({
                         {session?.user && artwork.userId === session.user.id && (
                             <div className={"flex items-center gap-4"}>
                                 <ArtworkForm artwork={artwork} onSuccess={handleArtworkEdited}>
-                                    <Button
-                                        variant={"default"}
+                                    <Button variant={"default"} className={"cursor-pointer"}
                                     >
                                         Edit
                                     </Button>
@@ -89,6 +88,7 @@ export default function ArtworkDialog({
                                 <Button
                                     onClick={() => handleDeleteArtwork(artwork.id)}
                                     variant={"destructive"}
+                                    className={"cursor-pointer"}
                                 >
                                     Delete
                                 </Button>

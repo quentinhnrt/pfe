@@ -8,6 +8,7 @@ import Link from "next/link";
 import {Facebook, Instagram, Mail, Twitter} from "lucide-react";
 import LenisWrapper from "@/features/templates/bento-template/components/LenisWrapper";
 import ReactLenis from "lenis/react";
+import {Button} from "@/components/ui/shadcn/button";
 export default async function Render({data, user}: { user: UserFromApi, data: z.infer<typeof templateSchema> }) {
     if (!data.collections) {
         return;
@@ -21,7 +22,7 @@ export default async function Render({data, user}: { user: UserFromApi, data: z.
             <LenisWrapper>
                 <div className={"w-full mx-auto p-4"}>
                     <section
-                        className="flex items-center justify-center min-h-screen bg-gradient-to-b from-background to-muted">
+                        className="flex items-center justify-center min-h-screen">
                         <div className="container px-4 mx-auto">
                             <div className="grid items-center gap-8 md:grid-cols-2">
                                 <div className="flex flex-col space-y-6 order-2 md:order-1">
@@ -30,54 +31,64 @@ export default async function Render({data, user}: { user: UserFromApi, data: z.
                                     </h1>
 
                                     {data.description && (
-                                        <p className="max-w-[600px] text-muted-foreground text-lg md:text-4xl text-center lg:text-left">{data.description}</p>
+                                        <p className="max-w-[600px] text-muted-foreground text-lg md:text-2xl text-center lg:text-left">{data.description}</p>
                                     )}
 
                                     <div className="flex flex-wrap gap-4 pt-4 justify-center md:justify-start">
                                         {data.contactInfos.mail && (
-                                            <Link
-                                                href={`mailto:${data.contactInfos.mail}`}
-                                                className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full bg-black hover:bg-black80 text-white"
-                                            >
-                                                <Mail className="w-5 h-5"/>
-                                                <span className="sr-only md:not-sr-only md:inline">Email</span>
-                                            </Link>
+                                            <Button>
+                                                <Link
+                                                    href={`mailto:${data.contactInfos.mail}`}
+                                                    className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full"
+                                                >
+                                                    <Mail className="w-5 h-5"/>
+                                                    <span className="sr-only md:not-sr-only md:inline">Email</span>
+                                                </Link>
+                                            </Button>
                                         )}
 
                                         {data.contactInfos.instagram && (
-                                            <Link
-                                                href={`https://instagram.com/${data.contactInfos.instagram}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full bg-black hover:bg-black80 text-white"
-                                            >
-                                                <Instagram className="w-5 h-5"/>
-                                                <span className="sr-only md:not-sr-only md:inline">Instagram</span>
-                                            </Link>
+                                            <Button>
+                                                <Link
+                                                    href={`https://instagram.com/${data.contactInfos.instagram}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full"
+                                                >
+                                                    <Instagram className="w-5 h-5"/>
+                                                    <span className="sr-only md:not-sr-only md:inline">Instagram</span>
+                                                </Link>
+                                            </Button>
+
                                         )}
 
                                         {data.contactInfos.twitter && (
-                                            <Link
-                                                href={`https://twitter.com/${data.contactInfos.twitter}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full bg-black hover:bg-black80 text-white"
-                                            >
-                                                <Twitter className="w-5 h-5"/>
-                                                <span className="sr-only md:not-sr-only md:inline">Twitter</span>
-                                            </Link>
+                                            <Button>
+                                                <Link
+                                                    href={`https://twitter.com/${data.contactInfos.twitter}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full "
+                                                >
+                                                    <Twitter className="w-5 h-5"/>
+                                                    <span className="sr-only md:not-sr-only md:inline">Twitter</span>
+                                                </Link>
+                                            </Button>
+
                                         )}
 
                                         {data.contactInfos.facebook && (
-                                            <Link
-                                                href={`https://facebook.com/${data.contactInfos.facebook}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full bg-black hover:bg-black80 text-white"
-                                            >
-                                                <Facebook className="w-5 h-5"/>
-                                                <span className="sr-only md:not-sr-only md:inline">Facebook</span>
-                                            </Link>
+                                            <Button>
+                                                <Link
+                                                    href={`https://facebook.com/${data.contactInfos.facebook}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="flex items-center gap-2 px-4 py-2 transition-colors rounded-full"
+                                                >
+                                                    <Facebook className="w-5 h-5"/>
+                                                    <span className="sr-only md:not-sr-only md:inline">Facebook</span>
+                                                </Link>
+                                            </Button>
                                         )}
                                     </div>
                                 </div>

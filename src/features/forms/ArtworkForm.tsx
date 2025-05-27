@@ -25,6 +25,7 @@ import { z } from "zod";
 import { useState } from "react";
 import { Loader2, X, Euro, ShoppingCart, CheckCircle } from "lucide-react";
 import {Artwork} from "@prisma/client";
+import {useRouter} from "next/navigation";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -69,6 +70,7 @@ type Props = {
 export default function ArtworkForm({ onSuccess, onFailure, children, artwork }: Props) {
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const router = useRouter()
 
     const formSchema = z.object({
         title: z.string().min(1, "Le titre est requis").max(255, "Le titre ne peut pas dépasser 255 caractères"),
@@ -158,6 +160,8 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
             }
 
             setOpen(false);
+            window.location.reload()
+
         } catch (error) {
             console.error("Erreur lors de la création de l'œuvre:", error);
             if (onFailure) {
@@ -263,8 +267,8 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                                 )}
                             />
 
-                            <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                <h3 className="text-lg font-semibold text-black mb-4 flex items-center">
+                            <div className="rounded-lg p-4 border border-gray-200">
+                                <h3 className="text-lg font-semibold mb-4 flex items-center">
                                     <ShoppingCart className="w-5 h-5 mr-2" />
                                     Informations de vente
                                 </h3>
@@ -343,7 +347,7 @@ export default function ArtworkForm({ onSuccess, onFailure, children, artwork }:
                     </Form>
                 </div>
 
-                <div className="flex-shrink-0 border-t border-gray-200 pt-4 bg-white">
+                <div className="flex-shrink-0 pt-4">
                     <div className="flex justify-end gap-3">
                         <Button
                             type="button"

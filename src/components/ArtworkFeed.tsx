@@ -89,10 +89,10 @@ export default function ArtworksFeed({isAuthenticated = false}: ArtworksFeedProp
             className={`${isAuthenticated ? 'flex gap-4 px-6' : 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6'}`}>
             {[...Array(isAuthenticated ? 6 : 8)].map((_, i) => (
                 <div key={i} className={`${isAuthenticated ? 'flex-shrink-0 w-56' : ''} animate-pulse`}>
-                    <div className="bg-gray-200 rounded-xl h-48 mb-3"></div>
+                    <div className="rounded-xl h-48 mb-3"></div>
                     <div className="space-y-2">
-                        <div className="bg-gray-200 h-3 rounded-full"></div>
-                        <div className="bg-gray-200 h-3 rounded-full w-2/3"></div>
+                        <div className=" h-3 rounded-full"></div>
+                        <div className=" h-3 rounded-full w-2/3"></div>
                     </div>
                 </div>
             ))}
@@ -101,12 +101,12 @@ export default function ArtworksFeed({isAuthenticated = false}: ArtworksFeedProp
 
     if (isLoading) {
         return (
-            <section className="py-8 bg-white">
+            <section className="py-8">
                 <div className="px-6 mb-6">
-                    <h2 className="text-2xl font-bold mb-2 text-gray-900">
+                    <h2 className="text-2xl font-bold mb-2">
                         Œuvres à découvrir
                     </h2>
-                    <p className="text-gray-600">
+                    <p>
                         {isAuthenticated ? 'Naviguez dans notre sélection d\'œuvres' : 'Explorez notre galerie d\'art'}
                     </p>
                 </div>

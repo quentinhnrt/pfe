@@ -89,6 +89,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
       setIsOpen(false);
       form.reset();
       onPostCreated?.();
+      window.location.reload()
     } catch (error) {
       console.error(error);
     } finally {
@@ -111,9 +112,9 @@ export default function PostForm({ children, onPostCreated }: Props) {
         )}
       </DialogTrigger>
 
-      <DialogContent className="!max-w-6xl max-h-[90vh] flex flex-col border-2 border-black bg-white shadow-2xl overflow-hidden">
-        <DialogHeader className="border-b border-gray-200 pb-4 flex-shrink-0">
-          <DialogTitle className="text-2xl font-bold text-black">
+      <DialogContent className="!max-w-6xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+        <DialogHeader className="pb-4 flex-shrink-0">
+          <DialogTitle className="text-2xl font-bold">
             Créer un post
           </DialogTitle>
         </DialogHeader>
@@ -129,14 +130,14 @@ export default function PostForm({ children, onPostCreated }: Props) {
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-black font-semibold">
+                    <FormLabel className="font-semibold">
                       Description
                     </FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
                         placeholder="Contenu"
-                        className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder-gray-500 min-h-[100px] resize-none transition"
+                        className="min-h-[100px] resize-none transition"
                       />
                     </FormControl>
                     <FormMessage className="text-red-600 font-medium" />
@@ -149,11 +150,11 @@ export default function PostForm({ children, onPostCreated }: Props) {
                 name="artworks"
                 render={() => (
                   <FormItem>
-                    <FormLabel className="text-black font-semibold">
+                    <FormLabel className="font-semibold">
                       Œuvres
                     </FormLabel>
                     <FormControl>
-                      <div className="border-2 border-gray-300 hover:border-black rounded-lg p-4 bg-gray-50 transition-colors">
+                      <div className="rounded-lg p-4 transition-colors">
                         <ArtworkGallerySelector
                           name="artworks"
                           label="Sélectionner des œuvres à accompagner"
@@ -168,15 +169,14 @@ export default function PostForm({ children, onPostCreated }: Props) {
                 control={form.control}
                 name="hasCommunityQuestion"
                 render={({ field }) => (
-                  <FormItem className="flex items-center justify-between border-2 border-gray-300 p-4 rounded-lg bg-gray-50 hover:border-black transition-colors">
-                    <FormLabel className="text-black font-semibold">
+                  <FormItem className="flex items-center justify-between p-4 rounded-lg transition-colors border">
+                    <FormLabel className="font-semibold">
                       Y a-t-il une question à la communauté ?
                     </FormLabel>
                     <FormControl>
                       <Switch
                         checked={field.value}
                         onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-black data-[state=unchecked]:bg-gray-300"
                       />
                     </FormControl>
                   </FormItem>
@@ -190,14 +190,14 @@ export default function PostForm({ children, onPostCreated }: Props) {
                     name="question"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-black font-semibold">
+                        <FormLabel className="font-semibold">
                           Question
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
                             placeholder="Posez votre question à la communauté"
-                            className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder-gray-500 min-h-[80px] resize-none transition"
+                            className="min-h-[80px] resize-none transition"
                           />
                         </FormControl>
                         <FormMessage className="text-red-600 font-medium" />
@@ -210,11 +210,11 @@ export default function PostForm({ children, onPostCreated }: Props) {
                     name="answers"
                     render={() => (
                       <FormItem>
-                        <FormLabel className="text-black font-semibold">
+                        <FormLabel className="font-semibold">
                           Réponses
                         </FormLabel>
                         <FormControl>
-                          <div className="border-2 border-gray-300 rounded-lg p-4 bg-white space-y-2">
+                          <div className="rounded-lg p-4  space-y-2">
                             <Repeater<{ answer: string }>
                               name="answers"
                               initialValues={{ answer: "" }}
@@ -226,14 +226,14 @@ export default function PostForm({ children, onPostCreated }: Props) {
                                     handleChange(index, "answer", e.target.value)
                                   }
                                   placeholder={`Option ${index + 1}`}
-                                  className="border-2 border-gray-300 focus:border-black focus:ring-2 focus:ring-black/20 bg-white text-black placeholder-gray-500 transition"
+                                  className="transition"
                                 />
                               )}
                               addButtonRenderer={({ onAdd }) => (
                                 <Button
                                   onClick={onAdd}
                                   variant="default"
-                                  className="w-full bg-black text-white hover:bg-white hover:text-black border-black border transition-colors font-medium mt-3"
+                                  className="w-full transition-colors font-medium mt-3"
                                 >
                                   Ajouter une question
                                 </Button>
@@ -251,14 +251,14 @@ export default function PostForm({ children, onPostCreated }: Props) {
           </Form>
         </div>
 
-        <div className="flex-shrink-0 border-t border-gray-200 pt-4 bg-white">
+        <div className="flex-shrink-0 pt-4">
           <div className="flex justify-end gap-3">
             <Button
               type="button"
               variant="outline"
               onClick={handleCancel}
               disabled={isLoading}
-              className="border-2 border-gray-300 text-black hover:bg-gray-100 hover:border-black transition font-medium"
+              className="transition font-medium"
             >
               <X className="w-4 h-4 mr-2" />
               Annuler
@@ -267,7 +267,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
             <Button
               onClick={form.handleSubmit(onSubmit)}
               disabled={isLoading}
-              className="bg-black text-white hover:bg-gray-800 active:bg-gray-900 disabled:bg-gray-400 transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
+              className="transition-all duration-200 font-medium px-8 py-2 text-base min-w-[140px]"
             >
               {isLoading ? (
                 <>
