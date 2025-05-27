@@ -28,7 +28,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 type Props = {
-  onSuccess?: (data: object) => void;
+  onSuccess?: (data: Artwork) => void;
   onFailure?: (data: object) => void;
   artwork?: Artwork | null;
   children?: React.ReactNode;
