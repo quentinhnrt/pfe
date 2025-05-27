@@ -3,6 +3,7 @@ import PostArtworks from "@/features/post-card/PostArtworks";
 import PostCommunityQuestion from "@/features/post-card/PostCommunityQuestion";
 import { Prisma } from "@prisma/client";
 import { MoreHorizontal, Clock } from "lucide-react";
+import {Card} from "@/components/ui/shadcn/card";
 
 export type PostWithArtworksQuestionAndAnswers = Prisma.PostGetPayload<{
   include: {
@@ -39,7 +40,7 @@ export default function PostCard({ post }: Props) {
   };
 
   return (
-    <article className="w-full max-w-2xl mx-auto bg-white border border-gray-200 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="w-full max-w-2xl mx-auto  rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300">
       <div className="p-5 pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -56,7 +57,7 @@ export default function PostCard({ post }: Props) {
             </div>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
-                <h3 className="text-gray-900 font-semibold text-base">
+                <h3 className="font-semibold text-base">
                   {`${post.user.firstname ?? ""} ${post.user.lastname ?? ""}`.trim() || "Utilisateur"}
                 </h3>
               </div>
@@ -73,7 +74,7 @@ export default function PostCard({ post }: Props) {
       </div>
       {post.content && (
         <div className="px-5 pb-4">
-          <p className="text-gray-800 text-base leading-relaxed">
+          <p className="text-base leading-relaxed">
             {post.content}
           </p>
         </div>
@@ -88,6 +89,6 @@ export default function PostCard({ post }: Props) {
           <PostCommunityQuestion question={post.question} />
         </div>
       )}
-    </article>
+    </Card>
   );
 }

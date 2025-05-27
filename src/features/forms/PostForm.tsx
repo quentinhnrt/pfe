@@ -105,7 +105,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {children || (
-          <Button className="bg-black text-white hover:bg-gray-800 border-0 transition-all duration-200 font-medium">
+          <Button className="border-0 transition-all duration-200 font-medium">
             Créer un post
           </Button>
         )}

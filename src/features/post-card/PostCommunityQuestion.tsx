@@ -1,9 +1,14 @@
 "use client";
 import { Answer, Prisma } from "@prisma/client";
 import { useState, useEffect } from "react";
+import {Card} from "@/components/ui/shadcn/card";
 
 type QuestionWithAnswers = Prisma.QuestionGetPayload<{
-  include: { answers: true };
+  include: { answers: {include: {users: true}} };
+}>;
+
+type AnswerWithUsers = Prisma.AnswerGetPayload<{
+    include: { users: true };
 }>;
 
 type Props = {
@@ -12,9 +17,15 @@ type Props = {
 };
 
 export default function PostCommunityQuestion({ question, userAnswerId }: Props) {
-  const [answers, setAnswers] = useState<Answer[]>(question.answers || []);
+  const [answers, setAnswers] = useState<AnswerWithUsers[]>(question.answers || []);
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+
+  answers.map((answer) => {
+      if (answer.users?.length > 0) {
+          userAnswerId = answer.id
+      }
+  })
 
   useEffect(() => {
     if (userAnswerId) {
@@ -52,8 +63,8 @@ export default function PostCommunityQuestion({ question, userAnswerId }: Props)
   }
 
   return (
-    <div className="bg-white border border-gray-200 p-4 rounded-lg">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">
+    <Card className=" p-4 rounded-lg">
+      <h2 className="text-lg font-semibold  mb-4">
         {question.question}
         <span className="ml-2 text-sm text-blue-600">
           ({totalVotes} vote{totalVotes !== 1 ? "s" : ""})
@@ -72,28 +83,26 @@ export default function PostCommunityQuestion({ question, userAnswerId }: Props)
                 disabled={hasVoted || isLoading}
                 className="w-full text-left"
               >
-                <div className="relative bg-gray-100 border rounded-lg overflow-hidden">
+                <div className="relative bg-gray-100 dark:bg-transparent border rounded-lg overflow-hidden">
                   {(hasVoted || userAnswerId) && (
                     <div
-                      className={`absolute top-0 left-0 h-full transition-all duration-300 ${
-                        isSelected ? "bg-gray-300" : "bg-gray-100"
-                      }`}
+                      className={`absolute top-0 left-0 h-full transition-all duration-300 bg-white`}
                       style={{ width: `${percent}%` }}
                     ></div>
                   )}
 
                   <div className="relative z-10 p-3 flex justify-between items-center">
-                    <span className={`font-medium ${isSelected ? "text-gray-700" : "text-gray-800"}`}>
-                      {answer.content}
-                      {isSelected && (
-                        <span className="ml-2 text-xs bg-blue-100 text-gray-700 px-2 py-0.5 rounded-full">
-                          Votre choix
+                        <span className={`font-medium w-4/5 text-gray-700`}>
+                          {answer.content}
+                            {isSelected && (
+                                <span className="ml-2 text-xs bg-blue-100 text-gray-700 px-2 py-0.5 rounded-full">
+                              Votre choix
+                            </span>
+                            )}
                         </span>
-                      )}
-                    </span>
 
                     {(hasVoted || userAnswerId) ? (
-                      <span className="text-sm text-gray-700 font-medium">
+                      <span className="text-sm font-medium">
                         {percent}% – {answer.votes} vote{answer.votes !== 1 ? "s" : ""}
                       </span>
                     ) : (
@@ -122,6 +131,6 @@ export default function PostCommunityQuestion({ question, userAnswerId }: Props)
           Vous avez déjà répondu à cette question.
         </p>
       )}
-    </div>
+    </Card>
   );
 }

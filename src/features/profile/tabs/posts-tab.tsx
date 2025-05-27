@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/shadcn/button"
 import PostCard, {PostWithArtworksQuestionAndAnswers} from "@/features/post-card/PostCard";
+import {authClient} from "@/lib/auth-client";
 
 export default function PostsTab({ userId, isActive }: { userId: string, isActive: boolean }) {
     const [posts, setPosts] = useState<PostWithArtworksQuestionAndAnswers[]>([])
@@ -11,15 +12,15 @@ export default function PostsTab({ userId, isActive }: { userId: string, isActiv
     const [page, setPage] = useState(1)
     const [hasMore, setHasMore] = useState(true)
     const [hasFetched, setHasFetched] = useState(false)
+    const {data:session} = authClient.useSession()
 
     const limit = 10
 
     const fetchPosts = async () => {
         try {
             setIsLoading(true)
-            const response = await fetch(`/api/posts?userId=${userId}&page=${page}&limit=${limit}`, {
-                cache: "force-cache",
-            })
+
+            const response = await fetch(`/api/posts?userId=${userId}&page=${page}&limit=${limit}&currentUserId=${session?.user?.id || ""}`)
 
             if (!response.ok) {
                 throw new Error("Failed to fetch posts")

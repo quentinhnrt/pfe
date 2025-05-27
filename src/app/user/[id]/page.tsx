@@ -53,7 +53,7 @@ export default async function ProfilePage({
 
   return (
     <main className="container mx-auto">
-      <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} />
+      <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} user={userData} currentUser={currentUserData} />
       <ProfileTabs userId={id} />
     </main>
   );
