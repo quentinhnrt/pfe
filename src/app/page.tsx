@@ -5,7 +5,12 @@ import PostFeed from '@/components/PostFeed';
 import ArtworkFeed from '@/components/ArtworkFeed';
 import {Separator} from "@/components/ui/shadcn/separator";
 import {Badge} from "@/components/ui/shadcn/badge";
+import {Metadata} from "next";
 
+export const metadata: Metadata = {
+    title: 'Page d\'accueil | ArtiLink',
+    description: 'Découvrez des œuvres d\'art exceptionnelles et connectez-vous avec des artistes talentueux',
+}
 
 export default async function Page() {
   const session = await auth.api.getSession({

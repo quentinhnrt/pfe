@@ -16,7 +16,7 @@ export default function Header() {
             <div className="container mx-auto">
                 <div className="flex items-center justify-between">
                     <Link href="/" className="text-2xl font-bold">
-                        ArtLink
+                        ArtiLink
                     </Link>
                     <div className="flex items-center gap-4">
                         {!session?.user ? (
