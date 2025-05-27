@@ -1,5 +1,5 @@
 "use client";
-import { Answer, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { useState, useEffect } from "react";
 import {Card} from "@/components/ui/shadcn/card";
 

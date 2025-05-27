@@ -1,6 +1,6 @@
 import {Artwork} from "@prisma/client";
 import Image from "next/image";
-import {Card, CardContent} from "@/components/ui/shadcn/card";
+import {Card} from "@/components/ui/shadcn/card";
 import {Badge} from "@/components/ui/shadcn/badge";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
     index: number;
 }
 
-export default function ArtworkCard({artwork, onClick, index}: Props) {
+export default function ArtworkCard({artwork, onClick}: Props) {
 
     return (
         <Card className={"relative aspect-video cursor-pointer group overflow-hidden"} key={artwork.id}
