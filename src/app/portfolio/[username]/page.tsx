@@ -2,6 +2,23 @@ import { notFound } from "next/navigation";
 
 import { templates } from "@/lib/templates";
 import { getUserByUsername } from "@/lib/users";
+import {generatePortfolioMetadata} from "@/features/templates/bento-template/lib/generate-metadata";
+import {z} from "zod";
+import {templateSchema} from "@/features/templates/bento-template/settings";
+
+export async function generateMetadata({ params }: { params: { username: string } }) {
+  const { username } = await params;
+  const user = await getUserByUsername(username);
+
+  const activeTemplate = user.user_template[0];
+
+  if (!activeTemplate) {
+    console.log("No active template found for user:", username);
+    notFound();
+  }
+
+  return generatePortfolioMetadata(user, activeTemplate.data as z.infer<typeof templateSchema>);
+}
 
 export default async function PortfolioPage({
   params,
