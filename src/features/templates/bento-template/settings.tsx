@@ -31,7 +31,6 @@ import { z } from "zod";
 
 export const templateSchema = z.object({
   description: z.string().optional(),
-  // mail, instagram, twitter, facebook, tiktok, youtube...
   contactInfos: z.object({
     mail: z.string().optional(),
     instagram: z.string().optional(),

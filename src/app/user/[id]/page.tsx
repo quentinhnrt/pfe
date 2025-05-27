@@ -7,7 +7,7 @@ import { getCurrentUser, getUserById } from "@/lib/users";
 import { formatDateToLocale } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "User Profile",
+  title: "User Profile | ArtiLink",
   description: "View user profile and posts",
 };
 

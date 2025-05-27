@@ -9,6 +9,7 @@ import {Facebook, Instagram, Mail, Twitter} from "lucide-react";
 import LenisWrapper from "@/features/templates/bento-template/components/LenisWrapper";
 import ReactLenis from "lenis/react";
 import {Button} from "@/components/ui/shadcn/button";
+
 export default async function Render({data, user}: { user: UserFromApi, data: z.infer<typeof templateSchema> }) {
     if (!data.collections) {
         return;
