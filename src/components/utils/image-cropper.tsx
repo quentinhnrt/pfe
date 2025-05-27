@@ -368,7 +368,7 @@ export function ImageCropper<
   }, [dialogOpen, selectedFile, imageSrc]);
 
   return (
-    <>
+    <div className={"relative"}>
       <input
         ref={fileInputRef}
         type="file"
@@ -521,7 +521,7 @@ export function ImageCropper<
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   );
 }
 
