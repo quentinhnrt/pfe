@@ -5,7 +5,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/shadcn/tabs"
 import ArtworksTab from "./tabs/artworks-tab"
 import PostsTab from "./tabs/posts-tab"
 import ArtworksToSell from "./tabs/artworks-to-sell-tab"
-import {authClient} from "@/lib/auth-client";
 
 export default function ProfileTabs({ userId }: { userId: string }) {
   const [activeTab, setActiveTab] = useState("artworks")
