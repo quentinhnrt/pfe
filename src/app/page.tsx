@@ -1,12 +1,9 @@
 import SearchArtist from '@/components/SearchArtist';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import Image from 'next/image';
-import Link from 'next/link';
 import PostFeed from '@/components/PostFeed';
-
-import ActionButton from '../components/ActionButton';
 import ArtworkFeed from '@/components/ArtworkFeed';
+
 
 export default async function Page() {
   const session = await auth.api.getSession({
@@ -14,58 +11,42 @@ export default async function Page() {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <header className="sticky top-0 z-50 bg-black/90 backdrop-blur-sm shadow-sm border-b border-gray-800">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <Link href="/" className="text-2xl font-bold text-white">ArtLink</Link>
-
-          <div className="flex items-center gap-3">
-            {!session?.user ? (
-              <Link
-                href="/sign-in"
-                className="flex h-10 items-center justify-center rounded-full border border-white/20 px-4 text-sm font-medium transition-colors hover:border-transparent hover:bg-white/10"
-              >
-                S&apos;inscrire / Se connecter
-              </Link>
-            ) : (
-              <div className="flex items-center gap-3">
-                <ActionButton />
-                <Link href={`/user/${session.user.id}`} className="flex flex-col items-center">
-                  {session.user.image ? (
-                    <div className="w-12 h-12 rounded-full border-2 border-white overflow-hidden">
-                      <Image
-                        src={session.user.image}
-                        alt={session.user.firstname || ''}
-                        width={48}
-                        height={48}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-12 h-12 flex items-center justify-center bg-gray-700 text-white rounded-full">
-                      {session.user.firstname?.charAt(0) || 'U'}
-                    </div>
-                  )}
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-      <div className="bg-black py-6">
+    <div className="min-h-screen bg-white text-black">
+      <div className="bg-gray-50 py-12">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-white text-3xl font-bold mb-6">
+          <h1 className="text-black text-4xl font-bold mb-4 text-gray-900">
             Explorez l&apos;art du monde entier
           </h1>
+          <p className="text-gray-600 text-lg mb-8 max-w-2xl mx-auto">
+            Découvrez des œuvres d&apos;art exceptionnelles et connectez-vous avec des artistes talentueux
+          </p>
           <SearchArtist />
         </div>
       </div>
-      <main className="container mx-auto px-4 py-6">
-        <ArtworkFeed />
+      <main className="container mx-auto px-4">
+        <ArtworkFeed isAuthenticated={!!session?.user} />
         {session?.user && (
-          <>
-            <PostFeed />
-          </>
+          <div className="relative py-10">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-white px-6 py-2 text-sm font-semibold text-gray-600 rounded-full border border-gray-200">
+                Derniers posts
+              </span>
+            </div>
+          </div>
+        )}
+        {session?.user && (
+          <PostFeed
+            session={{
+              user: {
+                id: session.user.id,
+                firstname: session.user.firstname || "Utilisateur",
+                image: session.user.image ?? undefined,
+              },
+            }}
+          />
         )}
       </main>
     </div>
