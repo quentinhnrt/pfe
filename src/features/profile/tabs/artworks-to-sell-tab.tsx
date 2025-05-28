@@ -3,9 +3,9 @@
 import {useState, useEffect} from "react"
 import {Artwork} from "@prisma/client"
 import {Button} from "@/components/ui/shadcn/button"
-import ArtworkCard from "@/features/profile/ArtworkCard";
+import ArtworkCard from "@/features/artwork/ArtworkCard";
 import {deleteArtwork} from "@/lib/artworks";
-import ArtworkDialog from "@/features/profile/ArtworkDialog";
+import ArtworkDialog from "@/features/artwork/ArtworkDialog";
 
 export default function ArtworksToSellTab({userId, isActive}: { userId: string, isActive: boolean }) {
     const [artworks, setArtworks] = useState<Artwork[]>([])

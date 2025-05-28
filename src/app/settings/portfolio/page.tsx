@@ -2,7 +2,7 @@
 
 import TemplateList, {
   type TemplateWithStatus,
-} from "@/components/TemplateList";
+} from "@/features/portfolio/TemplateList";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { AlertTriangle } from "lucide-react";
 import {useEffect, useState} from "react";

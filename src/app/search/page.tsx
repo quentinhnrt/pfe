@@ -5,7 +5,7 @@ import {useState, useEffect} from "react";
 import {User} from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import SearchArtist from "@/components/SearchArtist";
+import SearchArtist from "@/features/search/SearchArtist";
 import {Button} from "@/components/ui/shadcn/button";
 import {Card} from "@/components/ui/shadcn/card";
 

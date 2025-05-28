@@ -7,7 +7,7 @@ import {
     DialogTitle
 } from "@/components/ui/shadcn/dialog";
 import Image from "next/image";
-import ArtworkForm from "@/features/forms/ArtworkForm";
+import ArtworkForm from "@/features/artwork/ArtworkForm";
 import {Button} from "@/components/ui/shadcn/button";
 import {Artwork} from "@prisma/client";
 import {authClient} from "@/lib/auth-client";

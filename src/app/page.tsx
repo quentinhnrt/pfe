@@ -1,8 +1,8 @@
-import SearchArtist from '@/components/SearchArtist';
+import SearchArtist from '@/features/search/SearchArtist';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
-import PostFeed from '@/components/PostFeed';
-import ArtworkFeed from '@/components/ArtworkFeed';
+import PostFeed from '@/features/feed/PostFeed';
+import ArtworkFeed from '@/features/feed/ArtworkFeed';
 import {Separator} from "@/components/ui/shadcn/separator";
 import {Badge} from "@/components/ui/shadcn/badge";
 import {Metadata} from "next";

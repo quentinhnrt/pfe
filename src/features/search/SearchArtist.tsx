@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {User} from "@prisma/client";
-import SearchInput from "@/features/forms/SearchInput";
+import SearchInput from "@/features/search/SearchInput";
 import {usePathname} from "next/navigation";
 import {ChevronRight} from "lucide-react";
 import {Button} from "@/components/ui/shadcn/button";

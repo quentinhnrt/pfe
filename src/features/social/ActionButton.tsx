@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/shadcn/button";
 import PostForm from "@/features/forms/PostForm";
-import ArtworkForm from "@/features/forms/ArtworkForm";
+import ArtworkForm from "@/features/artwork/ArtworkForm";
 import CollectionForm from "@/features/forms/CollectionForm";
 import { Plus, Image, FileText, FolderPlus } from "lucide-react";
 import {

@@ -5,7 +5,7 @@ import {Card} from "@/components/ui/shadcn/card";
 import {Button} from '@/components/ui/shadcn/button';
 import UserHeader from "@/features/header/UserHeader";
 import {Session} from "@/lib/auth";
-import ActionButton from '@/components/ActionButton';
+import ActionButton from '@/features/social/ActionButton';
 import {authClient} from "@/lib/auth-client";
 
 export default function Header() {

@@ -5,7 +5,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Textarea } from "@/components/ui/shadcn/textarea";
-import { ArtworkGallerySelector } from "@/features/fields/ArtworkGallerySelector";
+import { ArtworkGallerySelector } from "@/features/artwork/ArtworkGallerySelector";
 import { Input } from "@/components/ui/shadcn/input";
 import { useState } from "react";
 import { Loader2, X } from "lucide-react";

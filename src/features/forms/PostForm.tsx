@@ -23,7 +23,7 @@ import {
 import { Textarea } from "@/components/ui/shadcn/textarea";
 import { Input } from "@/components/ui/shadcn/input";
 import { Switch } from "@/components/ui/shadcn/switch";
-import { ArtworkGallerySelector } from "@/features/fields/ArtworkGallerySelector";
+import { ArtworkGallerySelector } from "@/features/artwork/ArtworkGallerySelector";
 import Repeater from "@/features/fields/Repeater";
 import { Loader2, X } from "lucide-react";
 

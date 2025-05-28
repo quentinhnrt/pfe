@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/shadcn/avatar";
 import {Button} from "@/components/ui/shadcn/button";
 import {User} from "@prisma/client";
-import FollowButton from "@/components/FollowButton";
+import FollowButton from "@/features/social/FollowButton";
 import {UserFromApi} from "@/lib/users";
 
 interface ProfileHeaderProps {
