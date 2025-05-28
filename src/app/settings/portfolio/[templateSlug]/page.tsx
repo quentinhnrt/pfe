@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
 
 import { auth } from "@/lib/auth";
+import { getServerUrl } from "@/lib/server-url";
 import { templates } from "@/lib/templates";
 import { Template } from "@prisma/client";
 
@@ -29,7 +30,7 @@ export default async function TemplatePage({
   }
 
   const response = await fetch(
-    process.env.BETTER_AUTH_URL + "/api/templates/" + templateSlug
+    getServerUrl() + "/api/templates/" + templateSlug
   );
 
   if (response.status === 404) {
