@@ -23,11 +23,11 @@ const createArtworkSchema = z.object({
 
 const updateArtworkSchema = z.object({
   artworkId: z.coerce.number().int().positive(),
-  title: z.string().min(1).max(255).optional(),
-  description: z.string().optional(),
-  isForSale: z.enum(["true", "false"]).transform((val) => val === "true").optional(),
+  title: z.string().min(1).max(255).optional().nullable(),
+  description: z.string().optional().nullable(),
+  isForSale: z.enum(["true", "false"]).transform((val) => val === "true").optional().nullable(),
   price: z.coerce.number().int().positive().optional().nullable(),
-  sold: z.enum(["true", "false"]).transform((val) => val === "true").optional(),
+  sold: z.enum(["true", "false"]).transform((val) => val === "true").optional().nullable(),
 });
 
 
@@ -113,6 +113,15 @@ export async function POST(request: Request) {
 
     const formData = await request.formData();
     
+    // Check image first
+    const imageFile = formData.get("image");
+    if (!imageFile || !(imageFile instanceof File)) {
+      return NextResponse.json(
+        { error: "Image is required" },
+        { status: 400 }
+      );
+    }
+    
     // Validate form data
     const validation = createArtworkSchema.safeParse({
       title: formData.get("title"),
@@ -129,15 +138,6 @@ export async function POST(request: Request) {
     }
 
     const { title, description, isForSale, price } = validation.data;
-
-    // Handle image upload
-    const imageFile = formData.get("image");
-    if (!imageFile || !(imageFile instanceof File)) {
-      return NextResponse.json(
-        { error: "Image is required" },
-        { status: 400 }
-      );
-    }
 
     const uploadedImage = await uploadImage(imageFile);
     if (!uploadedImage?.url) {
@@ -221,19 +221,19 @@ export async function PUT(request: Request) {
     // Build update data
     const dataToUpdate: Prisma.ArtworkUpdateInput = {};
     
-    if (updateData.title !== undefined) {
+    if (updateData.title !== undefined && updateData.title !== null) {
       dataToUpdate.title = updateData.title;
     }
-    if (updateData.description !== undefined) {
+    if (updateData.description !== undefined && updateData.description !== null) {
       dataToUpdate.description = updateData.description;
     }
-    if (updateData.isForSale !== undefined) {
+    if (updateData.isForSale !== undefined && updateData.isForSale !== null) {
       dataToUpdate.isForSale = updateData.isForSale;
     }
-    if (updateData.price !== undefined) {
+    if (updateData.price !== undefined && updateData.price !== null) {
       dataToUpdate.price = updateData.price;
     }
-    if (updateData.sold !== undefined) {
+    if (updateData.sold !== undefined && updateData.sold !== null) {
       dataToUpdate.sold = updateData.sold;
     }
 

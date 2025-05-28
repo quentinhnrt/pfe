@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 
 // Validation schema for search parameters
 const searchParamsSchema = z.object({
-  search: z.string().min(1).max(100).optional(),
+  search: z.string().min(1).max(100).optional().nullable(),
 });
 
 // Type for the API response
