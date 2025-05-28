@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import TemplateList, {
   type TemplateWithStatus,
-} from "@/features/portfolio/TemplateList";
+} from "@/features/portfolio/components/template-list";
 import { AlertTriangle } from "lucide-react";
 import { useEffect, useState } from "react";
 
