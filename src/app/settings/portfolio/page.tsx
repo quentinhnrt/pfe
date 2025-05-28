@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
+import { Card, CardContent } from "@/components/ui/shadcn/card";
 import TemplateList, {
   type TemplateWithStatus,
 } from "@/features/portfolio/TemplateList";
-import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { AlertTriangle } from "lucide-react";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 export default function PortfolioSettings() {
   const [templates, setTemplates] = useState<TemplateWithStatus[]>([]);
@@ -29,7 +29,7 @@ export default function PortfolioSettings() {
   }
 
   useEffect(() => {
-    fetchTemplates()
+    fetchTemplates();
   }, []);
 
   if (loading) {
@@ -56,9 +56,7 @@ export default function PortfolioSettings() {
               <h1 className="text-2xl font-bold text-gray-900">
                 Error Loading Templates
               </h1>
-              <p className="text-gray-600">
-                {error}
-              </p>
+              <p className="text-gray-600">{error}</p>
             </div>
           </CardContent>
         </Card>

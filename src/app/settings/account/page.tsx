@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { AccountForm } from "@/features/settings/account-form";
+import { AccountForm } from "@/features/settings/components/account-form";
 import { getCurrentUser } from "@/lib/users";
 
 export const metadata = {
@@ -12,7 +12,7 @@ export default async function AccountSettingsPage() {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/sign-in");
   }
 
   return (

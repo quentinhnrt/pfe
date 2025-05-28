@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { AppearanceForm } from "@/features/settings/appearance-form";
+import { AppearanceForm } from "@/features/settings/components/appearance-form";
 import { getCurrentUser } from "@/lib/users";
 
 export const metadata = {
@@ -12,7 +12,7 @@ export default async function AppearanceSettingsPage() {
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/sign-in");
   }
 
   return (

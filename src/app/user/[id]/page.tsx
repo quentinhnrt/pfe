@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { ProfileHeader } from "@/features/profile/profile-header";
-import ProfileTabs from "@/features/profile/profile-tabs";
+import { ProfileHeader } from "@/features/profile/components/profile-header";
+import ProfileTabs from "@/features/profile/components/profile-tabs";
 import { getCurrentUser, getUserById } from "@/lib/users";
 import { formatDateToLocale } from "@/lib/utils";
 
@@ -53,7 +53,12 @@ export default async function ProfilePage({
 
   return (
     <main className="container mx-auto">
-      <ProfileHeader profile={profile} isOwnProfile={isOwnProfile} user={userData} currentUser={currentUserData} />
+      <ProfileHeader
+        profile={profile}
+        isOwnProfile={isOwnProfile}
+        user={userData}
+        currentUser={currentUserData}
+      />
       <ProfileTabs userId={id} />
     </main>
   );

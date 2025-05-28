@@ -2,26 +2,7 @@ import { ArrowLeftIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { AuthTabs } from "@/features/auth/auth-tabs";
-
-// export const metadata: Metadata = {
-//   title: "Complétez votre profil | Artilink",
-//   description:
-//     "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
-//   openGraph: {
-//     title: "Complétez votre profil | Artilink",
-//     description:
-//       "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
-//     images: [
-//       {
-//         url: "/signin.jpg",
-//         width: 1200,
-//         height: 630,
-//         alt: "Artilink - Complétez votre profil",
-//       },
-//     ],
-//   },
-// };
+import { AuthTabs } from "@/features/auth/components/auth-tabs";
 
 export default function SignInPage() {
   return (

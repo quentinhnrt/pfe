@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { ProfileForm } from "@/features/settings/profile-form";
+import { ProfileForm } from "@/features/settings/components/profile-form";
 import { getCurrentUser } from "@/lib/users";
 
 export const metadata = {

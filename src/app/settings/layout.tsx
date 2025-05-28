@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { SettingsNav } from "@/features/settings/settings-nav";
+import { SettingsNav } from "@/features/settings/components/settings-nav";
 import { getCurrentUser } from "@/lib/users";
 
 export const metadata: Metadata = {

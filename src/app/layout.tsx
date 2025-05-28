@@ -1,6 +1,6 @@
-import CookieConsentBanner from "@/features/cookie/cookie-consent-banner";
-import ConditionalHeader from "@/features/header/conditional-header";
-import { SessionProvider } from "@/hooks/useSession";
+import CookieConsentBanner from "@/features/cookie/components/cookie-consent-banner";
+import ConditionalHeader from "@/features/header/components/conditional-header";
+import { SessionProvider } from "@/hooks/use-session";
 import { auth } from "@/lib/auth";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";

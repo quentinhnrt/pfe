@@ -1,12 +1,16 @@
 import { notFound } from "next/navigation";
 
+import { generatePortfolioMetadata } from "@/features/templates/bento-template/lib/generate-metadata";
+import { templateSchema } from "@/features/templates/bento-template/settings";
 import { templates } from "@/lib/templates";
 import { getUserByUsername } from "@/lib/users";
-import {generatePortfolioMetadata} from "@/features/templates/bento-template/lib/generate-metadata";
-import {z} from "zod";
-import {templateSchema} from "@/features/templates/bento-template/settings";
+import { z } from "zod";
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}) {
   const { username } = await params;
   const user = await getUserByUsername(username);
 
@@ -17,7 +21,10 @@ export async function generateMetadata({ params }: { params: { username: string 
     notFound();
   }
 
-  return generatePortfolioMetadata(user, activeTemplate.data as z.infer<typeof templateSchema>);
+  return generatePortfolioMetadata(
+    user,
+    activeTemplate.data as z.infer<typeof templateSchema>
+  );
 }
 
 export default async function PortfolioPage({

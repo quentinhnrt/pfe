@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/shadcn/input";
 import { Separator } from "@/components/ui/shadcn/separator";
 import { Textarea } from "@/components/ui/shadcn/textarea";
 import { CollectionSelector } from "@/features/fields/CollectionSelector";
-import { TemplateContainer } from "@/features/template-container/TemplateContainer";
+import { TemplateContainer } from "@/features/template-container/components/template-container";
 import {
   Facebook,
   FolderOpen,
