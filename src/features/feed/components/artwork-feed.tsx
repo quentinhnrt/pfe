@@ -225,9 +225,10 @@ export default function ArtworksFeed({
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
             {artworks.map((artwork, index) => (
-              <div
+              <Link
+                href={"/user/" + artwork.user.id}
                 key={artwork.id}
-                className="border border-gray-100 rounded-xl overflow-hidden cursor-pointer group/card hover:shadow-md transition-all duration-300 hover:-translate-y-1"
+                className="block border border-gray-100 rounded-xl overflow-hidden cursor-pointer group/card hover:shadow-md transition-all duration-300 hover:-translate-y-1"
                 style={{ animationDelay: `${index * 50}ms` }}
               >
                 <div className="relative h-40 overflow-hidden">
@@ -249,7 +250,7 @@ export default function ArtworksFeed({
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
