@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
-import { SettingsNav } from "@/features/settings/settings-nav";
+import { SettingsNav } from "@/features/settings/components/settings-nav";
 import { getCurrentUser } from "@/lib/users";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ export default async function SettingsLayout({
   const user = await getCurrentUser();
 
   if (!user) {
-    redirect("/login");
+    redirect("/sign-in");
   }
 
   return (

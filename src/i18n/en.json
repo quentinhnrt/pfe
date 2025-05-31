@@ -1,14 +1,65 @@
 {
-  "cookieConsentBanner": {
-    "title": "We use cookies",
-    "description": "We use cookies to ensure you get the best experience on our website. For more information on how we use cookies, please see our cookie policy.",
-    "learnMore": "Learn more.",
-    "byClickingAccept1": "By clicking ",
-    "byClickingAccept2": ", you agree to our use of cookies.",
-    "accept": "Accept",
-    "decline": "Decline"
+  "app": {
+    "name": "Artilink"
   },
-  "HomePage": {
-    "title": "Hello world!"
+  "commons": {
+    "user": "User",
+    "anonymous-user": "Anonymous User",
+    "back-to-home": "Back to home",
+    "loading": "Loading..."
+  },
+  "page": {
+    "index": {
+      "title": "Explore the world of art",
+      "description": "Discover exceptional artworks and connect with talented artists",
+      "last-posts": "Last posts"
+    },
+    "sign-in": {
+      "title": "Join the artistic community",
+      "description": "Connect with artists, share your work and grow your creative network"
+    },
+    "settings": {
+      "portfolio": {
+        "error-loading-templates": "Error loading templates"
+      },
+      "profile": {
+        "title": "Profile",
+        "description": "Manage your profile information and how others see you"
+      },
+      "appearance": {
+        "title": "Appearance",
+        "description": "Customize the appearance of the application"
+      },
+      "account": {
+        "title": "Account",
+        "description": "Manage your account settings and preferences"
+      }
+    },
+    "search": {
+      "title": "Discover artists",
+      "description": "And connect with exceptional talent",
+      "see-profile": "See profile",
+      "no-artist-found": "No artist found",
+      "try-with-other-keywords": "Try with other keywords or explore our suggestions below",
+      "search-artist": "Search for an artist"
+    },
+    "portfolio": {
+      "no-active-template": "No active template found for user: {{username}}",
+      "no-template-found": "No template found: {{templateId}}"
+    },
+    "on-boarding": {
+      "description": "Shape your identity, illuminate your art."
+    }
+  },
+  "feature": {
+    "cookie-banner": {
+      "title": "We use cookies",
+      "description": "We use cookies to ensure you get the best experience on our website. For more information on how we use cookies, please see our cookie policy.",
+      "learnMore": "Learn more.",
+      "byClickingAccept1": "By clicking ",
+      "byClickingAccept2": ", you agree to our use of cookies.",
+      "accept": "Accept",
+      "decline": "Decline"
+    }
   }
 }

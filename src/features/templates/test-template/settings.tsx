@@ -1,5 +1,6 @@
 "use client";
 
+import { CollectionSelector } from "@/components/fields/collection-selector";
 import {
   Card,
   CardContent,
@@ -16,8 +17,7 @@ import {
 } from "@/components/ui/shadcn/form";
 import { Input } from "@/components/ui/shadcn/input";
 import { Textarea } from "@/components/ui/shadcn/textarea";
-import { CollectionSelector } from "@/features/fields/CollectionSelector";
-import { TemplateContainer } from "@/features/template-container/TemplateContainer";
+import { TemplateContainer } from "@/features/template-container/components/template-container";
 import { FileText, FolderOpen, Layers, Type } from "lucide-react";
 import { z } from "zod";
 

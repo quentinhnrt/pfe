@@ -4,33 +4,37 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import OnBoardingForm from "@/features/on-boarding/on-boarding-form";
+import OnBoardingForm from "@/features/on-boarding/components/on-boarding-form";
 import { auth } from "@/lib/auth";
-import {Metadata} from "next";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
- export const metadata: Metadata = {
-   title: "Complétez votre profil | Artilink",
-   description:
-     "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
-   openGraph: {
-     title: "Complétez votre profil | Artilink",
-     description:
-       "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
-     images: [
-       {
-         url: "/signin.jpg",
-         width: 1200,
-         height: 630,
-         alt: "Artilink - Complétez votre profil",
-       },
-     ],
-   },
- };
+export const metadata: Metadata = {
+  title: "Complétez votre profil | Artilink",
+  description:
+    "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
+  openGraph: {
+    title: "Complétez votre profil | Artilink",
+    description:
+      "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
+    images: [
+      {
+        url: "/signin.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Artilink - Complétez votre profil",
+      },
+    ],
+  },
+};
 
 export default async function OnBoardingPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+  const t = await getTranslations("page.on-boarding");
+  const c = await getTranslations("commons");
+  const a = await getTranslations("app");
 
   if (!session || !session.user || session.user.onBoarded) {
     redirect("/");
@@ -49,8 +53,8 @@ export default async function OnBoardingPage() {
             priority
           />
           <div className="absolute inset-0 bg-black/10 flex flex-col justify-end p-8 text-white">
-            <h1 className="text-2xl font-bold mb-2">Artilink</h1>
-            <p className="text-sm">Shape your identity, illuminate your art.</p>
+            <h1 className="text-2xl font-bold mb-2">{a("title")}</h1>
+            <p className="text-sm">{t("description")}</p>
           </div>
         </div>
 
@@ -61,7 +65,7 @@ export default async function OnBoardingPage() {
             aria-label="Retour à l'accueil"
           >
             <ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
-            <span>Retour à l&apos;accueil</span>
+            <span>{c("back-to-home")}</span>
           </Link>
 
           <div

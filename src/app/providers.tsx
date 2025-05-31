@@ -8,7 +8,7 @@ import posthog from "posthog-js";
 import { PostHogProvider as PHProvider } from "posthog-js/react";
 import type { PropsWithChildren } from "react";
 import { useEffect } from "react";
-import { cookieConsentGiven } from "./cookie-consent-banner";
+import { cookieConsentGiven } from "../features/cookie-banner/components/cookie-consent-banner";
 
 const queryClient = new QueryClient({});
 
