@@ -12,6 +12,7 @@ export const auth = betterAuth({
     provider: "postgresql",
   }),
   baseURL: getServerUrl(),
+  trustedOrigins: [getServerUrl()],
   plugins: [
     magicLink({
       sendMagicLink: async (data: {
