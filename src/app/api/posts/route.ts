@@ -1,308 +1,217 @@
-import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
-import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { headers } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
-// Validation schemas
-const getPostsSchema = z.object({
-  limit: z.string().nullable().optional().transform((val) => {
-    if (!val) return 10;
-    const num = parseInt(val, 10);
-    return isNaN(num) ? 10 : Math.min(Math.max(num, 1), 100);
-  }),
-  page: z.string().nullable().optional().transform((val) => {
-    if (!val) return 1;
-    const num = parseInt(val, 10);
-    return isNaN(num) ? 1 : Math.max(num, 1);
-  }),
-  userId: z.string().nullable().optional(),
-});
+type POST_PARAMS = {
+  artworks: number[];
+  content: string;
+  question?: string;
+  answers?: string[];
+};
 
-const createPostSchema = z.object({
-  content: z.string().min(1).max(5000),
-  artworks: z.array(z.number().int().positive()).min(1),
-  question: z.string().min(1).max(500).optional(),
-  answers: z.array(z.string().min(1).max(200)).optional(),
-});
+type PUT_PARAMS = {
+  postId: number;
+  artworks: number[];
+  content: string;
+};
 
-const updatePostSchema = z.object({
-  postId: z.number().int().positive(),
-  content: z.string().min(1).max(5000),
-  artworks: z.array(z.number().int().positive()).min(1),
-});
+type CREATE_POST_QUERY = {
+  data: {
+    userId: string;
+    content: string;
+    artworks: {
+      connect: { id: number }[];
+    };
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  include: {
+    artworks: true;
+    question?: {
+      include: {
+        answers: true;
+      };
+    };
+  };
+};
 
+type GET_POST_QUERY = {
+  orderBy: {
+    createdAt: "desc";
+  };
+  include: {
+    artworks: true;
+    question: {
+      include: {
+        answers: {
+          include: {
+            users: {
+              where: {
+                id: string;
+              };
+            };
+          };
+        };
+      };
+    };
+    user: true;
+  };
+  take: number;
+  skip: number;
+  where?: {
+    userId?: string;
+  };
+};
 
 export async function GET(request: NextRequest) {
-  try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
 
-    const searchParams = request.nextUrl.searchParams;
-    const validation = getPostsSchema.safeParse({
-      limit: searchParams.get("limit"),
-      page: searchParams.get("page"),
-      userId: searchParams.get("userId"),
-    });
+  const searchParams = request.nextUrl.searchParams;
+  const limit = searchParams.get("limit") || "10";
+  const page = searchParams.get("page") || "1";
+  const userId = searchParams.get("userId");
+  const currentUserId = session?.user?.id || "";
 
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: "Invalid parameters", details: validation.error.flatten() },
-        { status: 400 }
-      );
-    }
-
-    const { limit, page, userId } = validation.data;
-    const currentUserId = session?.user?.id || "";
-
-    const query: Prisma.PostFindManyArgs = {
-      orderBy: {
-        createdAt: "desc",
-      },
-      include: {
-        artworks: true,
-        question: {
-          include: {
-            answers: {
-              include: {
-                users: {
-                  where: {
-                    id: currentUserId,
-                  },
+  const query: GET_POST_QUERY = {
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      artworks: true,
+      question: {
+        include: {
+          answers: {
+            include: {
+              users: {
+                where: {
+                  id: currentUserId || "",
                 },
               },
             },
           },
         },
-        user: true,
       },
-      take: limit,
-      skip: (page - 1) * limit,
+      user: true,
+    },
+    take: Number(limit),
+    skip: (Number(page) - 1) * Number(limit),
+  };
+
+  if (userId) {
+    query.where = {
+      userId: userId,
     };
-
-    if (userId) {
-      query.where = {
-        userId: userId,
-      };
-    }
-
-    const posts = await prisma.post.findMany(query);
-
-    return NextResponse.json(posts);
-  } catch (error) {
-    console.error("Error fetching posts:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
   }
+
+  const posts = await prisma.post.findMany(query);
+
+  return NextResponse.json(posts, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
-    if (!session?.user || session.user.role !== "ARTIST") {
-      return NextResponse.json(
-        { error: "Unauthorized: Only artists can create posts" },
-        { status: 403 }
-      );
+    if (!session || !session.user || session.user.role !== "ARTIST") {
+      return new Response("Not authorized", {
+        status: 403,
+      });
     }
 
-    const body = await request.json();
-    const validation = createPostSchema.safeParse(body);
+    const data: POST_PARAMS = await request.json();
 
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: "Invalid data", details: validation.error.flatten() },
-        { status: 400 }
-      );
-    }
-
-    const { content, artworks, question, answers } = validation.data;
-
-    // Validate question and answers together
-    if ((question && !answers) || (!question && answers)) {
-      return NextResponse.json(
-        { error: "Both question and answers must be provided together" },
-        { status: 400 }
-      );
-    }
-
-    if (answers && answers.length < 2) {
-      return NextResponse.json(
-        { error: "At least 2 answers are required for a question" },
-        { status: 400 }
-      );
-    }
-
-    // Verify that all artworks exist and belong to the user
-    const artworkCount = await prisma.artwork.count({
-      where: {
-        id: {
-          in: artworks,
-        },
-        userId: session.user.id,
-      },
+    const content = data.content.toString();
+    const artworks = data.artworks.map((id) => {
+      return { id };
     });
 
-    if (artworkCount !== artworks.length) {
-      return NextResponse.json(
-        { error: "One or more artworks not found or unauthorized" },
-        { status: 400 }
-      );
-    }
+    const query: CREATE_POST_QUERY = {
+      data: {
+        userId: session.user.id,
+        content,
+        artworks: {
+          connect: artworks,
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      include: {
+        artworks: true,
+      },
+    };
 
-    // Create post with transaction
-    const post = await prisma.$transaction(async (tx) => {
-      const newPost = await tx.post.create({
+    const post = await prisma.post.create(query);
+
+    if (data.question && data.answers) {
+      post.question = await prisma.question.create({
         data: {
-          userId: session.user!.id,
-          content,
-          artworks: {
-            connect: artworks.map((id) => ({ id })),
+          question: data.question,
+          answers: {
+            create: data.answers.map((answer) => ({ content: answer })),
           },
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          postId: post.id,
         },
         include: {
-          artworks: true,
-          question: {
-            include: {
-              answers: true,
-            },
-          },
+          answers: true,
         },
       });
-
-      // Create question if provided
-      if (question && answers) {
-        await tx.question.create({
-          data: {
-            question,
-            answers: {
-              create: answers.map((answer) => ({ content: answer })),
-            },
-            postId: newPost.id,
-          },
-        });
-
-        // Fetch the post again with question included
-        return await tx.post.findUnique({
-          where: { id: newPost.id },
-          include: {
-            artworks: true,
-            question: {
-              include: {
-                answers: true,
-              },
-            },
-          },
-        });
-      }
-
-      return newPost;
-    });
+    }
 
     return NextResponse.json(post, { status: 201 });
   } catch (error) {
-    console.error("Error creating post:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Erreur lors de la création du post:", error);
+    return NextResponse.json({ error: "Erreur interne" }, { status: 500 });
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(request: Request) {
   try {
     const session = await auth.api.getSession({
       headers: await headers(),
     });
 
-    if (!session?.user || session.user.role !== "ARTIST") {
-      return NextResponse.json(
-        { error: "Unauthorized: Only artists can update posts" },
-        { status: 403 }
-      );
+    if (!session || !session.user || session.user.role !== "ARTIST") {
+      return new Response("Not authorized", {
+        status: 403,
+      });
     }
 
-    const body = await request.json();
-    const validation = updatePostSchema.safeParse(body);
+    const data: PUT_PARAMS = await request.json();
 
-    if (!validation.success) {
-      return NextResponse.json(
-        { error: "Invalid data", details: validation.error.flatten() },
-        { status: 400 }
-      );
-    }
-
-    const { postId, content, artworks } = validation.data;
-
-    // Check if post exists and belongs to user
-    const existingPost = await prisma.post.findFirst({
-      where: {
-        id: postId,
-        userId: session.user.id,
-      },
+    const content = data.content.toString();
+    const artworks = data.artworks.map((id) => {
+      return { id };
     });
 
-    if (!existingPost) {
-      return NextResponse.json(
-        { error: "Post not found or unauthorized" },
-        { status: 404 }
-      );
-    }
-
-    // Verify that all artworks exist and belong to the user
-    const artworkCount = await prisma.artwork.count({
+    const post = await prisma.post.update({
       where: {
-        id: {
-          in: artworks,
-        },
-        userId: session.user.id,
-      },
-    });
-
-    if (artworkCount !== artworks.length) {
-      return NextResponse.json(
-        { error: "One or more artworks not found or unauthorized" },
-        { status: 400 }
-      );
-    }
-
-    // Update post
-    const updatedPost = await prisma.post.update({
-      where: {
-        id: postId,
+        id: data.postId,
       },
       data: {
         content,
         artworks: {
-          set: artworks.map((id) => ({ id })),
+          set: artworks,
         },
         updatedAt: new Date(),
       },
       include: {
         artworks: true,
-        question: {
-          include: {
-            answers: true,
-          },
-        },
       },
     });
 
-    return NextResponse.json(updatedPost);
+    return NextResponse.json(post, { status: 201 });
   } catch (error) {
-    console.error("Error updating post:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Erreur lors de la création du post:", error);
+    return NextResponse.json({ error: "Erreur interne" }, { status: 500 });
   }
 }
