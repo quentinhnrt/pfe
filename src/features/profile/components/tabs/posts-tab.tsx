@@ -78,7 +78,7 @@ export default function PostsTab({
   }
 
   return (
-    <div className="p-4">
+    <div className="p-2 sm:p-4">
       {isLoading && page === 1 ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
@@ -90,8 +90,12 @@ export default function PostsTab({
         </div>
       ) : (
         <div className="space-y-4">
-          <div className={"mx-auto w-fit space-y-4"}>
-            {posts?.map((post) => <PostCard post={post} key={post.id} />)}
+          <div className="flex flex-col items-center w-full gap-4">
+            {posts?.map((post) => (
+              <div key={post.id} className="w-full max-w-2xl">
+                <PostCard post={post} />
+              </div>
+            ))}
           </div>
 
           {posts?.length === 0 && (

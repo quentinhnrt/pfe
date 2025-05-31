@@ -101,7 +101,7 @@ export default function PostFeed({ session }: PostFeed) {
       <div className="container mx-auto px-4 text-black">
         <div className="flex flex-col gap-6 items-center">
           {posts.map((post) => (
-            <div key={post.id} className="w-[1000px]">
+            <div key={post.id} className="w-full max-w-2xl">
               <PostCard post={post} />
             </div>
           ))}
