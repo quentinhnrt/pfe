@@ -71,15 +71,15 @@ export default function PostCommunityQuestion({
   }
 
   return (
-    <Card className=" p-4 rounded-lg">
-      <h2 className="text-lg font-semibold  mb-4">
+    <Card className="p-3 sm:p-4 rounded-lg">
+      <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
         {question.question}
-        <span className="ml-2 text-sm text-blue-600">
+        <span className="ml-2 text-xs sm:text-sm text-blue-600">
           ({totalVotes} vote{totalVotes !== 1 ? "s" : ""})
         </span>
       </h2>
 
-      <ul className="space-y-3">
+      <ul className="space-y-2 sm:space-y-3">
         {answers.map((answer) => {
           const isSelected = selectedAnswerId === answer.id;
           const percent = totalVotes
@@ -101,23 +101,25 @@ export default function PostCommunityQuestion({
                     ></div>
                   )}
 
-                  <div className="relative z-10 p-3 flex justify-between items-center">
-                    <span className={`font-medium w-4/5 text-gray-700`}>
+                  <div className="relative z-10 p-2 sm:p-3 flex justify-between items-center">
+                    <span
+                      className={`font-medium w-4/5 text-xs sm:text-sm text-gray-700`}
+                    >
                       {answer.content}
                       {isSelected && (
-                        <span className="ml-2 text-xs bg-blue-100 text-gray-700 px-2 py-0.5 rounded-full">
+                        <span className="ml-1 sm:ml-2 text-[10px] sm:text-xs bg-blue-100 text-gray-700 px-1 sm:px-2 py-0.5 rounded-full">
                           Votre choix
                         </span>
                       )}
                     </span>
 
                     {hasVoted || userAnswerId ? (
-                      <span className="text-sm font-medium">
+                      <span className="text-xs sm:text-sm font-medium">
                         {percent}% – {answer.votes} vote
                         {answer.votes !== 1 ? "s" : ""}
                       </span>
                     ) : (
-                      <span className="text-sm text-gray-500">
+                      <span className="text-xs sm:text-sm text-gray-500">
                         ({answer.votes})
                       </span>
                     )}
@@ -130,17 +132,19 @@ export default function PostCommunityQuestion({
       </ul>
 
       {isLoading && (
-        <p className="mt-4 text-sm text-gray-600">Enregistrement du vote...</p>
+        <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-600">
+          Enregistrement du vote...
+        </p>
       )}
 
       {hasVoted && !userAnswerId && (
-        <p className="mt-4 text-sm text-blue-700 bg-blue-50 border border-blue-200 p-3 rounded">
+        <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-blue-700 bg-blue-50 border border-blue-200 p-2 sm:p-3 rounded">
           Merci pour votre vote ! Les résultats sont maintenant visibles.
         </p>
       )}
 
       {userAnswerId && (
-        <p className="mt-4 text-sm text-gray-700 bg-gray-100 border border-gray-200 p-3 rounded">
+        <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-700 bg-gray-100 border border-gray-200 p-2 sm:p-3 rounded">
           Vous avez déjà répondu à cette question.
         </p>
       )}

@@ -9,7 +9,7 @@ export default function PostArtworks({ artworks }: Props) {
   if (!artworks || artworks.length === 0) return null;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-4xl mx-auto">
+    <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full mx-auto">
       {artworks.slice(0, 4).map((artwork) => (
         <div
           key={`artwork-${artwork.id}`}

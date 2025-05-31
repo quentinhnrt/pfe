@@ -16,7 +16,7 @@ export default function ActionButton() {
       <DropdownMenuTrigger asChild>
         <Button>
           <Plus size={18} />
-          <span>Publier</span>
+          <span className="hidden sm:inline ml-1">Publier</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
