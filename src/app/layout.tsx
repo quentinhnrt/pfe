@@ -1,4 +1,4 @@
-import CookieConsentBanner from "@/features/cookie/components/cookie-consent-banner";
+import CookieConsentBanner from "@/features/cookie-banner/components/cookie-consent-banner";
 import ConditionalHeader from "@/features/header/components/conditional-header";
 import { SessionProvider } from "@/hooks/use-session";
 import { auth } from "@/lib/auth";

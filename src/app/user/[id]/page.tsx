@@ -5,6 +5,7 @@ import { ProfileHeader } from "@/features/profile/components/profile-header";
 import ProfileTabs from "@/features/profile/components/profile-tabs";
 import { getCurrentUser, getUserById } from "@/lib/users";
 import { formatDateToLocale } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
   title: "User Profile | ArtiLink",
@@ -16,6 +17,7 @@ export default async function ProfilePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
+  const c = await getTranslations("commons");
   const { id } = await params;
 
   // Parallel data fetching for better performance
@@ -34,7 +36,7 @@ export default async function ProfilePage({
 
   const profile = {
     id: userData.id,
-    name: fullName || userData.name || "Anonymous User",
+    name: fullName || userData.name || c("anonymous-user"),
     username: userData.name || "",
     avatar: userData.image || "/avatar-placeholder.svg",
     coverImage: userData.bannerImage || "/banner-placeholder.svg",

@@ -21,7 +21,7 @@ export default function CookieConsentBanner() {
   const [consentGiven, setConsentGiven] = useState("");
   const posthog = usePostHog();
 
-  const t = useTranslations("cookieConsentBanner");
+  const t = useTranslations("feature.cookie-banner");
 
   useEffect(() => {
     setConsentGiven(cookieConsentGiven() ?? "undecided");

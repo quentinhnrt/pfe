@@ -4,6 +4,7 @@ import { generatePortfolioMetadata } from "@/features/templates/bento-template/l
 import { templateSchema } from "@/features/templates/bento-template/settings";
 import { templates } from "@/lib/templates";
 import { getUserByUsername } from "@/lib/users";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 
 export async function generateMetadata({
@@ -13,11 +14,12 @@ export async function generateMetadata({
 }) {
   const { username } = await params;
   const user = await getUserByUsername(username);
+  const t = await getTranslations("page.portfolio");
 
   const activeTemplate = user.user_template[0];
 
   if (!activeTemplate) {
-    console.log("No active template found for user:", username);
+    console.log(t("no-active-template", { username }));
     notFound();
   }
 
@@ -34,11 +36,12 @@ export default async function PortfolioPage({
 }) {
   const { username } = await params;
   const user = await getUserByUsername(username);
+  const t = await getTranslations("page.portfolio");
 
   const activeTemplate = user.user_template[0];
 
   if (!activeTemplate) {
-    console.log("No active template found for user:", username);
+    console.log(t("no-active-template", { username }));
     notFound();
   }
 
@@ -48,7 +51,7 @@ export default async function PortfolioPage({
   const Template = templates[templateId]?.render.default;
 
   if (!Template) {
-    console.log("Template not found:", templateId);
+    console.log(t("no-template-found", { templateId }));
     notFound();
   }
 

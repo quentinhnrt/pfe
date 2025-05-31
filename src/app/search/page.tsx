@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/shadcn/button";
 import { Card } from "@/components/ui/shadcn/card";
 import SearchArtist from "@/features/search/components/search-artist";
 import { User } from "@prisma/client";
+import { ArrowRightIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -13,6 +15,7 @@ export default function SearchPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const initialQuery = searchParams.get("query") || "";
+  const t = useTranslations("page.search");
 
   const [query, setQuery] = useState(initialQuery);
   const [artists, setArtists] = useState<User[]>([]);
@@ -53,10 +56,10 @@ export default function SearchPage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-5xl md:text-6xl font-bold  mb-4 animate-gradient-x">
-              Découvrez des artistes
+              {t("title")}
             </h1>
             <p className="text-xl max-w-2xl mx-auto leading-relaxed">
-              Et connectez-vous avec des talents exceptionnels
+              {t("description")}
             </p>
           </div>
           <div className="max-w-2xl mx-auto mb-12">
@@ -89,7 +92,7 @@ export default function SearchPage() {
                         {artist.bannerImage ? (
                           <Image
                             src={artist.bannerImage}
-                            alt="Bannière"
+                            alt=""
                             fill
                             className="object-cover transition-transform duration-700"
                           />
@@ -136,7 +139,8 @@ export default function SearchPage() {
                         </div>
                         <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                           <Button className="text-xs rounded-full font-medium">
-                            Voir le profil →
+                            {t("see-profile")}
+                            <ArrowRightIcon className="w-4 h-4" />
                           </Button>
                         </div>
                       </div>
@@ -163,12 +167,9 @@ export default function SearchPage() {
                 </svg>
               </div>
               <h3 className="text-2xl font-semibold  mb-2">
-                Aucun artiste trouvé
+                {t("no-artist-found")}
               </h3>
-              <p className="max-w-md mx-auto">
-                Essayez avec d&apos;autres mots-clés ou explorez nos suggestions
-                ci-dessous
-              </p>
+              <p className="max-w-md mx-auto">{t("try-with-other-keywords")}</p>
             </div>
           ) : (
             <div className="text-center py-20 animate-fade-in">
@@ -188,7 +189,7 @@ export default function SearchPage() {
                 </svg>
               </div>
               <h3 className="text-3xl font-semibold mb-4">
-                Recherchez un artiste
+                {t("search-artist")}
               </h3>
             </div>
           )}
