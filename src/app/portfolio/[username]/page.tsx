@@ -1,23 +1,32 @@
 import { notFound } from "next/navigation";
 
+import { generatePortfolioMetadata } from "@/features/templates/bento-template/lib/generate-metadata";
+import { templateSchema } from "@/features/templates/bento-template/settings";
 import { templates } from "@/lib/templates";
 import { getUserByUsername } from "@/lib/users";
-import {generatePortfolioMetadata} from "@/features/templates/bento-template/lib/generate-metadata";
-import {z} from "zod";
-import {templateSchema} from "@/features/templates/bento-template/settings";
+import { getTranslations } from "next-intl/server";
+import { z } from "zod";
 
-export async function generateMetadata({ params }: { params: { username: string } }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: { username: string };
+}) {
   const { username } = await params;
   const user = await getUserByUsername(username);
+  const t = await getTranslations("page.portfolio");
 
   const activeTemplate = user.user_template[0];
 
   if (!activeTemplate) {
-    console.log("No active template found for user:", username);
+    console.log(t("no-active-template", { username }));
     notFound();
   }
 
-  return generatePortfolioMetadata(user, activeTemplate.data as z.infer<typeof templateSchema>);
+  return generatePortfolioMetadata(
+    user,
+    activeTemplate.data as z.infer<typeof templateSchema>
+  );
 }
 
 export default async function PortfolioPage({
@@ -27,11 +36,12 @@ export default async function PortfolioPage({
 }) {
   const { username } = await params;
   const user = await getUserByUsername(username);
+  const t = await getTranslations("page.portfolio");
 
   const activeTemplate = user.user_template[0];
 
   if (!activeTemplate) {
-    console.log("No active template found for user:", username);
+    console.log(t("no-active-template", { username }));
     notFound();
   }
 
@@ -41,7 +51,7 @@ export default async function PortfolioPage({
   const Template = templates[templateId]?.render.default;
 
   if (!Template) {
-    console.log("Template not found:", templateId);
+    console.log(t("no-template-found", { templateId }));
     notFound();
   }
 

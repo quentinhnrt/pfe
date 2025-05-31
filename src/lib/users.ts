@@ -3,11 +3,16 @@
 import { auth } from "@/lib/auth";
 import { Prisma } from "@prisma/client";
 import { headers } from "next/headers";
+import { getServerUrl } from "./server-url";
 
 export type UserFromApi = Prisma.UserGetPayload<{
   include: {
     posts: {
-      include: { artworks: true; question: { include: { answers: true } }, user: true };
+      include: {
+        artworks: true;
+        question: { include: { answers: true } };
+        user: true;
+      };
     };
     followers: true;
     following: true;
@@ -30,9 +35,7 @@ export async function getCurrentUser() {
 }
 
 export async function getUserById(id: string): Promise<UserFromApi> {
-  const userResponse = await fetch(
-    process.env.BETTER_AUTH_URL + "/api/user/" + id
-  );
+  const userResponse = await fetch(getServerUrl() + "/api/user/" + id);
 
   return await userResponse.json();
 }
@@ -41,7 +44,7 @@ export async function getUserByUsername(
   username: string
 ): Promise<UserFromApi> {
   const userResponse = await fetch(
-    process.env.BETTER_AUTH_URL + "/api/user/username/" + username
+    getServerUrl() + "/api/user/username/" + username
   );
 
   return await userResponse.json();

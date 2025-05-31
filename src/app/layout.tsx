@@ -1,14 +1,14 @@
+import CookieConsentBanner from "@/features/cookie-banner/components/cookie-consent-banner";
+import ConditionalHeader from "@/features/header/components/conditional-header";
+import { SessionProvider } from "@/hooks/use-session";
+import { auth } from "@/lib/auth";
 import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Encode_Sans } from "next/font/google";
-import CookieConsentBanner from "./cookie-consent-banner";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Providers } from "./providers";
-import { SessionProvider } from "@/hooks/useSession";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import ConditionalHeader from "./conditional-header";
 
 const fontSans = Encode_Sans({
   variable: "--encode-sans",
