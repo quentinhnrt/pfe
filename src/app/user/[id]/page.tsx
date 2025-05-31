@@ -49,6 +49,9 @@ export default async function ProfilePage({
       month: "long",
       year: "numeric",
     }),
+    hasPortfolio:
+      Array.isArray(userData.user_template) &&
+      userData.user_template.length > 0,
   };
 
   const isOwnProfile = currentUserData?.id === userData.id;
