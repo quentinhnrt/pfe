@@ -1,4 +1,4 @@
-import { Calendar, Globe, MapPin } from "lucide-react";
+import { Calendar, Globe, MapPin, Palette } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { memo } from "react";
@@ -27,6 +27,7 @@ interface ProfileHeaderProps {
     following: number;
     joined: string;
     isFollowing?: boolean;
+    hasPortfolio?: boolean;
   };
   isOwnProfile?: boolean;
   user: UserFromApi;
@@ -64,7 +65,29 @@ export const ProfileHeader = memo(function ProfileHeader({
             <AvatarFallback>{profile.name.substring(0, 2)}</AvatarFallback>
           </Avatar>
         </div>
-        <div className="absolute bottom-2 right-4">
+        <div className="absolute bottom-2 right-4 flex gap-2">
+          <Button
+            asChild={profile.hasPortfolio}
+            variant="outline"
+            disabled={!profile.hasPortfolio}
+            title={
+              !profile.hasPortfolio
+                ? "Aucun portfolio configuré"
+                : "Voir le portfolio"
+            }
+          >
+            {profile.hasPortfolio ? (
+              <Link href={`/portfolio/${profile.username}`}>
+                <Palette className="mr-1 h-4 w-4" />
+                Portfolio
+              </Link>
+            ) : (
+              <span className="flex items-center">
+                <Palette className="mr-1 h-4 w-4" />
+                Portfolio
+              </span>
+            )}
+          </Button>
           {isOwnProfile ? (
             <Button asChild>
               <Link href={`/settings/profile`}>Edit Profile</Link>

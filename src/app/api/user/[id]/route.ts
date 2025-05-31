@@ -45,6 +45,14 @@ export async function GET(
       },
       followers: true,
       following: true,
+      user_template: {
+        where: {
+          active: true,
+        },
+        include: {
+          template: true,
+        },
+      },
     },
   });
 
