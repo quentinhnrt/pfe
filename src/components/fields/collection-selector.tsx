@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/shadcn/table";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import {useTranslations} from "next-intl";
 
 interface Collection {
   id: number;
@@ -46,6 +47,8 @@ export function CollectionSelector({
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
+  const co = useTranslations("feature.collection.selector");
+  const c = useTranslations("commons");
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -118,7 +121,7 @@ export function CollectionSelector({
             <Input
               type="search"
               className="w-64"
-              placeholder="Chercher par titre"
+              placeholder={co("placeholders.search")}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -129,7 +132,7 @@ export function CollectionSelector({
                 <TableHeader>
                   <TableRow>
                     <TableHead className="w-[40px]" />
-                    <TableHead>Titre</TableHead>
+                    <TableHead>{co("headers.title")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -150,14 +153,14 @@ export function CollectionSelector({
               {hasMore && (
                 <div className="p-4 text-center">
                   <Button onClick={loadMore} variant="outline">
-                    Charger plus
+                    {c("buttons.load-more")}
                   </Button>
                 </div>
               )}
             </div>
           </FormControl>
           <FormMessage />
-          {loading && <p className="text-muted-foreground">Chargement…</p>}
+          {loading && <p className="text-muted-foreground">{c("loading")}</p>}
         </FormItem>
       )}
     />

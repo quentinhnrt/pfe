@@ -26,32 +26,36 @@ import { Switch } from "@/components/ui/shadcn/switch";
 import { Textarea } from "@/components/ui/shadcn/textarea";
 import { ArtworkGallerySelector } from "@/features/artwork/components/artwork-gallery-selector";
 import { Loader2, X } from "lucide-react";
+import {useTranslations} from "next-intl";
 
 type Props = {
   children?: React.ReactNode;
   onPostCreated?: () => void;
 };
 
-const formSchema = z
-  .object({
-    content: z.string().min(1),
-    artworks: z.number().array(),
-    hasCommunityQuestion: z.boolean().optional(),
-    question: z.string().optional(),
-    answers: z.array(z.object({ answer: z.string() })).optional(),
-  })
-  .superRefine((data, ctx) => {
-    if (data.hasCommunityQuestion && !data.question) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "La question est requise",
-      });
-    }
-  });
 
 export default function PostForm({ children, onPostCreated }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const p = useTranslations("feature.post");
+  const f = useTranslations("commons.forms");
+
+  const formSchema = z
+      .object({
+        content: z.string().min(1),
+        artworks: z.number().array(),
+        hasCommunityQuestion: z.boolean().optional(),
+        question: z.string().optional(),
+        answers: z.array(z.object({ answer: z.string() })).optional(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.hasCommunityQuestion && !data.question) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: p("errors.question-required"),
+          });
+        }
+      });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -115,7 +119,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
       <DialogContent className="!max-w-6xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
         <DialogHeader className="pb-4 flex-shrink-0">
           <DialogTitle className="text-2xl font-bold">
-            Créer un post
+            {p("create.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -130,11 +134,11 @@ export default function PostForm({ children, onPostCreated }: Props) {
                 name="content"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-semibold">Description</FormLabel>
+                    <FormLabel className="font-semibold">{p("labels.description")}</FormLabel>
                     <FormControl>
                       <Textarea
                         {...field}
-                        placeholder="Contenu"
+                        placeholder={p("placeholders.description")}
                         className="min-h-[100px] resize-none transition"
                       />
                     </FormControl>
@@ -148,12 +152,12 @@ export default function PostForm({ children, onPostCreated }: Props) {
                 name="artworks"
                 render={() => (
                   <FormItem>
-                    <FormLabel className="font-semibold">Œuvres</FormLabel>
+                    <FormLabel className="font-semibold">{p("labels.artworks")}</FormLabel>
                     <FormControl>
                       <div className="rounded-lg p-4 transition-colors">
                         <ArtworkGallerySelector
                           name="artworks"
-                          label="Sélectionner des œuvres à accompagner"
+                          label={p("labels.select-artworks")}
                         />
                       </div>
                     </FormControl>
@@ -167,7 +171,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
                 render={({ field }) => (
                   <FormItem className="flex items-center justify-between p-4 rounded-lg transition-colors border">
                     <FormLabel className="font-semibold">
-                      Y a-t-il une question à la communauté ?
+                        {p("labels.has-community-question")}
                     </FormLabel>
                     <FormControl>
                       <Switch
@@ -187,12 +191,12 @@ export default function PostForm({ children, onPostCreated }: Props) {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="font-semibold">
-                          Question
+                            {p("labels.question")}
                         </FormLabel>
                         <FormControl>
                           <Textarea
                             {...field}
-                            placeholder="Posez votre question à la communauté"
+                            placeholder={p("placeholders.question")}
                             className="min-h-[80px] resize-none transition"
                           />
                         </FormControl>
@@ -207,7 +211,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
                     render={() => (
                       <FormItem>
                         <FormLabel className="font-semibold">
-                          Réponses
+                            {p("labels.answers")}
                         </FormLabel>
                         <FormControl>
                           <div className="rounded-lg p-4  space-y-2">
@@ -225,7 +229,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
                                       e.target.value
                                     )
                                   }
-                                  placeholder={`Option ${index + 1}`}
+                                  placeholder={`${p("labels.answers")} ${index + 1}`}
                                   className="transition"
                                 />
                               )}
@@ -235,7 +239,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
                                   variant="default"
                                   className="w-full transition-colors font-medium mt-3"
                                 >
-                                  Ajouter une question
+                                    {p("labels.add-answer")}
                                 </Button>
                               )}
                             />
@@ -261,7 +265,7 @@ export default function PostForm({ children, onPostCreated }: Props) {
               className="transition font-medium"
             >
               <X className="w-4 h-4 mr-2" />
-              Annuler
+                {f("cancel")}
             </Button>
 
             <Button
@@ -272,10 +276,10 @@ export default function PostForm({ children, onPostCreated }: Props) {
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Création...
+                    {f("creation")}
                 </>
               ) : (
-                <>Créer</>
+                <>{f("create")}</>
               )}
             </Button>
           </div>

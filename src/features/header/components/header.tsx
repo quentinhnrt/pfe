@@ -16,9 +16,12 @@ import { authClient } from "@/lib/auth-client";
 import { Home, LogOut, Menu, Settings, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import {useTranslations} from "next-intl";
 
 export function Header() {
   const { data: session } = authClient.useSession();
+  const c = useTranslations("commons");
+  const s = useTranslations("feature.social");
 
   async function handleSignOut() {
     await authClient.signOut({
@@ -42,7 +45,7 @@ export function Header() {
           <div className="hidden md:flex items-center gap-4">
             {!session?.user ? (
               <Button asChild>
-                <Link href="/sign-in">Se connecter / S&apos;inscrire</Link>
+                <Link href="/sign-in">{c("buttons.sign-in")}</Link>
               </Button>
             ) : (
               <div className="flex items-center gap-4">
@@ -50,7 +53,7 @@ export function Header() {
                   <>
                     <Button variant={"link"}>
                       <Link href={"/settings/portfolio"}>
-                        Configurer mon portfolio
+                        {c("buttons.configure-portfolio")}
                       </Link>
                     </Button>
                     <ActionButton />
@@ -90,7 +93,9 @@ export function Header() {
                       >
                         <Link href="/" className="flex items-center gap-3">
                           <Home size={18} />
-                          <span>Accueil</span>
+                          <span>
+                            {c("home")}
+                          </span>
                         </Link>
                       </Button>
                       <Button asChild className="w-full justify-start mt-2">
@@ -99,7 +104,9 @@ export function Header() {
                           className="flex items-center gap-3"
                         >
                           <LogOut size={18} />
-                          <span>Se connecter / S&apos;inscrire</span>
+                          <span>
+                            {c("buttons.sign-in")}
+                          </span>
                         </Link>
                       </Button>
                     </>
@@ -123,7 +130,7 @@ export function Header() {
                         )}
                         <div className="text-left">
                           <p className="text-sm font-medium">
-                            {session.user.firstname || "Utilisateur"}
+                            {session.user.firstname || "User"}
                           </p>
                           <p className="text-xs text-gray-500">
                             {session.user.email || ""}
@@ -138,7 +145,9 @@ export function Header() {
                       >
                         <Link href="/" className="flex items-center gap-3">
                           <Home size={18} />
-                          <span>Accueil</span>
+                          <span>
+                            {c("home")}
+                          </span>
                         </Link>
                       </Button>
 
@@ -152,7 +161,7 @@ export function Header() {
                           className="flex items-center gap-3"
                         >
                           <User size={18} />
-                          <span>Mon profil</span>
+                          <span>{s("my-profile")}</span>
                         </Link>
                       </Button>
 
@@ -167,7 +176,9 @@ export function Header() {
                             className="flex items-center gap-3"
                           >
                             <Settings size={18} />
-                            <span>Configurer mon portfolio</span>
+                            <span>
+                                {c("buttons.configure-portfolio")}
+                            </span>
                           </Link>
                         </Button>
                       )}
@@ -179,7 +190,9 @@ export function Header() {
                       >
                         <div className="flex items-center gap-3">
                           <LogOut size={18} />
-                          <span>Se déconnecter</span>
+                          <span>
+                            {s("disconnect")}
+                          </span>
                         </div>
                       </Button>
                     </>

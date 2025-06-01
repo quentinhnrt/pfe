@@ -2,6 +2,7 @@
 import { Card } from "@/components/ui/shadcn/card";
 import { Prisma } from "@prisma/client";
 import { useEffect, useState } from "react";
+import {useTranslations} from "next-intl";
 
 type QuestionWithAnswers = Prisma.QuestionGetPayload<{
   include: { answers: { include: { users: true } } };
@@ -25,6 +26,7 @@ export default function PostCommunityQuestion({
   );
   const [selectedAnswerId, setSelectedAnswerId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations("feature.post-community-question");
 
   answers.map((answer) => {
     if (answer.users?.length > 0) {
@@ -64,7 +66,7 @@ export default function PostCommunityQuestion({
         setSelectedAnswerId(answerId);
       }
     } catch (err) {
-      console.error("Erreur lors du vote :", err);
+      console.error("Error while voting :", err);
     } finally {
       setIsLoading(false);
     }
@@ -133,19 +135,19 @@ export default function PostCommunityQuestion({
 
       {isLoading && (
         <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-600">
-          Enregistrement du vote...
+          {t("vote-registering")}
         </p>
       )}
 
       {hasVoted && !userAnswerId && (
         <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-blue-700 bg-blue-50 border border-blue-200 p-2 sm:p-3 rounded">
-          Merci pour votre vote ! Les résultats sont maintenant visibles.
+            {t("vote-success")}
         </p>
       )}
 
       {userAnswerId && (
         <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-700 bg-gray-100 border border-gray-200 p-2 sm:p-3 rounded">
-          Vous avez déjà répondu à cette question.
+          {t("already-answered")}
         </p>
       )}
     </Card>

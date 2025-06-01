@@ -25,6 +25,7 @@ import { CheckCircle, Euro, Loader2, ShoppingCart, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {useTranslations} from "next-intl";
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -41,14 +42,14 @@ function isImageCorrect(image: File) {
   if (!size) {
     return {
       correct: false,
-      message: "La taille maximale de l'image est de 5MB.",
+      message: "Maximum size is 5MB.",
     };
   }
 
   if (!format) {
     return {
       correct: false,
-      message: "Seuls les formats .jpg, .jpeg, .png et .webp sont supportés.",
+      message: "Only JPG, PNG, and WEBP formats are allowed.",
     };
   }
 
@@ -74,13 +75,15 @@ export default function ArtworkForm({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const c = useTranslations("commons");
+  const a = useTranslations("feature.artwork");
 
   const formSchema = z
     .object({
       title: z
         .string()
-        .min(1, "Le titre est requis")
-        .max(255, "Le titre ne peut pas dépasser 255 caractères"),
+        .min(1, a("errors.title-required"))
+        .max(255, a("errors.title-too-long")),
       description: z.string().optional(),
       isForSale: z.boolean(),
       price: z.string().optional(),
@@ -91,7 +94,7 @@ export default function ArtworkForm({
       if (data.isForSale && (!data.price || data.price.trim() === "")) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Le prix est requis lorsque l'œuvre est à vendre",
+          message: a("errors.price-required"),
           path: ["price"],
         });
       }
@@ -99,7 +102,7 @@ export default function ArtworkForm({
       if (!artwork && !data.image) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "L'image est obligatoire",
+          message: a("errors.image-required"),
           path: ["image"],
         });
       }
@@ -170,9 +173,9 @@ export default function ArtworkForm({
       setOpen(false);
       window.location.reload();
     } catch (error) {
-      console.error("Erreur lors de la création de l'œuvre:", error);
+      console.error("Error occured during artwork creation/update", error);
       if (onFailure) {
-        onFailure({ error: "Une erreur inattendue s'est produite" });
+        onFailure({ error: c("error.title") });
       }
     } finally {
       setIsLoading(false);
@@ -198,7 +201,7 @@ export default function ArtworkForm({
       <DialogTrigger asChild>
         {children || (
           <Button className="border-0 transition-all duration-200 font-medium">
-            Créer une œuvre
+            {a("create.title")}
           </Button>
         )}
       </DialogTrigger>
@@ -206,7 +209,7 @@ export default function ArtworkForm({
       <DialogContent className="!max-w-4xl max-h-[90vh]  shadow-2xl overflow-hidden flex flex-col">
         <DialogHeader className=" pb-4 flex-shrink-0">
           <DialogTitle className=" text-2xl font-bold">
-            Créer une nouvelle œuvre
+            {a("create.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -219,13 +222,13 @@ export default function ArtworkForm({
                 render={() => (
                   <FormItem>
                     <FormLabel className="font-semibold text-base">
-                      Image de l&apos;œuvre
+                      {a("labels.image")}
                     </FormLabel>
                     <FormControl>
                       <div className="transition-colors duration-200 rounded-lg p-4 ">
                         <ImageUploadField
                           name="image"
-                          label="Téléchargez une image de votre œuvre"
+                          label={a("labels.image")}
                           existingImage={artwork?.thumbnail || undefined}
                         />
                       </div>
@@ -240,11 +243,11 @@ export default function ArtworkForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-semibold text-base">
-                      Titre de l&apos;œuvre
+                        {a("labels.title")}
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Donnez un titre à votre création"
+                        placeholder={a("placeholders.title")}
                         {...field}
                         className="transition-all duration-200"
                       />
@@ -260,11 +263,11 @@ export default function ArtworkForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-semibold text-base">
-                      Description (optionnelle)
+                        {a("labels.description")}
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Décrivez votre œuvre, sa technique, son inspiration..."
+                        placeholder={a("placeholders.description")}
                         {...field}
                         className="transition-all duration-200 min-h-[100px] resize-none"
                       />
@@ -277,7 +280,7 @@ export default function ArtworkForm({
               <div className="rounded-lg p-4 border border-gray-200">
                 <h3 className="text-lg font-semibold mb-4 flex items-center">
                   <ShoppingCart className="w-5 h-5 mr-2" />
-                  Informations de vente
+                    {a("labels.sales-section")}
                 </h3>
 
                 <FormField
@@ -287,7 +290,7 @@ export default function ArtworkForm({
                     <FormItem className="flex flex-row items-center justify-between rounded-lg p-4 shadow-sm  transition-colors duration-200 mb-4">
                       <div className="space-y-0.5">
                         <FormLabel className="font-semibold text-base">
-                          Cette œuvre est-elle à vendre ?
+                          {a("labels.is-for-sale")}
                         </FormLabel>
                       </div>
                       <FormControl>
@@ -309,7 +312,7 @@ export default function ArtworkForm({
                         <FormItem>
                           <FormLabel className="text-black font-semibold text-base flex items-center">
                             <Euro className="w-4 h-4 mr-2" />
-                            Prix de vente
+                            {a("labels.price")}
                           </FormLabel>
                           <FormControl>
                             <div className="relative">
@@ -335,7 +338,7 @@ export default function ArtworkForm({
                           <div className="space-y-0.5">
                             <FormLabel className="font-semibold text-base flex items-center">
                               <CheckCircle className="w-4 h-4 mr-2" />
-                              Cette œuvre est-elle vendue ?
+                                {a("labels.sold")}
                             </FormLabel>
                           </div>
                           <FormControl>
@@ -363,7 +366,7 @@ export default function ArtworkForm({
               disabled={isLoading}
             >
               <X className="w-4 h-4 mr-2" />
-              Annuler
+                {c("forms.cancel")}
             </Button>
             <Button
               onClick={form.handleSubmit(onSubmit)}
@@ -373,10 +376,10 @@ export default function ArtworkForm({
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  {artwork ? "Modification..." : "Création..."}
+                  {artwork ? c("forms.modification") : c("forms.creation")}
                 </>
               ) : (
-                <p>{artwork ? "Modifier" : "Créer"}</p>
+                <p>{artwork ? c("forms.modify") : c("forms.create")}</p>
               )}
             </Button>
           </div>
