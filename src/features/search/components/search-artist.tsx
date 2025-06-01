@@ -107,7 +107,7 @@ export default function SearchArtist({
                       "Artiste"}
                   </span>
                   <span className="text-gray-500 text-xs group-hover:text-gray-600 transition-colors duration-300">
-                    Artiste
+                    {c("artist")}
                   </span>
                 </div>
                 <ChevronRight

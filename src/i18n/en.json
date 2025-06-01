@@ -4,6 +4,7 @@
   },
   "commons": {
     "user": "User",
+    "artist": "Artist",
     "anonymous-user": "Anonymous User",
     "back-to-home": "Back to home",
     "loading": "Loading...",

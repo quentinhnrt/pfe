@@ -9,9 +9,9 @@ import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 
 export const metadata: Metadata = {
-  title: "Page d'accueil | ArtiLink",
+  title: "Homepage | ArtiLink",
   description:
-    "Découvrez des œuvres d'art exceptionnelles et connectez-vous avec des artistes talentueux",
+    "Discover and share artworks, connect with artists, and explore the world of art.",
 };
 
 export default async function Page() {
