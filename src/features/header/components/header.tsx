@@ -14,14 +14,15 @@ import ActionButton from "@/features/social/components/action-button";
 import { Session } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
 import { Home, LogOut, Menu, Settings, User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
-import {useTranslations} from "next-intl";
 
 export function Header() {
   const { data: session } = authClient.useSession();
   const c = useTranslations("commons");
   const s = useTranslations("feature.social");
+  const a = useTranslations("app");
 
   async function handleSignOut() {
     await authClient.signOut({
@@ -38,7 +39,7 @@ export function Header() {
       <div className="container mx-auto px-4 py-2">
         <div className="flex items-center justify-between">
           <Link href="/" className="text-2xl font-bold">
-            ArtiLink
+            {a("name")}
           </Link>
 
           {/* Desktop Navigation */}
@@ -93,9 +94,7 @@ export function Header() {
                       >
                         <Link href="/" className="flex items-center gap-3">
                           <Home size={18} />
-                          <span>
-                            {c("home")}
-                          </span>
+                          <span>{c("home")}</span>
                         </Link>
                       </Button>
                       <Button asChild className="w-full justify-start mt-2">
@@ -104,9 +103,7 @@ export function Header() {
                           className="flex items-center gap-3"
                         >
                           <LogOut size={18} />
-                          <span>
-                            {c("buttons.sign-in")}
-                          </span>
+                          <span>{c("buttons.sign-in")}</span>
                         </Link>
                       </Button>
                     </>
@@ -145,9 +142,7 @@ export function Header() {
                       >
                         <Link href="/" className="flex items-center gap-3">
                           <Home size={18} />
-                          <span>
-                            {c("home")}
-                          </span>
+                          <span>{c("home")}</span>
                         </Link>
                       </Button>
 
@@ -176,9 +171,7 @@ export function Header() {
                             className="flex items-center gap-3"
                           >
                             <Settings size={18} />
-                            <span>
-                                {c("buttons.configure-portfolio")}
-                            </span>
+                            <span>{c("buttons.configure-portfolio")}</span>
                           </Link>
                         </Button>
                       )}
@@ -190,9 +183,7 @@ export function Header() {
                       >
                         <div className="flex items-center gap-3">
                           <LogOut size={18} />
-                          <span>
-                            {s("disconnect")}
-                          </span>
+                          <span>{s("disconnect")}</span>
                         </div>
                       </Button>
                     </>

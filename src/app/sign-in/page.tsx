@@ -1,16 +1,31 @@
+import { auth } from "@/lib/auth";
 import { ArrowLeftIcon } from "lucide-react";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 import { AuthTabs } from "@/features/auth/components/auth-tabs";
-import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-    title: "Sign In | ArtiLink",
-    description: "Connect with artists and explore their works",
+export async function generateMetadata(): Promise<Metadata> {
+  const m = await getTranslations("commons.metadata");
+
+  return {
+    title: m("sign-in"),
+  };
 }
 
 export default async function SignInPage() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (session) {
+    redirect("/");
+  }
+
   const t = await getTranslations("page.sign-in");
   const c = await getTranslations("commons");
 

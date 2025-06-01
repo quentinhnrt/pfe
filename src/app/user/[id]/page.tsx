@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ProfileHeader } from "@/features/profile/components/profile-header";
@@ -7,10 +7,13 @@ import { getCurrentUser, getUserById } from "@/lib/users";
 import { formatDateToLocale } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "User Profile | ArtiLink",
-  description: "View user profile and posts",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const m = await getTranslations("commons.metadata");
+
+  return {
+    title: m("user-profile"),
+  };
+}
 
 export default async function ProfilePage({
   params,

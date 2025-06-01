@@ -8,11 +8,14 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
 
-export const metadata: Metadata = {
-  title: "Homepage | ArtiLink",
-  description:
-    "Discover and share artworks, connect with artists, and explore the world of art.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const m = await getTranslations("commons.metadata");
+
+  return {
+    title: m("homepage"),
+    description: m("homepage-description"),
+  };
+}
 
 export default async function Page() {
   const session = await auth.api.getSession({

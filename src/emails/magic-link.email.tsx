@@ -11,10 +11,14 @@ import {
   Tailwind,
   Text,
 } from "@react-email/components";
+import { getTranslations } from "next-intl/server";
 
 const baseUrl = getServerUrl();
 
-export const MagicLinkEmail = ({ url }: { url: string }) => {
+export const MagicLinkEmail = async ({ url }: { url: string }) => {
+  const e = await getTranslations("emails.magic-link");
+  const a = await getTranslations("app");
+
   return (
     <Html>
       <Head />
@@ -26,24 +30,23 @@ export const MagicLinkEmail = ({ url }: { url: string }) => {
                 src={`${baseUrl}/logo.svg`}
                 width={40}
                 height={40}
-                alt="Artilink"
+                alt={e("alt")}
                 className="mx-auto my-0"
               />
               <Text className="text-sm font-normal tracking-wider text-black uppercase">
-                Artilink
+                {a("name")}
               </Text>
               <Heading className="my-4 text-4xl leading-tight font-medium text-black">
-                Your magic link
+                {e("heading")}
               </Heading>
               <Text className="mb-8 text-base leading-7 text-[#777777]">
-                This link and code will only be valid for the next 5 minutes. If
-                you didn&apos;t request this, please ignore this email.
+                {e("text")}
               </Text>
               <Link
                 href={url}
                 className="inline-flex items-center rounded-lg bg-black px-10 py-3 text-center text-sm font-bold text-white no-underline"
               >
-                Click here to sign in
+                {e("button")}
               </Link>
             </Section>
           </Container>

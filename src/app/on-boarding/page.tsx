@@ -9,24 +9,26 @@ import { auth } from "@/lib/auth";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-export const metadata: Metadata = {
-  title: "Complétez votre profil | Artilink",
-  description:
-    "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
-  openGraph: {
-    title: "Complétez votre profil | Artilink",
-    description:
-      "Complétez votre profil pour profiter pleinement de l'expérience Artilink",
-    images: [
-      {
-        url: "/signin.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Artilink - Complétez votre profil",
-      },
-    ],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("page.on-boarding");
+
+  return {
+    title: t("title"),
+    description: t("meta-description"),
+    openGraph: {
+      title: t("title"),
+      description: t("meta-description"),
+      images: [
+        {
+          url: "/signin.jpg",
+          width: 1200,
+          height: 630,
+          alt: t("title"),
+        },
+      ],
+    },
+  };
+}
 
 export default async function OnBoardingPage() {
   const session = await auth.api.getSession({
@@ -35,6 +37,7 @@ export default async function OnBoardingPage() {
   const t = await getTranslations("page.on-boarding");
   const c = await getTranslations("commons");
   const a = await getTranslations("app");
+  const aria = await getTranslations("commons.aria");
 
   if (!session || !session.user || session.user.onBoarded) {
     redirect("/");
@@ -46,7 +49,7 @@ export default async function OnBoardingPage() {
         <div className="hidden md:flex md:w-2/6 bg-muted relative">
           <Image
             src="/signin.jpg"
-            alt="Image décorative représentant l'art"
+            alt={aria("decorative-art-image")}
             width={800}
             height={800}
             className="absolute inset-0 w-full h-full object-cover"
@@ -62,7 +65,7 @@ export default async function OnBoardingPage() {
           <Link
             href="/"
             className="absolute top-4 left-3 flex items-center gap-2 z-50 text-sm leading-none font-medium p-2 hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded-md"
-            aria-label="Retour à l'accueil"
+            aria-label={aria("back-to-home")}
           >
             <ArrowLeftIcon className="h-4 w-4" aria-hidden="true" />
             <span>{c("back-to-home")}</span>
@@ -71,7 +74,7 @@ export default async function OnBoardingPage() {
           <div
             className="w-full max-w-md"
             role="region"
-            aria-label="Formulaire de configuration de profil"
+            aria-label={aria("profile-form")}
           >
             <OnBoardingForm user={session.user} />
           </div>
