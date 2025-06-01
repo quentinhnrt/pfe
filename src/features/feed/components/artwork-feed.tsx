@@ -184,7 +184,7 @@ export default function ArtworksFeed({
             <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white dark:from-black to-transparent z-20 pointer-events-none"></div>
             <div
               ref={scrollRef}
-              className="flex gap-4 px-6 overflow-x-auto scrollbar-hide scroll-smooth"
+              className="flex gap-4 lg:px-6 overflow-x-auto scrollbar-hide scroll-smooth"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
@@ -223,7 +223,7 @@ export default function ArtworksFeed({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:px-6">
             {artworks.map((artwork, index) => (
               <Link
                 href={"/user/" + artwork.user.id}

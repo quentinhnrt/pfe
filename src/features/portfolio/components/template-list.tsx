@@ -46,7 +46,7 @@ export default function TemplateList({
   const { data: session } = authClient.useSession();
 
   return (
-    <div className="p-4 md:p-8">
+    <div>
       <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
