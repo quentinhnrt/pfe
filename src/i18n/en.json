@@ -4,9 +4,29 @@
   },
   "commons": {
     "user": "User",
+    "artist": "Artist",
     "anonymous-user": "Anonymous User",
     "back-to-home": "Back to home",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "error": {
+      "title": "An error occurred",
+      "description": "Please try again later or contact support if the problem persists."
+    },
+    "forms": {
+      "modify": "Modify",
+      "create": "Create",
+      "modification": "Modification...",
+      "creation": "Creation...",
+      "cancel": "Cancel"
+    },
+    "buttons": {
+      "load-more": "Load more",
+      "publish": "Publish",
+      "configure-portfolio": "Configure my portfolio",
+      "sign-in": "Sign in/Sign up",
+      "see-more": "See more"
+    },
+    "home": "Home"
   },
   "page": {
     "index": {
@@ -60,6 +80,125 @@
       "byClickingAccept2": ", you agree to our use of cookies.",
       "accept": "Accept",
       "decline": "Decline"
+    },
+    "post-community-question": {
+      "already-answered": "You have already answered this question.",
+      "vote-success": "Thank you for your vote! The results are now shown.",
+      "vote-registering": "Your vote is being registered..."
+    },
+    "social": {
+      "follow": "Follow",
+      "unfollow": "Unfollow",
+      "publish": "Publish",
+      "create-post": "Create a post",
+      "create-artwork": "Create an artwork",
+      "create-collection": "Create a collection",
+      "my-profile": "My profile",
+      "disconnect": "Disconnect"
+    },
+    "artwork": {
+      "selector": {
+        "placeholders": {
+          "search": "Search by title"
+        }
+      },
+      "errors": {
+        "image-size": "Maximum size is 5MB.",
+        "image-type": "Only JPG, PNG, and WEBP formats are allowed.",
+        "image-required": "Image is required.",
+        "price-required": "Price is required.",
+        "title-required": "Title is required.",
+        "title-too-long": "Title must be less than 255 characters."
+      },
+      "create": {
+        "title": "Create Artwork",
+        "description": "Share your art with the world",
+        "submit": "Submit Artwork",
+        "cancel": "Cancel"
+      },
+      "labels": {
+        "title": "Artwork title",
+        "description": "Description",
+        "price": "Selling price",
+        "image": "Artwork Image",
+        "tags": "Tags",
+        "category": "Category",
+        "sales-section": "Sales information",
+        "is-for-sale": "Is this artwork for sale?",
+        "sold": "Is this artwork sold?"
+      },
+      "placeholders": {
+        "title": "Enter the title of your artwork",
+        "description": "Describe your artwork, it's technique, and inspiration",
+        "price": "Enter the price of your artwork",
+        "tags": "Add tags (comma separated)",
+        "category": "Select a category"
+      },
+      "feed": {
+        "title": "Artworks to discover",
+        "description-auth": "Browse our selection of artworks",
+        "description-guest": "Explore our art gallery",
+        "no-artworks": "No artworks for the moment",
+        "refresh" : "Refresh"
+      }
+    },
+    "post": {
+      "errors": {
+        "question-required": "Question is required."
+      },
+      "create": {
+        "title": "Create Post"
+      },
+      "labels": {
+        "description": "Post description",
+        "artworks": "Artworks",
+        "select-artworks": "Select artworks to include in your post",
+        "has-community-question": "Do you have a community question?",
+        "question": "Question",
+        "answers": "Answers",
+        "add-answer": "Add an answer"
+      },
+      "placeholders": {
+        "description": "Share your thoughts, questions, or updates with the community",
+        "question": "What would you like to ask the community?"
+      }
+    },
+    "collection": {
+        "create": {
+            "title": "Create Collection",
+            "description": "Organize your artworks into collections",
+            "submit": "Create Collection",
+            "cancel": "Cancel"
+        },
+        "labels": {
+            "title": "Collection title",
+            "description": "Description",
+            "artworks": "Artworks to include",
+            "select-artworks": "Select artworks to include in your collection"
+        },
+        "placeholders": {
+            "title": "Enter the name of your collection",
+            "description": "Describe your collection and its theme"
+        },
+      "errors": {
+        "artworks-required": "At least one artwork is required in the collection."
+      },
+      "selector": {
+        "placeholders": {
+          "search": "Search by title"
+        },
+        "headers": {
+          "title": "Title"
+        }
+      }
+    },
+    "search": {
+      "placeholders": {
+        "artists": "Search for artists"
+      },
+      "titles": {
+        "artists-results": "Suggested artists"
+      }
     }
   }
 }
