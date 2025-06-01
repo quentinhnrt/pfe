@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Artilink"
+    "name": "Artilink",
+    "title": "Artilink"
   },
   "commons": {
     "user": "User",
@@ -26,7 +27,19 @@
       "sign-in": "Sign in/Sign up",
       "see-more": "See more"
     },
-    "home": "Home"
+    "home": "Home",
+    "metadata": {
+      "homepage": "Homepage | Artilink",
+      "homepage-description": "Discover and share artworks, connect with artists, and explore the world of art.",
+      "sign-in": "Sign In | Artilink",
+      "search": "Search Artists | Artilink",
+      "user-profile": "User Profile | Artilink"
+    },
+    "aria": {
+      "back-to-home": "Back to home",
+      "profile-form": "Profile configuration form",
+      "decorative-art-image": "Decorative image representing art"
+    }
   },
   "page": {
     "index": {
@@ -36,7 +49,11 @@
     },
     "sign-in": {
       "title": "Join the artistic community",
-      "description": "Connect with artists, share your work and grow your creative network"
+      "description": "Connect with artists, share your work and grow your creative network",
+      "welcome": "Welcome",
+      "create-account": "Create an account",
+      "sign-in-to": "Sign in to your Artilink account",
+      "join-community": "Join the Artilink community"
     },
     "settings": {
       "portfolio": {
@@ -68,7 +85,9 @@
       "no-template-found": "No template found: {{templateId}}"
     },
     "on-boarding": {
-      "description": "Shape your identity, illuminate your art."
+      "description": "Shape your identity, illuminate your art.",
+      "title": "Complete your profile | Artilink",
+      "meta-description": "Complete your profile to fully enjoy the Artilink experience"
     }
   },
   "feature": {
@@ -139,7 +158,7 @@
         "description-auth": "Browse our selection of artworks",
         "description-guest": "Explore our art gallery",
         "no-artworks": "No artworks for the moment",
-        "refresh" : "Refresh"
+        "refresh": "Refresh"
       }
     },
     "post": {
@@ -164,22 +183,22 @@
       }
     },
     "collection": {
-        "create": {
-            "title": "Create Collection",
-            "description": "Organize your artworks into collections",
-            "submit": "Create Collection",
-            "cancel": "Cancel"
-        },
-        "labels": {
-            "title": "Collection title",
-            "description": "Description",
-            "artworks": "Artworks to include",
-            "select-artworks": "Select artworks to include in your collection"
-        },
-        "placeholders": {
-            "title": "Enter the name of your collection",
-            "description": "Describe your collection and its theme"
-        },
+      "create": {
+        "title": "Create Collection",
+        "description": "Organize your artworks into collections",
+        "submit": "Create Collection",
+        "cancel": "Cancel"
+      },
+      "labels": {
+        "title": "Collection title",
+        "description": "Description",
+        "artworks": "Artworks to include",
+        "select-artworks": "Select artworks to include in your collection"
+      },
+      "placeholders": {
+        "title": "Enter the name of your collection",
+        "description": "Describe your collection and its theme"
+      },
       "errors": {
         "artworks-required": "At least one artwork is required in the collection."
       },
@@ -199,6 +218,20 @@
       "titles": {
         "artists-results": "Suggested artists"
       }
+    },
+    "auth": {
+      "welcome": "Welcome",
+      "create-account": "Create an account",
+      "sign-in-to": "Sign in to your Artilink account",
+      "join-community": "Join the Artilink community"
+    }
+  },
+  "emails": {
+    "magic-link": {
+      "alt": "Artilink",
+      "heading": "Your magic link",
+      "text": "This link and code will only be valid for the next 5 minutes. If you didn't request this, please ignore this email.",
+      "button": "Click here to sign in"
     }
   }
 }

@@ -2,16 +2,20 @@ import { templateSchema } from "@/features/templates/bento-template/settings";
 import { getServerUrl } from "@/lib/server-url";
 import { User } from "@prisma/client";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { z } from "zod";
 
-export function generatePortfolioMetadata(
+export async function generatePortfolioMetadata(
   user: User,
   template: z.infer<typeof templateSchema>
-): Metadata {
+): Promise<Metadata> {
+  const c = await getTranslations("commons");
+  const a = await getTranslations("app");
+
   const fullName =
     [user.firstname, user.lastname].filter(Boolean).join(" ") ||
     user.name ||
-    "Utilisateur";
+    c("user");
 
   const baseUrl = getServerUrl() || "";
 
@@ -50,7 +54,7 @@ export function generatePortfolioMetadata(
         },
       ],
       locale: "fr_FR",
-      siteName: "ArtiLink",
+      siteName: a("name"),
     },
     twitter: {
       card: "summary_large_image",
