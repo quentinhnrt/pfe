@@ -22,7 +22,8 @@
       "load-more": "Load more",
       "publish": "Publish",
       "configure-portfolio": "Configure my portfolio",
-      "sign-in": "Sign in/Sign up"
+      "sign-in": "Sign in/Sign up",
+      "see-more": "See more"
     },
     "home": "Home"
   },
@@ -188,6 +189,14 @@
         "headers": {
           "title": "Title"
         }
+      }
+    },
+    "search": {
+      "placeholders": {
+        "artists": "Search for artists"
+      },
+      "titles": {
+        "artists-results": "Suggested artists"
       }
     }
   }

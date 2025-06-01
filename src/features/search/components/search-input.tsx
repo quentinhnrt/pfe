@@ -3,6 +3,7 @@
 import { Input } from "@/components/ui/shadcn/input";
 import { Loader2, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import {useTranslations} from "next-intl";
 
 type SearchInputProps = {
   value: string;
@@ -17,6 +18,7 @@ export default function SearchInput({
 }: SearchInputProps) {
   const [inputValue, setInputValue] = useState(value);
   const [isLoading, setIsLoading] = useState(false);
+  const s = useTranslations("feature.search");
 
   useEffect(() => {
     setInputValue(value);
@@ -60,7 +62,7 @@ export default function SearchInput({
         </div>
         <Input
           type="text"
-          placeholder="Rechercher des artistes, œuvres..."
+          placeholder={s("placeholders.artists")}
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
           className="
