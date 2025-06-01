@@ -3,6 +3,7 @@ import PostArtworks from "@/features/post-card/components/post-artworks";
 import PostCommunityQuestion from "@/features/post-card/components/post-community-question";
 import { Prisma } from "@prisma/client";
 import { Clock, MoreHorizontal } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 export type PostWithArtworksQuestionAndAnswers = Prisma.PostGetPayload<{
@@ -28,16 +29,19 @@ type Props = {
 };
 
 export default function PostCard({ post }: Props) {
+  const c = useTranslations("commons");
+  const p = useTranslations("feature.post");
+
   const formatDate = (date: Date) => {
     const now = new Date();
     const diffInHours = Math.floor(
       (now.getTime() - date.getTime()) / (1000 * 60 * 60)
     );
 
-    if (diffInHours < 1) return "À l'instant";
-    if (diffInHours < 24) return `Il y a ${diffInHours}h`;
-    if (diffInHours < 48) return "Hier";
-    return new Date(date).toLocaleDateString("fr-FR", {
+    if (diffInHours < 1) return p("time.just-now");
+    if (diffInHours < 24) return p("time.hours-ago", { hours: diffInHours });
+    if (diffInHours < 48) return p("time.yesterday");
+    return new Date(date).toLocaleDateString("en-US", {
       day: "numeric",
       month: "short",
     });
@@ -63,7 +67,7 @@ export default function PostCard({ post }: Props) {
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-sm sm:text-base">
                   {`${post.user.firstname ?? ""} ${post.user.lastname ?? ""}`.trim() ||
-                    "Utilisateur"}
+                    c("user")}
                 </h3>
               </div>
               <div className="flex items-center gap-2 text-gray-500 text-xs sm:text-sm">

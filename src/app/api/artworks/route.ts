@@ -10,6 +10,16 @@ type PrismaArtworkQuery = {
     userId?: string;
     isForSale?: boolean;
     sold?: boolean;
+    OR?: Array<{
+      title?: {
+        contains: string;
+        mode: "insensitive";
+      };
+      description?: {
+        contains: string;
+        mode: "insensitive";
+      };
+    }>;
   };
   orderBy?: {
     createdAt: "asc" | "desc";
@@ -36,6 +46,27 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get("userId") as string;
     query.where = {
       userId,
+    };
+  }
+
+  if (searchParams.has("search")) {
+    const searchTerm = searchParams.get("search") as string;
+    query.where = {
+      ...query.where,
+      OR: [
+        {
+          title: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+        {
+          description: {
+            contains: searchTerm,
+            mode: "insensitive",
+          },
+        },
+      ],
     };
   }
 

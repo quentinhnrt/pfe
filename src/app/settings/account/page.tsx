@@ -1,13 +1,26 @@
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
 
 import { AccountForm } from "@/features/settings/components/account-form";
+import { siteConfig } from "@/lib/seo/metadata";
 import { getCurrentUser } from "@/lib/users";
 import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Account Settings",
-  description: "Manage your account settings and preferences",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("page.settings.account");
+  
+  return {
+    title: t("title"),
+    description: t("description"),
+    robots: {
+      index: false,
+      follow: false,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/settings/account`,
+    },
+  };
+}
 
 export default async function AccountSettingsPage() {
   const user = await getCurrentUser();

@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/shadcn/dropdown-menu";
 import { Session } from "@/lib/auth";
 import { authClient } from "@/lib/auth-client";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {useTranslations} from "next-intl";
 
 export default function UserHeader({ session }: { session: Session }) {
   const router = useRouter();
@@ -55,9 +55,7 @@ export default function UserHeader({ session }: { session: Session }) {
               <p className="text-sm font-medium">
                 {session.user.firstname || "User"}
               </p>
-              <p className="text-xs text-gray-500">
-                {s("my-profile")}
-              </p>
+              <p className="text-xs text-gray-500">{s("my-profile")}</p>
             </div>
           </div>
         </Button>
@@ -68,11 +66,16 @@ export default function UserHeader({ session }: { session: Session }) {
             {s("my-profile")}
           </Link>
         </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href={`/settings/account`} className="w-full">
+            {s("settings")}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => handleSignOut()}
           className="text-red-600"
         >
-            {s("disconnect")}
+          {s("disconnect")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
