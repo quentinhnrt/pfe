@@ -1,9 +1,12 @@
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Separator } from "@/components/ui/shadcn/separator";
+import JsonLd from "@/components/seo/json-ld";
 import ArtworkFeed from "@/features/feed/components/artwork-feed";
 import PostFeed from "@/features/feed/components/post-feed";
 import SearchArtist from "@/features/search/components/search-artist";
 import { auth } from "@/lib/auth";
+import { siteConfig } from "@/lib/seo/metadata";
+import { generateOrganizationSchema, generateWebSiteSchema, generateBreadcrumbSchema } from "@/lib/seo/structured-data";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { headers } from "next/headers";
@@ -14,6 +17,24 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: m("homepage"),
     description: m("homepage-description"),
+    keywords: siteConfig.keywords,
+    openGraph: {
+      title: m("homepage"),
+      description: m("homepage-description"),
+      type: "website",
+      locale: "en_US",
+      url: siteConfig.url,
+      siteName: siteConfig.name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: m("homepage"),
+      description: m("homepage-description"),
+      creator: siteConfig.creator,
+    },
+    alternates: {
+      canonical: siteConfig.url,
+    },
   };
 }
 
@@ -23,8 +44,19 @@ export default async function Page() {
   });
   const t = await getTranslations("page.index");
   const c = await getTranslations("commons");
+  
   return (
-    <div className="min-h-screen">
+    <>
+      <JsonLd 
+        data={[
+          generateOrganizationSchema(),
+          generateWebSiteSchema(),
+          generateBreadcrumbSchema([
+            { name: "Home", url: siteConfig.url }
+          ])
+        ]} 
+      />
+      <div className="min-h-screen">
       <div className="py-12">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl font-bold mb-4">{t("title")}</h1>
@@ -59,5 +91,6 @@ export default async function Page() {
         )}
       </main>
     </div>
+    </>
   );
 }

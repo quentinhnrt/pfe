@@ -1,13 +1,26 @@
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
 
 import { ProfileForm } from "@/features/settings/components/profile-form";
+import { siteConfig } from "@/lib/seo/metadata";
 import { getCurrentUser } from "@/lib/users";
 import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Profile Settings",
-  description: "Manage your profile settings and information",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("page.settings.profile");
+  
+  return {
+    title: t("title"),
+    description: t("description"),
+    robots: {
+      index: false,
+      follow: false,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/settings/profile`,
+    },
+  };
+}
 
 export default async function ProfileSettingsPage() {
   const user = await getCurrentUser();

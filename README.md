@@ -81,10 +81,10 @@ Ajoutez une entrée dans le fichier JSON pour définir les métadonnées de votr
 }
 ```
 
-* `id` : identifiant unique de la template (doit correspondre à celui utilisé dans le code).
-* `name` : nom affiché.
-* `description` : description courte.
-* `slug` : identifiant utilisé dans le code et les URLs.
+- `id` : identifiant unique de la template (doit correspondre à celui utilisé dans le code).
+- `name` : nom affiché.
+- `description` : description courte.
+- `slug` : identifiant utilisé dans le code et les URLs.
 
 ### 2. Déclaration dans `src/lib/template.ts`
 
@@ -92,15 +92,15 @@ Ensuite, importez dynamiquement les composants nécessaires :
 
 ```ts
 export const templates = {
-  'test-template': {
-    render: await import('@/components/templates/test-template/render'),
-    settings: await import('@/components/templates/test-template/settings'),
-  }
-}
+  "test-template": {
+    render: await import("@/components/templates/test-template/render"),
+    settings: await import("@/components/templates/test-template/settings"),
+  },
+};
 ```
 
-* `render` : composant qui affiche la template en fonction des données du formulaire.
-* `settings` : composant qui contient le formulaire de configuration de la template.
+- `render` : composant qui affiche la template en fonction des données du formulaire.
+- `settings` : composant qui contient le formulaire de configuration de la template.
 
 ### 3. Structure du composant `settings`
 
@@ -118,12 +118,16 @@ Le composant `settings` doit impérativement être entouré du composant `Templa
 const templateSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  artworkSections: z.object({
-    title: z.string().optional(),
-    subtitle: z.string().optional(),
-    artworks: z.number().array(),
-  }).array(),
+  artworkSections: z
+    .object({
+      title: z.string().optional(),
+      subtitle: z.string().optional(),
+      artworks: z.number().array(),
+    })
+    .array(),
 });
 ```
 
 Tous les champs du formulaire doivent être compatibles avec les composants de formulaire de [`shadcn/ui`](https://ui.shadcn.com/docs/components/form) (par exemple : `<Input>`, `<Textarea>`, `<Select>`, etc.).
+
+Ajouter les images manquantes dans /public/ : - og-image.jpg (1200x630px) - twitter-image.jpg (1200x600px) - icon-192.png et icon-512.png pour le PWA - apple-touch-icon.png

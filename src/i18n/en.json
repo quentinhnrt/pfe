@@ -113,6 +113,7 @@
       "create-artwork": "Create an artwork",
       "create-collection": "Create a collection",
       "my-profile": "My profile",
+      "settings": "Settings",
       "disconnect": "Disconnect"
     },
     "artwork": {

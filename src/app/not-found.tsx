@@ -5,10 +5,26 @@ import Link from "next/link";
 import { MotionDiv, MotionImg } from "@/components/motion";
 import { Button } from "@/components/ui/shadcn/button";
 import { Input } from "@/components/ui/shadcn/input";
+import { siteConfig } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
-  title: "Page non trouvée",
-  description: "La page que vous recherchez n'existe pas ou a été déplacée.",
+  title: "Page Not Found - 404",
+  description: "The page you're looking for doesn't exist or has been moved. Explore our art gallery and discover amazing artworks.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+  openGraph: {
+    title: "Page Not Found - ArtiLink",
+    description: "The page you're looking for doesn't exist or has been moved.",
+    type: "website",
+    locale: "en_US",
+    url: `${siteConfig.url}/404`,
+    siteName: siteConfig.name,
+  },
+  alternates: {
+    canonical: `${siteConfig.url}/404`,
+  },
 };
 
 export default function NotFound() {

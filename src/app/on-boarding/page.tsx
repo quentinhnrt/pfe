@@ -6,26 +6,47 @@ import { redirect } from "next/navigation";
 
 import OnBoardingForm from "@/features/on-boarding/components/on-boarding-form";
 import { auth } from "@/lib/auth";
+import { siteConfig } from "@/lib/seo/metadata";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("page.on-boarding");
+  const title = t("title");
+  const description = t("meta-description");
 
   return {
-    title: t("title"),
-    description: t("meta-description"),
+    title,
+    description,
+    keywords: ["onboarding", "profile setup", "account setup", "artist registration"],
+    robots: {
+      index: false,
+      follow: false,
+    },
     openGraph: {
-      title: t("title"),
-      description: t("meta-description"),
+      title,
+      description,
+      type: "website",
+      locale: "en_US",
+      url: `${siteConfig.url}/on-boarding`,
+      siteName: siteConfig.name,
       images: [
         {
           url: "/signin.jpg",
           width: 1200,
           height: 630,
-          alt: t("title"),
+          alt: title,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/signin.jpg"],
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/on-boarding`,
     },
   };
 }

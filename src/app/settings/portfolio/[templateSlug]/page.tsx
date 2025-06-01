@@ -1,10 +1,32 @@
 import { headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
+import { Metadata } from "next";
 
 import { auth } from "@/lib/auth";
 import { getServerUrl } from "@/lib/server-url";
+import { siteConfig } from "@/lib/seo/metadata";
 import { templates } from "@/lib/templates";
 import { Template } from "@prisma/client";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ templateSlug: string }>;
+}): Promise<Metadata> {
+  const { templateSlug } = await params;
+  
+  return {
+    title: `${templateSlug} Template Settings`,
+    description: `Configure your ${templateSlug} portfolio template settings`,
+    robots: {
+      index: false,
+      follow: false,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/settings/portfolio/${templateSlug}`,
+    },
+  };
+}
 
 export default async function TemplatePage({
   params,

@@ -1,13 +1,26 @@
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
 
 import { AppearanceForm } from "@/features/settings/components/appearance-form";
+import { siteConfig } from "@/lib/seo/metadata";
 import { getCurrentUser } from "@/lib/users";
 import { getTranslations } from "next-intl/server";
 
-export const metadata = {
-  title: "Appearance Settings",
-  description: "Manage the appearance of the application",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("page.settings.appearance");
+  
+  return {
+    title: t("title"),
+    description: t("description"),
+    robots: {
+      index: false,
+      follow: false,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/settings/appearance`,
+    },
+  };
+}
 
 export default async function AppearanceSettingsPage() {
   const user = await getCurrentUser();

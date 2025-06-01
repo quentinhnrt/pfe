@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { siteConfig } from "@/lib/seo/metadata";
 import { ArrowLeftIcon } from "lucide-react";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -11,9 +12,32 @@ import { AuthTabs } from "@/features/auth/components/auth-tabs";
 
 export async function generateMetadata(): Promise<Metadata> {
   const m = await getTranslations("commons.metadata");
+  const title = m("sign-in");
+  const description = "Sign in to your ArtiLink account to connect with artists and discover amazing artworks";
 
   return {
-    title: m("sign-in"),
+    title,
+    description,
+    robots: {
+      index: false,
+      follow: true,
+    },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: "en_US",
+      url: `${siteConfig.url}/sign-in`,
+      siteName: siteConfig.name,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/sign-in`,
+    },
   };
 }
 

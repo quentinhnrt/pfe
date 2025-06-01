@@ -2,12 +2,30 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { SettingsNav } from "@/features/settings/components/settings-nav";
+import { siteConfig } from "@/lib/seo/metadata";
 import { getCurrentUser } from "@/lib/users";
 
-export const metadata: Metadata = {
-  title: "Settings",
-  description: "Manage your account settings and preferences",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Settings",
+    description: "Manage your account settings and preferences",
+    robots: {
+      index: false,
+      follow: false,
+    },
+    openGraph: {
+      title: "Settings - ArtiLink",
+      description: "Manage your account settings and preferences",
+      type: "website",
+      locale: "en_US",
+      url: `${siteConfig.url}/settings`,
+      siteName: siteConfig.name,
+    },
+    alternates: {
+      canonical: `${siteConfig.url}/settings`,
+    },
+  };
+}
 
 export default async function SettingsLayout({
   children,
