@@ -71,12 +71,12 @@ export default function SearchArtist({
             <h3 className="text-sm font-medium ">Artistes suggérés</h3>
             <div className="h-px flex-1 bg-gradient-to-r from-gray-300 to-transparent ml-4"></div>
           </div>
-          <div className="flex items-center gap-4 justify-center px-2">
+          <div className="flex flex-col lg:flex-row items-center gap-4 justify-center px-2">
             {artists.map((artist, index) => (
               <Link
                 href={`/user/${artist.id}`}
                 key={artist.id}
-                className="group flex-shrink-0 flex items-center gap-3 bg-white dark:bg-black border dark:border-white/50 border-gray-200 rounded-2xl px-4 py-3 hover:border-gray-300 hover:shadow-lg transition-all duration-300 min-w-fit"
+                className="group flex-shrink-0 flex items-center gap-3 bg-white dark:bg-black border dark:border-white/50 border-gray-200 rounded-2xl px-4 py-3 hover:border-gray-300 hover:shadow-lg transition-all duration-300 min-w-fit w-full lg:w-fit"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="relative">

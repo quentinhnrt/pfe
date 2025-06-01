@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function ProfileSettingsPage() {
   const user = await getCurrentUser();
-  const t = await getTranslations("page.profile");
+  const t = await getTranslations("page.settings.profile");
 
   if (!user) {
     redirect("/sign-in");
