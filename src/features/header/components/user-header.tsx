@@ -12,9 +12,11 @@ import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {useTranslations} from "next-intl";
 
 export default function UserHeader({ session }: { session: Session }) {
   const router = useRouter();
+  const s = useTranslations("feature.social");
 
   async function handleSignOut() {
     await authClient.signOut({
@@ -51,9 +53,11 @@ export default function UserHeader({ session }: { session: Session }) {
             )}
             <div className="hidden sm:block text-left">
               <p className="text-sm font-medium">
-                {session.user.firstname || "Utilisateur"}
+                {session.user.firstname || "User"}
               </p>
-              <p className="text-xs text-gray-500">Mon profil</p>
+              <p className="text-xs text-gray-500">
+                {s("my-profile")}
+              </p>
             </div>
           </div>
         </Button>
@@ -61,14 +65,14 @@ export default function UserHeader({ session }: { session: Session }) {
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem asChild>
           <Link href={`/user/${session.user.id}`} className="w-full">
-            Mon profil
+            {s("my-profile")}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => handleSignOut()}
           className="text-red-600"
         >
-          Se déconnecter
+            {s("disconnect")}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

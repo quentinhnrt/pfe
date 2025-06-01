@@ -5,6 +5,7 @@ import { UserFromApi } from "@/lib/users";
 import { User } from "@prisma/client";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
+import {useTranslations} from "next-intl";
 
 type Props = {
   user: UserFromApi;
@@ -21,6 +22,8 @@ export default function FollowButton({ user, currentUser }: Props) {
   const isSelf = user.id === currentUser?.id;
   const targetIsArtist = user.role === "ARTIST";
   const canFollow = !isSelf && targetIsArtist && currentUser;
+  const c = useTranslations("commons");
+  const s = useTranslations("feature.social");
 
   if (!targetIsArtist || isSelf) return;
 
@@ -43,7 +46,7 @@ export default function FollowButton({ user, currentUser }: Props) {
 
       if (!res.ok) {
         const { error } = await res.json();
-        toast.error(error || "Une erreur est survenue.");
+        toast.error(error || c("error.title"));
         return;
       }
 
@@ -52,7 +55,7 @@ export default function FollowButton({ user, currentUser }: Props) {
     });
   };
 
-  const label = isFollowing ? "Ne plus suivre" : "Suivre";
+  const label = isFollowing ? s("unfollow") : s("follow");
 
   return (
     <Button

@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import {useTranslations} from "next-intl";
 
 type Props = {
   value?: string;
@@ -23,6 +24,8 @@ export default function SearchArtist({
   const [query, setQuery] = useState(value);
   const [artists, setArtists] = useState<User[]>([]);
   const pathname = usePathname();
+  const s = useTranslations("feature.search");
+  const c = useTranslations("commons");
 
   const suggestionsDisabled = disableSuggestions || pathname === "/search";
 
@@ -68,15 +71,17 @@ export default function SearchArtist({
       {!suggestionsDisabled && artists.length > 0 && (
         <div className="mt-6 w-full">
           <div className="flex items-center justify-between mb-4 px-2">
-            <h3 className="text-sm font-medium ">Artistes suggérés</h3>
+            <h3 className="text-sm font-medium ">
+                {s("titles.artists-results")}
+            </h3>
             <div className="h-px flex-1 bg-gradient-to-r from-gray-300 to-transparent ml-4"></div>
           </div>
-          <div className="flex items-center gap-4 justify-center px-2">
+          <div className="flex flex-col lg:flex-row items-center gap-4 justify-center px-2">
             {artists.map((artist, index) => (
               <Link
                 href={`/user/${artist.id}`}
                 key={artist.id}
-                className="group flex-shrink-0 flex items-center gap-3 bg-white dark:bg-black border dark:border-white/50 border-gray-200 rounded-2xl px-4 py-3 hover:border-gray-300 hover:shadow-lg transition-all duration-300 min-w-fit"
+                className="group flex-shrink-0 flex items-center gap-3 bg-white dark:bg-black border dark:border-white/50 border-gray-200 rounded-2xl px-4 py-3 hover:border-gray-300 hover:shadow-lg transition-all duration-300 min-w-fit w-full lg:w-fit"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <div className="relative">
@@ -102,7 +107,7 @@ export default function SearchArtist({
                       "Artiste"}
                   </span>
                   <span className="text-gray-500 text-xs group-hover:text-gray-600 transition-colors duration-300">
-                    Artiste
+                    {c("artist")}
                   </span>
                 </div>
                 <ChevronRight
@@ -117,7 +122,9 @@ export default function SearchArtist({
                   href={`/search?query=${encodeURIComponent(query)}`}
                   className="group flex items-center gap-2 transition-all duration-300 w-full h-full p-6"
                 >
-                  <span className="text-sm font-medium ">Voir plus</span>
+                  <span className="text-sm font-medium ">
+                    {c("buttons.see-more")}
+                  </span>
                   <div className="flex items-center justify-center w-6 h-6 transition-all duration-300">
                     <ChevronRight
                       size={14}

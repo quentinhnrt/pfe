@@ -18,6 +18,7 @@ import { Loader2, Search } from "lucide-react"; // <--- Loader2 ajouté ici
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import {useTranslations} from "next-intl";
 
 interface Artwork {
   id: number;
@@ -47,6 +48,9 @@ export function ArtworkGallerySelector({
   const [hasMore, setHasMore] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
+  const c = useTranslations("commons");
+  const as = useTranslations("feature.artwork.selector");
+
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -107,11 +111,11 @@ export function ArtworkGallerySelector({
             <div className="relative w-64">
               <input
                 type="search"
-                placeholder="Chercher par titre"
+                placeholder={as("placeholders.search")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full rounded border border-gray-300 pl-10 pr-3 py-2 text-black placeholder-gray-400 focus:border-black focus:ring-1 focus:ring-black"
-                aria-label="Chercher par titre"
+                aria-label={as("placeholders.search")}
               />
               <Search
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -156,7 +160,7 @@ export function ArtworkGallerySelector({
               {hasMore && (
                 <div className="p-4 text-center">
                   <Button onClick={loadMore} variant="outline">
-                    Charger plus
+                    {c("buttons.load-more")}
                   </Button>
                 </div>
               )}

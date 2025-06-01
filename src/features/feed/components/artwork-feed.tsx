@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import {useTranslations} from "next-intl";
 
 type Artwork = {
   id: number;
@@ -32,6 +33,7 @@ export default function ArtworksFeed({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const f = useTranslations("feature.artwork.feed");
 
   const fetchArtworks = useCallback(async () => {
     try {
@@ -110,11 +112,14 @@ export default function ArtworksFeed({
     return (
       <section className="py-8">
         <div className="px-6 mb-6">
-          <h2 className="text-2xl font-bold mb-2">Œuvres à découvrir</h2>
+          <h2 className="text-2xl font-bold mb-2">
+            {f("title")}
+          </h2>
           <p>
             {isAuthenticated
-              ? "Naviguez dans notre sélection d'œuvres"
-              : "Explorez notre galerie d'art"}
+              ? f("description-auth")
+              : f("description-guest")
+            }
           </p>
         </div>
         <LoadingSkeleton />
@@ -131,13 +136,13 @@ export default function ArtworksFeed({
           </h2>
           <div className="text-center py-8">
             <p className="text-gray-500 mb-4">
-              Aucune œuvre disponible pour le moment
+              {f("no-artworks")}
             </p>
             <button
               onClick={fetchArtworks}
               className="px-6 py-3 bg-black text-white hover:bg-gray-800 rounded-xl transition-colors duration-300 font-medium"
             >
-              Actualiser
+                {f("refresh")}
             </button>
           </div>
         </div>
@@ -149,11 +154,14 @@ export default function ArtworksFeed({
     <Card className="overflow-hidden bg-transparent border-0 shadow-none">
       <CardTitle>
         <div className="px-6 mb-6">
-          <h2 className="text-2xl font-bold mb-2">Œuvres à découvrir</h2>
+          <h2 className="text-2xl font-bold mb-2">
+            {f("title")}
+          </h2>
           <p className={"font-normal"}>
             {isAuthenticated
-              ? "Naviguez dans notre sélection d'œuvres"
-              : "Explorez notre galerie d'art"}
+              ? f("description-auth")
+              : f("description-guest")
+            }
           </p>
         </div>
       </CardTitle>
@@ -184,7 +192,7 @@ export default function ArtworksFeed({
             <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white dark:from-black to-transparent z-20 pointer-events-none"></div>
             <div
               ref={scrollRef}
-              className="flex gap-4 px-6 overflow-x-auto scrollbar-hide scroll-smooth"
+              className="flex gap-4 lg:px-6 overflow-x-auto scrollbar-hide scroll-smooth"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
@@ -223,7 +231,7 @@ export default function ArtworksFeed({
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:px-6">
             {artworks.map((artwork, index) => (
               <Link
                 href={"/user/" + artwork.user.id}

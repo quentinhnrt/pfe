@@ -22,6 +22,7 @@ import { Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import {useTranslations} from "next-intl";
 
 type Props = {
   children?: React.ReactNode;
@@ -35,14 +36,15 @@ export default function CollectionForm({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const co = useTranslations("feature.collection");
+  const f = useTranslations("commons.forms");
   const formSchema = z.object({
-    title: z.string().min(1, { message: "Le titre est requis" }),
+    title: z.string().min(1),
     description: z.string().optional(),
     artworks: z
       .number()
       .array()
-      .min(1, { message: "Sélectionnez au moins une œuvre" }),
+      .min(1, { message: co("errors.artworks-required") }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -86,7 +88,7 @@ export default function CollectionForm({
 
       window.location.reload();
     } catch (error) {
-      console.error("Erreur lors de la création de la collection:", error);
+      console.error("An error occurred during collection creation", error);
     } finally {
       setIsLoading(false);
     }
@@ -106,14 +108,14 @@ export default function CollectionForm({
       <DialogTrigger asChild>
         {children || (
           <Button className="border-0 transition-all duration-200 font-medium">
-            Créer une collection
+            {co("create.title")}
           </Button>
         )}
       </DialogTrigger>
       <DialogContent className="!max-w-5xl max-h-[90vh] shadow-2xl overflow-hidden flex flex-col">
         <DialogHeader className=" pb-4 flex-shrink-0">
           <DialogTitle className=" text-2xl font-bold flex items-center">
-            Créer une collection
+            {co("create.title")}
           </DialogTitle>
         </DialogHeader>
 
@@ -126,11 +128,11 @@ export default function CollectionForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-semibold text-base">
-                      Titre de la collection
+                      {co("labels.title")}
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Donnez un nom à votre collection"
+                        placeholder={co("placeholders.title")}
                         {...field}
                         className="transition-all duration-200"
                       />
@@ -145,11 +147,11 @@ export default function CollectionForm({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-semibold text-base">
-                      Description (optionnelle)
+                        {co("labels.description")}
                     </FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Décrivez votre collection, son thème ou son inspiration..."
+                        placeholder={co("placeholders.description")}
                         {...field}
                         className=" transition-all duration-200 min-h-[100px] resize-none"
                       />
@@ -164,13 +166,13 @@ export default function CollectionForm({
                 render={() => (
                   <FormItem>
                     <FormLabel className="font-semibold text-base">
-                      Œuvres à inclure
+                        {co("labels.artworks")}
                     </FormLabel>
                     <FormControl>
                       <div className=" transition-colors duration-200 rounded-lg p-4 ">
                         <ArtworkGallerySelector
                           name="artworks"
-                          label="Sélectionner un ou plusieurs œuvres à ajouter à la collection"
+                          label={co("labels.select-artworks")}
                         />
                       </div>
                     </FormControl>
@@ -191,7 +193,7 @@ export default function CollectionForm({
               className=" transition-all duration-200"
             >
               <X className="w-4 h-4 mr-2" />
-              Annuler
+                {f("cancel")}
             </Button>
             <Button
               onClick={form.handleSubmit(onSubmit)}
@@ -201,10 +203,12 @@ export default function CollectionForm({
               {isLoading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Création...
+                    {f("creation")}
                 </>
               ) : (
-                <>Créer</>
+                <>
+                    {f("create")}
+                </>
               )}
             </Button>
           </div>

@@ -5,6 +5,11 @@ import Link from "next/link";
 import { AuthTabs } from "@/features/auth/components/auth-tabs";
 import { getTranslations } from "next-intl/server";
 
+export const metadata = {
+    title: "Sign In | ArtiLink",
+    description: "Connect with artists and explore their works",
+}
+
 export default async function SignInPage() {
   const t = await getTranslations("page.sign-in");
   const c = await getTranslations("commons");
