@@ -105,12 +105,12 @@
       }
     },
     "search": {
-      "title": "Discover artists",
+      "title": "Discover artists and artworks",
       "description": "And connect with exceptional talent",
       "see-profile": "See profile",
       "no-artist-found": "No artist found",
       "try-with-other-keywords": "Try with other keywords or explore our suggestions below",
-      "search-artist": "Search for an artist",
+      "search-artist": "Search for an artist or an artwork",
       "results-for": "Results for"
     },
     "portfolio": {
