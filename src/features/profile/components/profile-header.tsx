@@ -65,7 +65,7 @@ export const ProfileHeader = memo(function ProfileHeader({
             <AvatarFallback>{profile.name.substring(0, 2)}</AvatarFallback>
           </Avatar>
         </div>
-        <div className="absolute bottom-2 right-4 flex gap-2">
+        <div className="absolute bottom-2 right-4 flex flex-col sm:flex-row gap-2">
           <Button
             asChild={profile.hasPortfolio}
             variant="outline"

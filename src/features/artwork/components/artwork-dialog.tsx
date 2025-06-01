@@ -10,6 +10,7 @@ import {
 import ArtworkForm from "@/features/artwork/components/artwork-form";
 import { authClient } from "@/lib/auth-client";
 import { Artwork } from "@prisma/client";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 
 type Props = {
@@ -28,6 +29,8 @@ export default function ArtworkDialog({
   handleDeleteArtwork,
 }: Props) {
   const { data: session } = authClient.useSession();
+  const c = useTranslations("commons");
+  const a = useTranslations("feature.artwork");
 
   return (
     <Dialog
@@ -42,7 +45,8 @@ export default function ArtworkDialog({
                 {artwork.title}
               </DialogTitle>
               <DialogDescription className="text-sm text-gray-500">
-                Created on {new Date(artwork.createdAt).toLocaleDateString()}
+                {c("created-on")}{" "}
+                {new Date(artwork.createdAt).toLocaleDateString("en-US")}
               </DialogDescription>
             </DialogHeader>
 
@@ -56,25 +60,29 @@ export default function ArtworkDialog({
 
             <div className="space-y-2 text-sm ">
               <p>
-                <span className="font-semibold">Description:</span>{" "}
+                <span className="font-semibold">
+                  {a("labels.description")}:
+                </span>{" "}
                 {artwork.description}
               </p>
 
               <p>
-                <span className="font-semibold">For Sale:</span>{" "}
-                {artwork.isForSale ? "Yes" : "No"}
+                <span className="font-semibold">
+                  {a("labels.is-for-sale")}:
+                </span>{" "}
+                {artwork.isForSale ? c("yes") : c("no")}
               </p>
 
               {artwork.isForSale && (
                 <p>
-                  <span className="font-semibold">Price:</span> {artwork.price}{" "}
-                  €
+                  <span className="font-semibold">{a("labels.price")}:</span>{" "}
+                  {artwork.price} €
                 </p>
               )}
 
               <p>
-                <span className="font-semibold">Sold:</span>{" "}
-                {artwork.sold ? "Yes" : "No"}
+                <span className="font-semibold">{a("labels.sold")}:</span>{" "}
+                {artwork.sold ? c("yes") : c("no")}
               </p>
             </div>
 
@@ -82,7 +90,7 @@ export default function ArtworkDialog({
               <div className={"flex items-center gap-4"}>
                 <ArtworkForm artwork={artwork} onSuccess={handleArtworkEdited}>
                   <Button variant={"default"} className={"cursor-pointer"}>
-                    Edit
+                    {c("forms.modify")}
                   </Button>
                 </ArtworkForm>
 
@@ -91,13 +99,13 @@ export default function ArtworkDialog({
                   variant={"destructive"}
                   className={"cursor-pointer"}
                 >
-                  Delete
+                  {c("delete")}
                 </Button>
               </div>
             )}
 
             <DialogClose asChild>
-              <Button className="w-full">Close</Button>
+              <Button className="w-full">{c("close")}</Button>
             </DialogClose>
           </div>
         )}

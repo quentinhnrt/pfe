@@ -27,7 +27,7 @@ export async function generatePortfolioMetadata(
   const description =
     template.description ||
     user.bio ||
-    `Portfolio de ${fullName} – Découvrez ses collections, inspirations et créations.`;
+    `Portfolio of ${fullName} – Discover their collections, inspirations and creations.`;
 
   const twitterHandle = template.contactInfos?.twitter
     ? `@${template.contactInfos.twitter.split("/").pop()}`
@@ -50,10 +50,10 @@ export async function generatePortfolioMetadata(
           url: profileImage,
           width: 1200,
           height: 630,
-          alt: `Image de profil de ${fullName}`,
+          alt: `Profile image of ${fullName}`,
         },
       ],
-      locale: "fr_FR",
+      locale: "en_US",
       siteName: a("name"),
     },
     twitter: {

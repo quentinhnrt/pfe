@@ -1,11 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/shadcn/button";
-import ArtworkCard from "@/features/artwork/components/artwork-card";
-import ArtworkDialog from "@/features/artwork/components/artwork-dialog";
-import { deleteArtwork } from "@/lib/artworks";
-import { Artwork } from "@prisma/client";
+import ArtworkGrid from "@/features/artwork/components/artwork-grid";
+import { Artwork, User } from "@prisma/client";
 import { useEffect, useState } from "react";
+
+type ArtworkWithUser = Artwork & {
+  user: User;
+};
 
 export default function ArtworksTab({
   userId,
@@ -14,15 +16,13 @@ export default function ArtworksTab({
   userId: string;
   isActive: boolean;
 }) {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
+  const [artworks, setArtworks] = useState<ArtworkWithUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [hasFetched, setHasFetched] = useState(false);
-  const [selectedArtwork, setSelectedArtwork] = useState<Artwork | null>(null);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const limit = 10;
+  const limit = 12;
 
   async function fetchArtworks() {
     try {
@@ -35,7 +35,7 @@ export default function ArtworksTab({
         throw new Error("Failed to fetch artworks");
       }
 
-      const result: Artwork[] = await response.json();
+      const result: ArtworkWithUser[] = await response.json();
 
       if (page === 1) {
         setArtworks(result);
@@ -43,7 +43,7 @@ export default function ArtworksTab({
         setArtworks((prev) => [...prev, ...result]);
       }
 
-      setHasMore(result.length !== 0);
+      setHasMore(result.length === limit);
       if (!hasFetched) {
         setHasFetched(true);
       }
@@ -63,38 +63,6 @@ export default function ArtworksTab({
     if (!isActive || hasFetched) return;
     fetchArtworks();
   }, [isActive, userId]);
-
-  const handleOpenDialog = (artwork: Artwork) => {
-    setSelectedArtwork(artwork);
-    setIsDialogOpen(true);
-  };
-
-  const handleCloseDialog = () => {
-    setIsDialogOpen(false);
-    setSelectedArtwork(null);
-  };
-
-  async function handleDeleteArtwork(artworkId: number) {
-    const response = await deleteArtwork(artworkId);
-
-    if (response) {
-      setArtworks((prev) => prev.filter((artwork) => artwork.id !== artworkId));
-      if (selectedArtwork?.id === artworkId) {
-        handleCloseDialog();
-      }
-    } else {
-      setError("Failed to delete artwork");
-    }
-  }
-
-  async function handleArtworkEdited(updatedArtwork: Artwork) {
-    setArtworks((prev) =>
-      prev.map((artwork) =>
-        artwork.id === updatedArtwork.id ? updatedArtwork : artwork
-      )
-    );
-    setSelectedArtwork(updatedArtwork);
-  }
 
   if (error) {
     return (
@@ -117,43 +85,23 @@ export default function ArtworksTab({
         </div>
       ) : (
         <div className="space-y-4">
-          <div
-            className={
-              "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-            }
-          >
-            {artworks.map((artwork) => (
-              <ArtworkCard
-                key={artwork.id}
-                artwork={artwork}
-                onClick={handleOpenDialog}
-              />
-            ))}
-          </div>
+          <ArtworkGrid artworks={artworks} columns={3} gap={16} />
 
           {artworks.length === 0 && (
-            <p className="text-gray-500">Aucun artwork trouvé</p>
+            <p className="text-gray-500 text-center">Aucune œuvre trouvée</p>
           )}
 
           {hasMore && (
             <Button
               onClick={() => setPage((prev) => prev + 1)}
               disabled={isLoading}
-              className="cursor-pointer mx-auto block mt-4"
+              className="cursor-pointer mx-auto block mt-8"
             >
               {isLoading ? "Chargement..." : "Charger plus"}
             </Button>
           )}
         </div>
       )}
-
-      <ArtworkDialog
-        artwork={selectedArtwork}
-        isDialogOpen={isDialogOpen}
-        handleCloseDialog={handleCloseDialog}
-        handleArtworkEdited={handleArtworkEdited}
-        handleDeleteArtwork={handleDeleteArtwork}
-      />
     </div>
   );
 }

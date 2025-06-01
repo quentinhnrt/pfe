@@ -9,9 +9,21 @@
     "anonymous-user": "Anonymous User",
     "back-to-home": "Back to home",
     "loading": "Loading...",
+    "created-on": "Created on",
+    "yes": "Yes",
+    "no": "No",
+    "delete": "Delete",
+    "close": "Close",
     "error": {
       "title": "An error occurred",
       "description": "Please try again later or contact support if the problem persists."
+    },
+    "not-found": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist or has been moved.",
+      "search-title": "No results for {{query}}",
+      "search-description": "We couldn't find any matches for your search. Try using different keywords.",
+      "search-title-no-query": "No results"
     },
     "forms": {
       "modify": "Modify",
@@ -25,7 +37,11 @@
       "publish": "Publish",
       "configure-portfolio": "Configure my portfolio",
       "sign-in": "Sign in/Sign up",
-      "see-more": "See more"
+      "see-more": "See more",
+      "view-artist": "View Artist Profile",
+      "explore": "Explore",
+      "go-back": "Go back",
+      "go-home": "Go to homepage"
     },
     "home": "Home",
     "metadata": {
@@ -39,6 +55,11 @@
       "back-to-home": "Back to home",
       "profile-form": "Profile configuration form",
       "decorative-art-image": "Decorative image representing art"
+    },
+    "artwork": {
+      "sold": "Sold",
+      "for-sale": "For Sale",
+      "no-image": "No image available"
     }
   },
   "page": {
@@ -46,6 +67,17 @@
       "title": "Explore the world of art",
       "description": "Discover exceptional artworks and connect with talented artists",
       "last-posts": "Last posts"
+    },
+    "explore": {
+      "title": "Explore artworks",
+      "description": "Discover the latest artistic creations",
+      "search-placeholder": "Search for artworks...",
+      "no-artworks": "No artworks found",
+      "try-different-search": "Try modifying your search criteria or browse all available artworks.",
+      "filter": {
+        "all": "All artworks",
+        "for-sale": "For sale"
+      }
     },
     "sign-in": {
       "title": "Join the artistic community",
@@ -78,7 +110,8 @@
       "see-profile": "See profile",
       "no-artist-found": "No artist found",
       "try-with-other-keywords": "Try with other keywords or explore our suggestions below",
-      "search-artist": "Search for an artist"
+      "search-artist": "Search for an artist",
+      "results-for": "Results for"
     },
     "portfolio": {
       "no-active-template": "No active template found for user: {{username}}",
@@ -181,6 +214,11 @@
       "placeholders": {
         "description": "Share your thoughts, questions, or updates with the community",
         "question": "What would you like to ask the community?"
+      },
+      "time": {
+        "just-now": "Just now",
+        "hours-ago": "{{hours}}h ago",
+        "yesterday": "Yesterday"
       }
     },
     "collection": {
@@ -214,10 +252,27 @@
     },
     "search": {
       "placeholders": {
-        "artists": "Search for artists"
+        "artists": "Search for artists",
+        "artworks": "Search for artworks"
       },
       "titles": {
-        "artists-results": "Suggested artists"
+        "artists-results": "Suggested artists",
+        "artworks-results": "Suggested artworks"
+      },
+      "loading": "Loading results...",
+      "no-results": "No artists found. Try a different search term.",
+      "no-results-artworks": "No artworks found. Try a different search term.",
+      "tabs": {
+        "artists": "Artists",
+        "artworks": "Artworks"
+      },
+      "aria": {
+        "clear-search": "Clear search"
+      },
+      "metadata": {
+        "results-for": "Search results for",
+        "on-artilink": "on ArtiLink",
+        "description": "Search for artists, artworks and portfolios on ArtiLink"
       }
     },
     "auth": {

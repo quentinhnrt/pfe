@@ -1,58 +1,64 @@
 "use client";
 
+import { Button } from "@/components/ui/shadcn/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/shadcn/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Image from "next/image";
+import ArtworkCard from "@/features/artwork/components/artwork-card";
+import ArtworkDetailsDialog from "@/features/artwork/components/artwork-details-dialog";
+import { Artwork, User } from "@prisma/client";
+import { ArrowLeft, ArrowRight, CompassIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
-import {useTranslations} from "next-intl";
+// Import Swiper React components
+import { Swiper, SwiperSlide } from "swiper/react";
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+// Import required modules
+import {
+  Autoplay,
+  EffectCoverflow,
+  Navigation,
+  Pagination,
+} from "swiper/modules";
 
-type Artwork = {
-  id: number;
-  title: string;
-  thumbnail: string;
-  user: {
-    id: string;
-    firstname?: string;
-    lastname?: string;
-    image?: string;
-    createdAt: string;
-  };
+type ArtworkWithUser = Artwork & {
+  user: User;
 };
 
-interface ArtworksFeedProps {
+type ArtworksFeedProps = {
   isAuthenticated?: boolean;
-}
+};
 
 export default function ArtworksFeed({
   isAuthenticated = false,
 }: ArtworksFeedProps) {
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [, setError] = useState<string | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
-  const f = useTranslations("feature.artwork.feed");
+  const [artworks, setArtworks] = useState<ArtworkWithUser[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedArtwork, setSelectedArtwork] =
+    useState<ArtworkWithUser | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Références pour les boutons de navigation personnalisés
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+
+  const a = useTranslations("feature.artwork.feed");
+  const c = useTranslations("commons.buttons");
 
   const fetchArtworks = useCallback(async () => {
+    setLoading(true);
     try {
-      setIsLoading(true);
-      setError(null);
-
-      const res = await fetch("/api/artworks?limit=10&page=1");
-
-      if (!res.ok) {
-        throw new Error(`HTTP error! status: ${res.status}`);
-      }
-
-      const data: Artwork[] = await res.json();
+      const res = await fetch("/api/artworks?limit=12&page=1");
+      if (!res.ok) throw new Error("Failed to fetch artworks");
+      const data = await res.json();
       setArtworks(data);
     } catch (error) {
-      setError(error instanceof Error ? error.message : "Erreur inconnue");
-      setArtworks([]);
+      console.error("Error fetching artworks:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   }, []);
 
@@ -60,234 +66,226 @@ export default function ArtworksFeed({
     fetchArtworks();
   }, [fetchArtworks]);
 
-  const updateScrollButtons = useCallback(() => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      const tolerance = 1;
-
-      setCanScrollLeft(scrollLeft > tolerance);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - tolerance);
-    }
-  }, []);
-
-  useEffect(() => {
-    const scrollElement = scrollRef.current;
-    if (scrollElement) {
-      scrollElement.addEventListener("scroll", updateScrollButtons);
-      setTimeout(updateScrollButtons, 100);
-      return () =>
-        scrollElement.removeEventListener("scroll", updateScrollButtons);
-    }
-  }, [updateScrollButtons, artworks.length]);
-
-  const scrollBy = (distance: number) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({
-        left: distance,
-        behavior: "smooth",
-      });
-    }
+  const handleArtworkClick = (artwork: ArtworkWithUser) => {
+    setSelectedArtwork(artwork);
+    setDialogOpen(true);
   };
 
-  const LoadingSkeleton = () => (
-    <div
-      className={`${isAuthenticated ? "flex gap-4 px-6" : "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-6"}`}
-    >
-      {[...Array(isAuthenticated ? 6 : 8)].map((_, i) => (
-        <div
-          key={i}
-          className={`${isAuthenticated ? "flex-shrink-0 w-56" : ""} animate-pulse`}
-        >
-          <div className="rounded-xl h-48 mb-3"></div>
-          <div className="space-y-2">
-            <div className=" h-3 rounded-full"></div>
-            <div className=" h-3 rounded-full w-2/3"></div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-
-  if (isLoading) {
-    return (
-      <section className="py-8">
-        <div className="px-6 mb-6">
-          <h2 className="text-2xl font-bold mb-2">
-            {f("title")}
-          </h2>
-          <p>
-            {isAuthenticated
-              ? f("description-auth")
-              : f("description-guest")
-            }
-          </p>
-        </div>
-        <LoadingSkeleton />
-      </section>
-    );
-  }
-
-  if (artworks.length === 0) {
-    return (
-      <section className="py-8 bg-white">
-        <div className="px-6">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900">
-            Œuvres à découvrir
-          </h2>
-          <div className="text-center py-8">
-            <p className="text-gray-500 mb-4">
-              {f("no-artworks")}
-            </p>
-            <button
-              onClick={fetchArtworks}
-              className="px-6 py-3 bg-black text-white hover:bg-gray-800 rounded-xl transition-colors duration-300 font-medium"
-            >
-                {f("refresh")}
-            </button>
-          </div>
-        </div>
-      </section>
-    );
-  }
-
   return (
-    <Card className="overflow-hidden bg-transparent border-0 shadow-none">
-      <CardTitle>
-        <div className="px-6 mb-6">
-          <h2 className="text-2xl font-bold mb-2">
-            {f("title")}
-          </h2>
-          <p className={"font-normal"}>
-            {isAuthenticated
-              ? f("description-auth")
-              : f("description-guest")
-            }
+    <Card className="rounded-lg mb-8 border-0 shadow-none bg-transparent">
+      <CardTitle className="p-6 flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold">{a("title")}</h2>
+          <p className="text-muted-foreground">
+            {isAuthenticated ? a("description-auth") : a("description-guest")}
           </p>
+        </div>
+        <div className="flex gap-2">
+          <Link href="/explore">
+            <Button variant="outline" className="gap-2">
+              <CompassIcon size={16} />
+              <span>{c("explore")}</span>
+            </Button>
+          </Link>
         </div>
       </CardTitle>
 
-      <CardContent>
-        {isAuthenticated ? (
-          <div className="relative group">
-            {canScrollLeft && (
-              <button
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-lg hover:scale-110"
-                onClick={() => scrollBy(-240)}
-                aria-label="Précédent"
-              >
-                <ChevronLeft size={20} strokeWidth={2.5} />
-              </button>
-            )}
-
-            {canScrollRight && (
-              <button
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-10 h-10 bg-black/80 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-lg hover:scale-110"
-                onClick={() => scrollBy(240)}
-                aria-label="Suivant"
-              >
-                <ChevronRight size={20} strokeWidth={2.5} />
-              </button>
-            )}
-            <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white dark:from-black to-transparent z-20 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white dark:from-black to-transparent z-20 pointer-events-none"></div>
-            <div
-              ref={scrollRef}
-              className="flex gap-4 lg:px-6 overflow-x-auto scrollbar-hide scroll-smooth"
-              style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-            >
-              {artworks.map((artwork, index) => (
-                <Link
-                  href={"/user/" + artwork.user.id}
-                  key={artwork.id}
-                  className="flex-shrink-0 w-56 cursor-pointer group/card"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <div className="relative overflow-hidden rounded-xl bg-white border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                    <div className="relative h-48 overflow-hidden">
-                      {artwork.thumbnail && artwork.thumbnail.trim() !== "" ? (
-                        <Image
-                          src={artwork.thumbnail}
-                          alt={artwork.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover/card:scale-105"
-                        />
-                      ) : (
-                        <div className="bg-gray-200 w-full h-full" />
-                      )}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent transform translate-y-full group-hover/card:translate-y-0 transition-transform duration-400 ease-out">
-                        <div className="p-4 text-center">
-                          <h3 className="font-semibold text-white text-sm leading-tight line-clamp-2">
-                            {artwork.title}
-                          </h3>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+      <CardContent className="pb-6">
+        {loading ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-900"></div>
+          </div>
+        ) : artworks.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-muted-foreground">{a("no-artworks")}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:px-6">
-            {artworks.map((artwork, index) => (
-              <Link
-                href={"/user/" + artwork.user.id}
-                key={artwork.id}
-                className="block border border-gray-100 rounded-xl overflow-hidden cursor-pointer group/card hover:shadow-md transition-all duration-300 hover:-translate-y-1"
-                style={{ animationDelay: `${index * 50}ms` }}
+          <div className="relative swiper-container px-2">
+            {/* Boutons de navigation personnalisés */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10">
+              <Button
+                ref={prevRef}
+                variant="ghost"
+                size="icon"
+                className="rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-white dark:bg-black/80 dark:hover:bg-black p-3 h-auto w-auto"
+                aria-label="Previous"
               >
-                <div className="relative h-40 overflow-hidden">
-                  {artwork.thumbnail && artwork.thumbnail.trim() !== "" ? (
-                    <Image
-                      src={artwork.thumbnail}
-                      alt={artwork.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover/card:scale-105"
-                    />
-                  ) : (
-                    <div className="bg-gray-200 w-full h-full" />
-                  )}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent transform translate-y-full group-hover/card:translate-y-0 transition-transform duration-400 ease-out">
-                    <div className="p-3 text-center">
-                      <h3 className="font-medium text-white text-xs line-clamp-1">
-                        {artwork.title}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            ))}
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10">
+              <Button
+                ref={nextRef}
+                variant="ghost"
+                size="icon"
+                className="rounded-full bg-white/80 backdrop-blur-sm shadow-md hover:bg-white dark:bg-black/80 dark:hover:bg-black p-3 h-auto w-auto"
+                aria-label="Next"
+              >
+                <ArrowRight className="h-5 w-5" />
+              </Button>
+            </div>
+
+            <Swiper
+              grabCursor={true}
+              centeredSlides={false}
+              spaceBetween={16}
+              slidesPerView="auto"
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              navigation={{
+                prevEl: prevRef.current,
+                nextEl: nextRef.current,
+              }}
+              onInit={(swiper) => {
+                // @ts-expect-error - Nécessaire pour accéder aux paramètres de navigation
+                swiper.params.navigation.prevEl = prevRef.current;
+                // @ts-expect-error - Nécessaire pour accéder aux paramètres de navigation
+                swiper.params.navigation.nextEl = nextRef.current;
+                swiper.navigation.init();
+                swiper.navigation.update();
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1.15,
+                  spaceBetween: 8,
+                },
+                480: {
+                  slidesPerView: 1.3,
+                  spaceBetween: 10,
+                },
+                640: {
+                  slidesPerView: 2.1,
+                  spaceBetween: 12,
+                },
+                768: {
+                  slidesPerView: 2.2,
+                  spaceBetween: 16,
+                },
+                1024: {
+                  slidesPerView: 3.2,
+                  spaceBetween: 16,
+                },
+                1280: {
+                  slidesPerView: 4.2,
+                  spaceBetween: 16,
+                },
+              }}
+              modules={[Pagination, Navigation, Autoplay, EffectCoverflow]}
+              className="artwork-swiper px-8"
+            >
+              {artworks.map((artwork) => (
+                <SwiperSlide key={artwork.id} className="h-auto py-2">
+                  <ArtworkCard
+                    artwork={artwork}
+                    onClick={handleArtworkClick}
+                    className="h-full w-full shadow-sm"
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         )}
       </CardContent>
 
-      <style jsx>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+      <ArtworkDetailsDialog
+        artwork={selectedArtwork}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
+
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
 
-        .scrollbar-hide::-webkit-scrollbar {
+        .artwork-card-container {
+          transition: transform 0.3s ease;
+        }
+
+        .artwork-card-container:hover {
+          transform: translateY(-5px);
+        }
+
+        .artwork-swiper {
+          padding: 16px 0 40px 0;
+        }
+
+        .swiper-slide {
+          width: auto;
+          height: auto;
+          transition: all 0.3s ease;
+          opacity: 1;
+          display: flex;
+          align-items: stretch;
+          height: auto !important;
+        }
+
+        /* Masquer les boutons de navigation par défaut de Swiper */
+        .swiper-button-next,
+        .swiper-button-prev {
           display: none;
-          width: 0;
-          background: transparent;
         }
 
-        .line-clamp-1 {
-          display: -webkit-box;
-          -webkit-line-clamp: 1;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        /* Styles pour les pagination bullets */
+        .swiper-pagination {
+          position: absolute;
+          bottom: 0px !important;
         }
 
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
+        .swiper-pagination-bullet {
+          width: 8px;
+          height: 8px;
+          background: rgba(100, 100, 100, 0.5);
+          transition: all 0.3s ease;
+          opacity: 0.5;
+        }
+
+        .swiper-pagination-bullet-active {
+          background: #333;
+          transform: scale(1.2);
+          width: 10px;
+          height: 10px;
+          opacity: 1;
+        }
+
+        /* Correction pour les couleurs d'indicateur */
+        .swiper-pagination-bullet {
+          background-color: rgba(100, 100, 100, 0.5) !important;
+        }
+
+        .swiper-pagination-bullet-active {
+          background-color: #333 !important;
+        }
+
+        /* Dark mode adjustments */
+        .dark .swiper-pagination-bullet {
+          background-color: rgba(200, 200, 200, 0.5) !important;
+        }
+
+        .dark .swiper-pagination-bullet-active {
+          background-color: #fff !important;
+        }
+
+        /* Responsive adjustments pour les cartes */
+        @media (max-width: 640px) {
+          .artwork-card-container {
+            padding: 8px;
+          }
         }
       `}</style>
     </Card>

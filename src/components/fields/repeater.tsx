@@ -70,7 +70,7 @@ export default function Repeater<T>({
                   type="button"
                   onClick={() => handleRemove(index)}
                   className="ml-4 mt-1 text-red-600 hover:text-red-800"
-                  aria-label="Supprimer la réponse"
+                  aria-label="Delete answer"
                 >
                   <Trash2 className="w-6 h-6" />
                 </button>
@@ -86,7 +86,7 @@ export default function Repeater<T>({
               onClick={handleAdd}
               className="mt-2 rounded-md px-4 py-2 text-white bg-black border hover:bg-gray-900 w-full"
             >
-              Ajouter une entrée
+              Add an entry
             </button>
           )}
         </>

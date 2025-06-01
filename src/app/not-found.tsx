@@ -1,4 +1,4 @@
-import { ArrowLeft, Compass, Home, Search } from "lucide-react";
+import { Compass, Home, Search } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -9,7 +9,8 @@ import { siteConfig } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
   title: "Page Not Found - 404",
-  description: "The page you're looking for doesn't exist or has been moved. Explore our art gallery and discover amazing artworks.",
+  description:
+    "The page you're looking for doesn't exist or has been moved. Explore our art gallery and discover amazing artworks.",
   robots: {
     index: false,
     follow: true,
@@ -73,8 +74,8 @@ export default function NotFound() {
           >
             <form action="/search" className="relative">
               <Input
-                type="search"
-                name="q"
+                type="text"
+                name="query"
                 placeholder="Search..."
                 className="pl-10 pr-4 py-2"
                 aria-label="Search"
@@ -103,12 +104,6 @@ export default function NotFound() {
                 <Link href="/explore">
                   <Compass className="mr-2 h-4 w-4" />
                   Explore
-                </Link>
-              </Button>
-              <Button asChild variant="outline">
-                <Link href="/community">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Community
                 </Link>
               </Button>
             </div>
