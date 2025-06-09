@@ -456,6 +456,21 @@ export default function OnBoardingForm({ user }: { user: User }) {
               validateAndProceed={validateAndProceed}
               isLoading={isLoading}
             />
+
+            {Object.entries(form.formState.errors).length > 0 && (
+              <div className="mb-6 p-4 border border-red-300 bg-red-50 rounded-md text-sm text-red-700">
+                <ul className="list-disc pl-5">
+                  {Object.entries(form.formState.errors).map(
+                    ([name, error]) => (
+                      <li key={name}>
+                        {(error as any).message ||
+                          `Erreur sur le champ ${name}`}
+                      </li>
+                    )
+                  )}
+                </ul>
+              </div>
+            )}
           </form>
         </Form>
       </div>

@@ -16,19 +16,11 @@ export const formSchema = z.object({
   image: z
     .any()
     .refine(
-      (file) => !file || file?.size <= MAX_FILE_SIZE,
-      "Maximum file size is 5MB"
-    )
-    .refine(
       (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file?.type),
       "Accepted formats: .jpg, .jpeg, .png and .webp"
     ),
   bannerImage: z
     .any()
-    .refine(
-      (file) => !file || file?.size <= MAX_FILE_SIZE,
-      "Maximum file size is 5MB"
-    )
     .refine(
       (file) => !file || ACCEPTED_IMAGE_TYPES.includes(file?.type),
       "Accepted formats: .jpg, .jpeg, .png and .webp"
