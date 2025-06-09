@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Artilink"
+    "name": "Artilink",
+    "title": "Artilink"
   },
   "commons": {
     "user": "User",

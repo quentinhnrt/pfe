@@ -60,14 +60,26 @@ export function NavButtons({
         Previous
       </Button>
 
+      {!isLastStep && (
       <Button
         type="button"
         onClick={validateAndProceed}
-        className="min-w-[100px]"
-        aria-label={isLastStep ? "Finish form" : "Go to next step"}
+        className="min-w-[100px] cursor-pointer"
+        aria-label={"Go to next step"}
       >
         {renderNextButtonContent()}
       </Button>
+      )}
+      
+      {isLastStep && (
+        <Button
+          type="submit"
+          className="min-w-[100px] cursor-pointer"
+          aria-label={"Finish onboarding"}
+        >
+          {renderNextButtonContent()}
+        </Button>
+      )}
     </div>
   );
 }

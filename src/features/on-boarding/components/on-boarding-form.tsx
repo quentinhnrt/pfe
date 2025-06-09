@@ -406,7 +406,10 @@ export default function OnBoardingForm({ user }: { user: User }) {
       <div className="max-w-4xl mx-auto">
         <Form {...form}>
           <form
-            onSubmit={(e) => e.preventDefault()}
+            onSubmit={(e) => {
+              e.preventDefault();
+              form.handleSubmit(onSubmit)();
+            }}
             className="space-y-8"
             aria-label="Formulaire d'onboarding"
           >
