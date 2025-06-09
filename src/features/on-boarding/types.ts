@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { z } from "zod";
-import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "./constants";
+import { ACCEPTED_IMAGE_TYPES } from "./constants";
 
 export interface StepType {
   title: string;

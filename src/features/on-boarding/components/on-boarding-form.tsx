@@ -6,7 +6,7 @@ import { ImageIcon, PencilIcon, UserCircleIcon, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
-import { useForm } from "react-hook-form";
+import { useForm, FieldErrors } from "react-hook-form";
 import { toast } from "sonner";
 
 import { Form } from "@/components/ui/shadcn/form";
@@ -460,10 +460,10 @@ export default function OnBoardingForm({ user }: { user: User }) {
             {Object.entries(form.formState.errors).length > 0 && (
               <div className="mb-6 p-4 border border-red-300 bg-red-50 rounded-md text-sm text-red-700">
                 <ul className="list-disc pl-5">
-                  {Object.entries(form.formState.errors).map(
+                  {Object.entries(form.formState.errors as FieldErrors<FormValues>).map(
                     ([name, error]) => (
                       <li key={name}>
-                        {(error as any).message ||
+                        {error.message?.toString() ||
                           `Erreur sur le champ ${name}`}
                       </li>
                     )
