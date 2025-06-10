@@ -22,7 +22,17 @@ export async function getPaletteFromCollection(collection: CollectionFromAPI): P
     let palette = null;
 
     try {
-        palette = await Vibrant.from(getServerUrl()+'/'+collection.artworks[0].thumbnail).getPalette();
+        let thumbnailUrl = collection.artworks[0].thumbnail;
+
+        if (!thumbnailUrl) {
+            return {};
+        }
+
+        if (!thumbnailUrl.startsWith("http")) {
+            thumbnailUrl = getServerUrl() + '/' + thumbnailUrl;
+        }
+
+        palette = await Vibrant.from(thumbnailUrl).getPalette();
     } catch (e) {
         console.error("Error while getting palette from image:", e);
         return {};
