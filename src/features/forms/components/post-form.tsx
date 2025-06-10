@@ -235,7 +235,8 @@ export default function PostForm({ children, onPostCreated }: Props) {
                               )}
                               addButtonRenderer={({ onAdd }) => (
                                 <Button
-                                  onClick={onAdd}
+                                    // @ts-expect-error event type is not defined in the function signature
+                                  onClick={(e) => onAdd(e)}
                                   variant="default"
                                   className="w-full transition-colors font-medium mt-3"
                                 >
