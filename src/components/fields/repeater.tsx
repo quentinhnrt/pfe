@@ -1,6 +1,6 @@
 "use client";
 import { Trash2 } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 type ValueType = object | number | string | (object | number | string)[];
@@ -15,7 +15,7 @@ interface FormRepeaterProps<T> {
   onAdd?: () => void;
   onRemove?: (index: number) => void;
   name: string;
-  addButtonRenderer?: (props: { onAdd: () => void }) => React.ReactNode;
+  addButtonRenderer?: (props: { onAdd: (e: MouseEvent) => void }) => React.ReactNode;
 }
 
 export default function Repeater<T>({
@@ -29,7 +29,9 @@ export default function Repeater<T>({
   const [items, setItems] = useState<T[]>([initialValues]);
   const { control, setValue } = useFormContext();
 
-  const handleAdd = () => {
+  // @ts-expect-error event type is not defined in the function signature
+  const handleAdd = (e ) => {
+    e.preventDefault();
     setItems((prev) => [...prev, initialValues]);
     onAdd?.();
   };
@@ -83,7 +85,7 @@ export default function Repeater<T>({
           ) : (
             <button
               type="button"
-              onClick={handleAdd}
+              onClick={(e) => handleAdd(e)}
               className="mt-2 rounded-md px-4 py-2 text-white bg-black border hover:bg-gray-900 w-full"
             >
               Ajouter une entrée

@@ -2,6 +2,7 @@ import {CollectionFromAPI} from "@/lib/collections";
 import {Vibrant} from "node-vibrant/node";
 import {hexToRgb} from "@vibrant/color";
 import sizeOf from 'image-size';
+import {getServerUrl} from "@/lib/server-url";
 
 type PaletteType =
     | "Vibrant"
@@ -21,7 +22,7 @@ export async function getPaletteFromCollection(collection: CollectionFromAPI): P
     let palette = null;
 
     try {
-        palette = await Vibrant.from(collection.artworks[0].thumbnail).getPalette();
+        palette = await Vibrant.from(getServerUrl()+'/'+collection.artworks[0].thumbnail).getPalette();
     } catch (e) {
         console.error("Error while getting palette from image:", e);
         return {};
